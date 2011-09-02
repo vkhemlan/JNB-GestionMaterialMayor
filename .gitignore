@@ -1,0 +1,6 @@
+*~
+*.pyc
+*.db
+*.log
+static/media/*
+settings/local.py
