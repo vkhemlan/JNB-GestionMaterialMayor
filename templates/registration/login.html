@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block layout %}
+<div id="header">
+
+	<div id="top">
+
+		<div class="left" id="logo">
+			<a href="index.html"><img src="{{ STATIC_URL }}img/logo_bomberos.jpg" alt="" /></a>
+		</div>
+
+		<div class="left navigation" id="login-form-container">
+			<form id="login-form" method="post" action=".">
+				{% csrf_token %}
+				<table>
+					{{ form.as_table }}
+				</table>
+				<input type="submit" value="Ingresar" />
+			</form>
+			<div class="clearer">&nbsp;</div>
+
+		</div>
+
+		<div class="clearer">&nbsp;</div>
+
+	</div>
+
+</div>
+{% endblock %}

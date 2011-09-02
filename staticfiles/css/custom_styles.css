@@ -1,0 +1,32 @@
+/* General rules for the application */
+
+/* Error lists should be displayed without margin or decorations and with a red color */
+ul.errorlist {
+	list-style-type: none;
+	margin: inherit;
+	margin-bottom: 5px;
+	font-weight: bold;
+	font-size: 8px;
+	color: #DE0000;
+}
+
+/* Rules for the login form */
+
+/* Make the text inputs for username and password visible and with some padding */
+#login-form input {
+	border: 1px solid gray;
+	padding: 3px 2px;
+}
+
+/* Center the login form vertically */
+#login-form-container {
+	margin-top: 30px;
+}
+
+#login-form table {
+	width: 700px;
+}
+
+#login-form table th {
+	width: 150px;
+}
