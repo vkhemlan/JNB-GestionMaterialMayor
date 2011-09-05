@@ -15,6 +15,9 @@ ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
 
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
+                            'interface.authentication.JnbAuthenticationBackend',)
+
 MANAGERS = ADMINS
 
 LOGIN_URL = '/login/'

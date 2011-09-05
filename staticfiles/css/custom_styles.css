@@ -1,4 +1,6 @@
-/* General rules for the application */
+/*************************************
+ * General rules for the application *
+ *************************************/
 
 /* Error lists should be displayed without margin or decorations and with a red color */
 ul.errorlist {
@@ -10,7 +12,9 @@ ul.errorlist {
 	color: #DE0000;
 }
 
-/* Rules for the login form */
+/************************************
+ * General rules for the login form *
+ ************************************/
 
 /* Make the text inputs for username and password visible and with some padding */
 #login-form input {
@@ -23,10 +27,13 @@ ul.errorlist {
 	margin-top: 30px;
 }
 
+/* Set a fixed width for the table so that the possible error message "username / pass don't match"
+   does not deform the form */
 #login-form table {
 	width: 700px;
 }
 
+/* Set a fixed width for the titles "username" and "password" to keed a nice spacing with the form inputs  */
 #login-form table th {
 	width: 150px;
 }
