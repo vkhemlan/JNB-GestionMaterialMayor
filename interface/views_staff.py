@@ -1,8 +1,6 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
 
-@login_required
-def index(request):
-	return render_to_response('registration/login.html', {}, 
+def _index(request):
+	return render_to_response('staff/index.html', {}, 
 								context_instance=RequestContext(request))

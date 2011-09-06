@@ -3,6 +3,6 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('interface.views',
-    (r'^/$', 'index'),
+    (r'^$', 'index'),
     url(r'^logout/$', 'logout', name='logout'),
 )

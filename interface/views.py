@@ -3,11 +3,12 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from interface.utils import log
 from django.contrib import auth
+from interface.views_staff import _index as staff_index
 
 @login_required
 def index(request):
-	return render_to_response('registration/login.html', {}, 
-								context_instance=RequestContext(request))
+	if request.user.is_staff:
+		return staff_index(request)
 
 @login_required
 def logout(request):
