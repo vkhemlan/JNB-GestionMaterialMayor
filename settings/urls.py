@@ -7,7 +7,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 	(r'^admin/', include(admin.site.urls)),
-	(r'^login/$', 'django.contrib.auth.views.login'),
+	url(r'^login/$', 'django.contrib.auth.views.login', name='login'),
     (r'^', include('interface.urls')),
 )
 

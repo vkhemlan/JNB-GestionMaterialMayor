@@ -24,7 +24,8 @@ ul.errorlist {
 
 /* Center the login form vertically */
 #login-form-container {
-	margin-top: 30px;
+	padding-top: 55px;
+	position: relative;
 }
 
 /* Set a fixed width for the table so that the possible error message "username / pass don't match"
@@ -36,4 +37,12 @@ ul.errorlist {
 /* Set a fixed width for the titles "username" and "password" to keed a nice spacing with the form inputs  */
 #login-form table th {
 	width: 150px;
+}
+
+.success {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	width: 325px;
+	display: none;
 }

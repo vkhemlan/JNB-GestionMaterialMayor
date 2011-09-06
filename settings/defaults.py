@@ -18,6 +18,8 @@ ADMINS = (
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
                             'interface.authentication.JnbAuthenticationBackend',)
 
+JNB_WEBSERVICES_URL = 'http://localhost:8080/JnbWebServices'
+
 MANAGERS = ADMINS
 
 LOGIN_URL = '/login/'
@@ -64,7 +66,6 @@ MEDIA_URL = ''
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
 
 STATIC_ROOT = root('static', 'assets')
 STATIC_URL = '/static/assets/'
@@ -73,6 +74,8 @@ STATICFILES_DIRS = (
     root('staticfiles'),
 )
 
+ADMIN_MEDIA_PREFIX = '%sadmin/' % STATIC_URL
+
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.debug',
     'django.core.context_processors.i18n',
@@ -80,6 +83,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
+    'djangoflash.context_processors.flash',
 )
 
 
@@ -96,6 +100,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'djangoflash.middleware.FlashMiddleware',
 )
 
 ROOT_URLCONF = '%s.settings.urls' % PROJECT_MODULE
@@ -115,7 +120,8 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'south',
-    'interface')
+    'interface',
+    'django_extensions',)
 
 LOGGING = {
     'version': 1,

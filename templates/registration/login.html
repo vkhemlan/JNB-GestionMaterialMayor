@@ -10,6 +10,10 @@
 		</div>
 
 		<div class="left navigation" id="login-form-container">
+			{% if flash.success %}				    
+				<div class="success">{{ flash.success }}</div>
+		    {% endif %}
+		    
 			<form id="login-form" method="post" action=".">
 				{% csrf_token %}
 				<table>
