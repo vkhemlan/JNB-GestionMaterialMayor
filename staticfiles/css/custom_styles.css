@@ -12,13 +12,21 @@ ul.errorlist {
 	color: #DE0000;
 }
 
+input {
+	border: 1px solid gray;
+	padding: 2px 2px;
+}
+
+select {
+	padding: 2px 2px;
+}
+
 /************************************
  * General rules for the login form *
  ************************************/
 
 /* Make the text inputs for username and password visible and with some padding */
 #login-form input {
-	border: 1px solid gray;
 	padding: 3px 2px;
 }
 

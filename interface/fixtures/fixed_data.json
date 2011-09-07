@@ -1,0 +1,170 @@
+[
+  {
+    "model": "interface.marcachasismaterialmayor",
+    "pk": 1,
+    "fields": {
+      "name": "Renault",
+      "ordering": "1"
+    }
+  },
+  {
+    "model": "interface.marcachasismaterialmayor",
+    "pk": 2,
+    "fields": {
+      "name": "Ford",
+      "ordering": "2"
+    }
+  },
+  {
+    "model": "interface.marcachasismaterialmayor",
+    "pk": 3,
+    "fields": {
+      "name": "Chevrolet",
+      "ordering": "3"
+    }
+  },
+  {
+    "model": "interface.marcachasismaterialmayor",
+    "pk": 4,
+    "fields": {
+      "name": "Volkswagen",
+      "ordering": "4"
+    }
+  },
+  {
+    "model": "interface.marcachasismaterialmayor",
+    "pk": 5,
+    "fields": {
+      "name": "Iveco",
+      "ordering": "5"
+    }
+  },
+  {
+    "model": "interface.marcachasismaterialmayor",
+    "pk": 6,
+    "fields": {
+      "name": "Mercedes Benz",
+      "ordering": "6"
+    }
+  },
+  {
+    "model": "interface.marcachasismaterialmayor",
+    "pk": 7,
+    "fields": {
+      "name": "Spartan",
+      "ordering": "7"
+    }
+  },
+  {
+    "model": "interface.marcachasismaterialmayor",
+    "pk": 8,
+    "fields": {
+      "name": "HME",
+      "ordering": "8"
+    }
+  },
+  {
+    "model": "interface.marcachasismaterialmayor",
+    "pk": 9,
+    "fields": {
+      "name": "Otra marca",
+      "ordering": "9"
+    }
+  },
+  {
+    "model": "interface.tipovehiculomaterialmayor",
+    "pk": 1,
+    "fields": {
+      "name": "Automóvil",
+      "ordering": "1"
+    }
+  },
+  {
+    "model": "interface.tipovehiculomaterialmayor",
+    "pk": 2,
+    "fields": {
+      "name": "Camioneta",
+      "ordering": "2"
+    }
+  },
+  {
+    "model": "interface.tipovehiculomaterialmayor",
+    "pk": 3,
+    "fields": {
+      "name": "Camión",
+      "ordering": "3"
+    }
+  },
+  {
+    "model": "interface.colormaterialmayor",
+    "pk": 1,
+    "fields": {
+      "name": "Rojo",
+      "ordering": "1"
+    }
+  },
+  {
+    "model": "interface.colormaterialmayor",
+    "pk": 2,
+    "fields": {
+      "name": "Verde",
+      "ordering": "2"
+    }
+  },
+  {
+    "model": "interface.colormaterialmayor",
+    "pk": 3,
+    "fields": {
+      "name": "Verde limón",
+      "ordering": "3"
+    }
+  },
+  {
+    "model": "interface.colormaterialmayor",
+    "pk": 4,
+    "fields": {
+      "name": "Azul",
+      "ordering": "4"
+    }
+  },
+  {
+    "model": "interface.colormaterialmayor",
+    "pk": 5,
+    "fields": {
+      "name": "Granate",
+      "ordering": "5"
+    }
+  },
+  {
+    "model": "interface.colormaterialmayor",
+    "pk": 6,
+    "fields": {
+      "name": "Amarillo",
+      "ordering": "6"
+    }
+  },
+  {
+    "model": "interface.colormaterialmayor",
+    "pk": 7,
+    "fields": {
+      "name": "Anaranjado",
+      "ordering": "7"
+    }
+  },
+  {
+    "model": "interface.colormaterialmayor",
+    "pk": 8,
+    "fields": {
+      "name": "Blanco",
+      "ordering": "8"
+    }
+  },
+  {
+    "model": "interface.colormaterialmayor",
+    "pk": 9,
+    "fields": {
+      "name": "Otro",
+      "ordering": "9"
+    }
+  }
+]

@@ -1,0 +1,3 @@
+from .formulario_dar_de_alta_material_mayor import FormularioDarDeAltaMaterialMayor
+
+__all__ = ['FormularioDarDeAltaMaterialMayor']
