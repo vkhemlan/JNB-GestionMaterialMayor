@@ -1,0 +1,13 @@
+{% for field in fields %}
+   {% if field.errors %}
+   <tr class="errorrow"><td colspan="2">{{field.errors}}</td> </tr>
+   {% endif %}
+    <tr>
+        <th>
+            {{ field.label_tag }}
+        </th>
+        <td>
+            {{ field }}
+        </td>
+    </tr>
+{% endfor %}

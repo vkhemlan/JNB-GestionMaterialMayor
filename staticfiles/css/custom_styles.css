@@ -6,7 +6,8 @@
 ul.errorlist {
 	list-style-type: none;
 	margin: inherit;
-	margin-bottom: 5px;
+    margin-top: 5px;    
+	margin-bottom: 0;
 	font-weight: bold;
 	font-size: 8px;
 	color: #DE0000;
@@ -53,4 +54,12 @@ select {
 	left: 10px;
 	width: 325px;
 	display: none;
+}
+
+table#form-table th, td {
+	/*padding: 0;*/
+}
+
+table#form-table input.text, textarea, select{
+    padding: 0;
 }

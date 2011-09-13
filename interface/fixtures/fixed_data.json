@@ -3,72 +3,56 @@
     "model": "interface.marcachasismaterialmayor",
     "pk": 1,
     "fields": {
-      "name": "Renault",
-      "ordering": "1"
+      "name": "Renault"
     }
   },
   {
     "model": "interface.marcachasismaterialmayor",
     "pk": 2,
     "fields": {
-      "name": "Ford",
-      "ordering": "2"
+      "name": "Ford"
     }
   },
   {
     "model": "interface.marcachasismaterialmayor",
     "pk": 3,
     "fields": {
-      "name": "Chevrolet",
-      "ordering": "3"
+      "name": "Chevrolet"
     }
   },
   {
     "model": "interface.marcachasismaterialmayor",
     "pk": 4,
     "fields": {
-      "name": "Volkswagen",
-      "ordering": "4"
+      "name": "Volkswagen"
     }
   },
   {
     "model": "interface.marcachasismaterialmayor",
     "pk": 5,
     "fields": {
-      "name": "Iveco",
-      "ordering": "5"
+      "name": "Iveco"
     }
   },
   {
     "model": "interface.marcachasismaterialmayor",
     "pk": 6,
     "fields": {
-      "name": "Mercedes Benz",
-      "ordering": "6"
+      "name": "Mercedes Benz"
     }
   },
   {
     "model": "interface.marcachasismaterialmayor",
     "pk": 7,
     "fields": {
-      "name": "Spartan",
-      "ordering": "7"
+      "name": "Spartan"
     }
   },
   {
     "model": "interface.marcachasismaterialmayor",
     "pk": 8,
     "fields": {
-      "name": "HME",
-      "ordering": "8"
-    }
-  },
-  {
-    "model": "interface.marcachasismaterialmayor",
-    "pk": 9,
-    "fields": {
-      "name": "Otra marca",
-      "ordering": "9"
+      "name": "HME"
     }
   },
   {
