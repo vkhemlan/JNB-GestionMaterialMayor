@@ -8,6 +8,14 @@ $(function() {
         
         generic_refresh(value)
     })
+
+    $.datepicker.setDefaults( $.datepicker.regional['es'] );
+    $('.datepicker').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        yearRange: 'c-20:c'
+    })
+
 })
 
 function generic_refresh(part_name) {

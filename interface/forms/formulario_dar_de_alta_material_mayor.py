@@ -27,6 +27,9 @@ class FormularioDarDeAltaMaterialMayor(BaseModelForm):
                 self._errors[modelo_string] = self.error_class([u'La marca %s debe coincidir con su modelo' % message])
                 del data[modelo_string]
 
+        if hasattr(self, 'custom_clean'):
+            data = self.custom_clean()
+
         return data
 
     def render_datos_vehiculo(self):
@@ -40,11 +43,11 @@ class FormularioDarDeAltaMaterialMayor(BaseModelForm):
         fields.insert(3, self['marca_caja_cambio'])
         fields.insert(7, self['marca_bomba'])
         return self._render_fields_as_list(fields) 
-               
 
+    def picture_fields(self):
+        fields = self._field_range('fotografia_frontal', 'fotografia_trasera')
+        return [(field, getattr(self.instance, field.name)) for field in fields]
+               
     class Meta:
         model = MaterialMayor
-        fields = ('tipo_vehiculo', 'modelo_chasis', 
-            'numero_chasis', 'numero_motor', 'ano_vehiculo', 'color',
-            'placa_patente', 'modelo_carrosado', 'condicion', 'modelo_caja_cambio',
-            'tipo_caja_cambio', 'tipo_combustible', 'modelo_bomba', 'pais_origen')
+        exclude = ('modo_adquisicion')

@@ -13,6 +13,9 @@ from .tipo_combustible_material_mayor import TipoCombustibleMaterialMayor
 from .marca_bomba_material_mayor import MarcaBombaMaterialMayor
 from .modelo_bomba_material_mayor import ModeloBombaMaterialMayor
 from .pais import Pais
+from .adquisicion_compra_material_mayor import AdquisicionCompraMaterialMayor
+from .adquisicion_donacion_material_mayor import AdquisicionDonacionMaterialMayor
+from .modo_adquisicion_material_mayor import ModoAdquisicionMaterialMayor
 
 
 __all__ = [
@@ -30,5 +33,8 @@ __all__ = [
 	'TipoCombustibleMaterialMayor',
 	'MarcaBombaMaterialMayor',
 	'ModeloBombaMaterialMayor',
-	'Pais'
+	'Pais',
+	'AdquisicionCompraMaterialMayor',
+	'ModoAdquisicionMaterialMayor',
+	'AdquisicionDonacionMaterialMayor'
 ]

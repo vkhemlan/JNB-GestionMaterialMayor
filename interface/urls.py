@@ -8,5 +8,6 @@ urlpatterns = patterns('interface.views',
 )
 
 urlpatterns += patterns('interface.views_staff',
-    (r'^dar_de_alta_material_mayor/$', 'dar_de_alta_material_mayor'),
+    (r'^adquisicion_compra_material_mayor/$', 'adquisicion_compra_material_mayor'),
+    (r'^adquisicion_donacion_material_mayor/$', 'adquisicion_donacion_material_mayor'),
 )

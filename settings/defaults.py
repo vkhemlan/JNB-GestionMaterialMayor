@@ -72,6 +72,7 @@ STATIC_URL = '/static/assets/'
 
 STATICFILES_DIRS = (
     root('staticfiles'),
+    root('uploads')
 )
 
 ADMIN_MEDIA_PREFIX = '%sadmin/' % STATIC_URL
@@ -117,8 +118,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'sorl.thumbnail',
     'south',
     'interface',
     'django_extensions',)

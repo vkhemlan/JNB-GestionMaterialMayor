@@ -1,0 +1,91 @@
+{% extends 'staff/base.html' %}
+
+{% block header_block %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/formulario_dar_de_alta_material_mayor_script.js"></script>
+
+
+<script type="text/javascript">
+    var modelos_chasis = [
+    {% for modelo_chasis in form.fields.modelo_chasis.queryset %}
+        new Array({{ modelo_chasis.id }}, "{{ modelo_chasis }}", {{ modelo_chasis.marca.id }}),
+    {% endfor %}
+    ]
+    
+    var modelos_carrosado = [
+    {% for modelo_carrosado in form.fields.modelo_carrosado.queryset %}
+        new Array({{ modelo_carrosado.id }}, "{{ modelo_carrosado }}", {{ modelo_carrosado.marca.id }}),
+    {% endfor %}
+    ]
+    
+    var modelos_caja_cambio = [
+    {% for modelo_caja_cambio in form.fields.modelo_caja_cambio.queryset %}
+        new Array({{ modelo_caja_cambio.id }}, "{{ modelo_caja_cambio }}", {{ modelo_caja_cambio.marca.id }}),
+    {% endfor %}
+    ]
+    
+    var modelos_bomba = [
+    {% for modelo_bomba in form.fields.modelo_bomba.queryset %}
+        new Array({{ modelo_bomba.id }}, "{{ modelo_bomba }}", {{ modelo_bomba.marca.id }}),
+    {% endfor %}
+    ]
+</script>
+
+{% endblock %}
+
+{% block content %}
+<div class="section">
+    <div class="section-content">
+
+        <div class="post">
+            <h2>Dar de alta material mayor (Compra)</h2>
+            <br />
+        
+            <form method="post" action="." enctype="multipart/form-data">
+                {% csrf_token %}
+                <table id="form-table">
+
+                    <tr><td colspan="2"><br /><h3>Datos del vehículo</h3><br /></tr></td>
+                    
+                    {{ form.render_datos_vehiculo }}
+                    
+                    <tr><td colspan="2"><br /><h3>Información Adicional</h3><br /></tr></td>
+                    
+                    {{ form.render_informacion_adicional }}
+
+                    <tr><td colspan="2"><br /><h3>Fotografías</h3><br /></tr></td>
+                    {% for pair in form.picture_fields %}
+                        <tr>
+                            <th>
+                                {% if pair.0.errors %}
+                                    <ul class="errorlist">
+                                        {% for error in pair.0.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                                {{ pair.0.label }}
+                            </th>
+
+                            <td>
+                                {{ pair.0 }}
+                            </td>
+                    {% endfor %}
+
+                    <tr><td colspan="2"><br /><h3>Documentos</h3><br /></tr></td>
+                    
+                    {{ form.render_documentos_compra }}
+                        
+                </table>
+
+                <input type="submit" value="Dar de alta" />
+
+            </form>
+        
+        </div>
+
+        <div class="clearer">&nbsp;</div>
+
+    </div>
+
+</div>
+{% endblock %}
