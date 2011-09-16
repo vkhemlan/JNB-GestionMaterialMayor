@@ -16,6 +16,7 @@ from .pais import Pais
 from .adquisicion_compra_material_mayor import AdquisicionCompraMaterialMayor
 from .adquisicion_donacion_material_mayor import AdquisicionDonacionMaterialMayor
 from .modo_adquisicion_material_mayor import ModoAdquisicionMaterialMayor
+from .region import Region
 
 
 __all__ = [
@@ -36,5 +37,6 @@ __all__ = [
 	'Pais',
 	'AdquisicionCompraMaterialMayor',
 	'ModoAdquisicionMaterialMayor',
-	'AdquisicionDonacionMaterialMayor'
+	'AdquisicionDonacionMaterialMayor',
+	'Region'
 ]

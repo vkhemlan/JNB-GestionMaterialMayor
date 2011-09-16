@@ -7,8 +7,8 @@ from interface.views_staff import _index as staff_index
 
 @login_required
 def index(request):
-	if request.user.is_staff:
-		return staff_index(request)
+    if request.user.is_staff:
+        return staff_index(request)
 
 @login_required
 def logout(request):

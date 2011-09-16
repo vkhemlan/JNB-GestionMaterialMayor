@@ -3,13 +3,13 @@
 from django.db import models
 
 class Pais(models.Model):
-    name = models.CharField(max_length = 255)
+    nombre = models.CharField(max_length = 255)
     
     def __unicode__(self):
-        return self.name
+        return self.nombre
 
     class Meta:
-        ordering = ['name']
+        ordering = ['nombre']
         app_label = 'interface'
         verbose_name = u'País'
         verbose_name_plural = u'Paises'

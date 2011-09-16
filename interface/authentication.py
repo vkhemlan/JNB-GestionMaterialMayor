@@ -1,8 +1,7 @@
 import urllib2
 from django.contrib.auth.models import User
-from xml.dom.minidom import parseString
 from django.conf import settings
-from interface.utils import log
+from interface.utils import log, request_webservice, get_xml_node_contents
 
 class JnbAuthenticationBackend:
     supports_object_permissions = False
@@ -12,22 +11,15 @@ class JnbAuthenticationBackend:
         
         log("Login in user '%s' with password '%s'" % 
             (username, password))
-        request_body = u'username=%s&password=%s' % (username, password)
-        request = urllib2.Request(
-            url='%s/services/login/' % settings.JNB_WEBSERVICES_URL, 
-            data=request_body, 
-            headers={
-                'Content-Type': 'application/x-www-form-urlencoded', 
-                'Accept':'application/xml'})
-        f = urllib2.urlopen(request)
-        xml_data = parseString(f.read()).childNodes[0]
 
+        request_body = u'username=%s&password=%s' % (username, password)
+
+        xml_data = request_webservice('/services/login/', request_body)
         user_id = int(JnbAuthenticationBackend.get_xml_node_contents(xml_data, 
             'id'))
         if not user_id:
             log("Username / password of the user do not match")
             return None
-        
         '''
         Maximum username length in django is 30
         We assume these are enough characters to identify a user
@@ -60,14 +52,6 @@ class JnbAuthenticationBackend:
         user.save()
         
         return user
-
-    @staticmethod
-    def get_xml_node_contents(xml, node_name):
-        '''
-        Method that, given an XML object and one of the root's child name, 
-        returns its contents
-        '''
-        return xml.getElementsByTagName(node_name)[0].childNodes[0].nodeValue
     
     def get_user(self, user_id):
         try:

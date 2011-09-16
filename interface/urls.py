@@ -7,6 +7,10 @@ urlpatterns = patterns('interface.views',
     url(r'^logout/$', 'logout', name='logout'),
 )
 
+urlpatterns += patterns('interface.views_account',
+    (r'^account/refresh_base_data/$', 'refresh_base_data'),
+)
+
 urlpatterns += patterns('interface.views_staff',
     (r'^adquisicion_compra_material_mayor/$', 'adquisicion_compra_material_mayor'),
     (r'^adquisicion_donacion_material_mayor/$', 'adquisicion_donacion_material_mayor'),
