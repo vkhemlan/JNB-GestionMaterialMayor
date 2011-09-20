@@ -1,9 +1,9 @@
 # coding: utf-8
 
 from django.db import models
-from . import MaterialMayor
+from . import AdquisicionMaterialMayor
 
-class AdquisicionCompraMaterialMayor(MaterialMayor):
+class AdquisicionCompraMaterialMayor(AdquisicionMaterialMayor):
     orden_de_compra = models.FileField(upload_to='ordenes_de_compra', verbose_name=u'Orden de compra')
     numero_orden_de_compra = models.IntegerField(verbose_name=u'Número de orden de compra')
     fecha_orden_de_compra = models.DateField(verbose_name=u'Fecha de orden de compra')
@@ -20,9 +20,6 @@ class AdquisicionCompraMaterialMayor(MaterialMayor):
     agente_de_aduana = models.CharField(max_length=255, verbose_name=u'Agente de aduana')
     manual_de_usuario = models.FileField(upload_to='manuales_de_usuario', verbose_name=u'Manual de usuario')
     manual_de_mantencion = models.FileField(upload_to='manuales_de_mantencion', verbose_name=u'Manual de mantención')
-
-    def __unicode__(self):
-        return unicode(self.materialmayor_ptr)
 
     class Meta:
         app_label = 'interface'

@@ -2,9 +2,9 @@
 
 from django import forms
 from interface.models import AdquisicionDonacionMaterialMayor
-from . import FormularioDarDeAltaMaterialMayor
+from . import BaseModelForm
 
-class FormularioAdquisicionDonacionMaterialMayor(FormularioDarDeAltaMaterialMayor):
+class FormularioAdquisicionDonacionMaterialMayor(BaseModelForm):
 
     def render_detalles_donacion(self):
         fields = self._field_range('donante', 'declaracion_de_ingreso')

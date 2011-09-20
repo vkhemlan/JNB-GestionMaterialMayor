@@ -50,4 +50,3 @@ class FormularioDarDeAltaMaterialMayor(BaseModelForm):
                
     class Meta:
         model = MaterialMayor
-        exclude = ('modo_adquisicion')

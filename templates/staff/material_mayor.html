@@ -1,0 +1,96 @@
+{% extends 'staff/base.html' %}
+
+{% block header_block %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/formulario_buscar_material_mayor_script.js"></script>
+
+
+<script type="text/javascript">
+    var cuerpos = [
+    {% for cuerpo in form.fields.cuerpo.queryset %}
+        new Array({{ cuerpo.id }}, "{{ cuerpo }}", {{ cuerpo.comuna.provincia.region.id }}),
+    {% endfor %}
+    ]
+</script>
+
+{% endblock %}
+
+{% block subnav %}
+<div id="sub-nav" class="navigation">
+
+	<ul class="tabbed">
+	    <li><a href="{% url interface.views_staff.material_mayor %}">Explorar</a></li>
+		<li><a href="{% url interface.views_staff.adquisicion_compra_material_mayor %}">Agregar Material Mayor (compra)</a></li>
+		<li><a href="{% url interface.views_staff.adquisicion_donacion_material_mayor %}">Agregar Material Mayor (donación)</a></li>
+	</ul>
+
+	<div class="clearer">&nbsp;</div>
+
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="main-two-columns" class="main">
+
+	<div id="main-content" class="left">
+
+		<h3>{{ search_result.title }}</h3>
+		<br />
+		
+	    <ul>
+	        {% if search_result.potentially_has_material_mayor %}
+	            {% for material_mayor in search_result.material_mayor %}
+	                <li>{{ material_mayor }}</li>
+                {% empty %}
+                    <i>No hay material mayor a este nivel</i>
+	            {% endfor %}
+            {% endif %}
+	    </ul>
+        
+        {% for child in search_result.children %}
+            {% if child.link_url %}
+                <h4><a href="{% url interface.views_staff.material_mayor %}{{ child.link_url }}">{{ child.title }}</a></h4>
+            {% else %}
+                <h4>{{ child.title }}</h4>
+            {% endif %}
+            
+            <br />
+		
+            <ul>
+                {% for material_mayor in child.material_mayor %}
+                    <li>{{ material_mayor }}</li>
+                {% empty %}
+                    <i>No hay material mayor a este nivel</i>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+		
+	</div>
+
+	<div id="sidebar" class="right sidebar">
+
+        <h4>Navegador</h4>
+        <br />
+            
+        <form method="get" action=".">        
+            <strong>Región</strong>
+            <br />
+            {{ form.region }}
+            
+            <br />
+            <br />
+            <strong>Cuerpo</strong>
+            <br />
+            {{ form.cuerpo }}
+            
+            <br />
+            <br />
+            <input type="submit" value="Buscar" />
+        </form>
+        
+
+	</div>
+
+	<div class="clearer">&nbsp;</div>
+
+</div>
+{% endblock %}

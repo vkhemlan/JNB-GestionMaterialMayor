@@ -2,9 +2,9 @@
 
 from django import forms
 from interface.models import AdquisicionCompraMaterialMayor
-from . import FormularioDarDeAltaMaterialMayor
+from . import BaseModelForm
 
-class FormularioAdquisicionCompraMaterialMayor(FormularioDarDeAltaMaterialMayor):
+class FormularioAdquisicionCompraMaterialMayor(BaseModelForm):
     fecha_orden_de_compra = forms.DateField(widget=forms.DateInput(attrs={'class': 'datepicker'}))
     fecha_declaracion_de_ingreso = forms.DateField(widget=forms.DateInput(attrs={'class': 'datepicker'}))
 

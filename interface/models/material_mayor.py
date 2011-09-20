@@ -27,7 +27,10 @@ class MaterialMayor(models.Model):
     fotografia_lateral = ImageField(upload_to='material_mayor', verbose_name=u'Vista Lateral')
     fotografia_trasera = ImageField(upload_to='material_mayor', verbose_name=u'Vista Trasera')
     # Metadata
-    modo_adquisicion = models.ForeignKey('ModoAdquisicionMaterialMayor')
+    adquisicion = models.OneToOneField('AdquisicionMaterialMayor')
+    # Asociacion
+    cuerpo = models.ForeignKey('Cuerpo', blank=True, null=True)
+    compania = models.ForeignKey('Compania', blank=True, null=True)
 
     class Meta:
         app_label = 'interface'

@@ -14,4 +14,5 @@ urlpatterns += patterns('interface.views_account',
 urlpatterns += patterns('interface.views_staff',
     (r'^adquisicion_compra_material_mayor/$', 'adquisicion_compra_material_mayor'),
     (r'^adquisicion_donacion_material_mayor/$', 'adquisicion_donacion_material_mayor'),
+    (r'material_mayor/$', 'material_mayor'),
 )

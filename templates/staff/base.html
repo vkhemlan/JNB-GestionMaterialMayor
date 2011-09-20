@@ -13,8 +13,7 @@
 
 			<ul class="tabbed">
 				<li class="current-tab"><a href="{% url interface.views.index %}">Inicio</a></li>
-				<li><a href="{% url interface.views_staff.adquisicion_compra_material_mayor %}">Dar de alta material mayor (compra)</a></li>
-				<li><a href="{% url interface.views_staff.adquisicion_donacion_material_mayor %}">Dar de alta material mayor (donación)</a></li>
+				<li><a href="{% url interface.views_staff.material_mayor %}">Material Mayor</a></li>
 			</ul>
 
 			<div class="clearer">&nbsp;</div>
@@ -24,12 +23,14 @@
 		<div class="clearer">&nbsp;</div>
 
 	</div>
-
-</div>
-
-<div class="main">
-	{% block content %}
+	
+	{% block subnav %}
 	{% endblock %}
+
 </div>
+
+
+{% block content %}
+{% endblock %}
 
 {% endblock %}

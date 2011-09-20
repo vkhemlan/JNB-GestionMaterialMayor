@@ -13,30 +13,40 @@ from .tipo_combustible_material_mayor import TipoCombustibleMaterialMayor
 from .marca_bomba_material_mayor import MarcaBombaMaterialMayor
 from .modelo_bomba_material_mayor import ModeloBombaMaterialMayor
 from .pais import Pais
+from .adquisicion_material_mayor import AdquisicionMaterialMayor
 from .adquisicion_compra_material_mayor import AdquisicionCompraMaterialMayor
 from .adquisicion_donacion_material_mayor import AdquisicionDonacionMaterialMayor
 from .modo_adquisicion_material_mayor import ModoAdquisicionMaterialMayor
 from .region import Region
+from .provincia import Provincia
+from .comuna import Comuna
+from .cuerpo import Cuerpo
+from .compania import Compania
 
 
 __all__ = [
-	'TipoVehiculoMaterialMayor',
-	'MarcaChasisMaterialMayor',
-	'ColorMaterialMayor',
-	'MaterialMayor',
-	'ModeloChasisMaterialMayor',
-	'MarcaCarrosadoMaterialMayor',
-	'ModeloCarrosadoMaterialMayor',
-	'CondicionMaterialMayor',
-	'MarcaCajaCambioMaterialMayor',
-	'ModeloCajaCambioMaterialMayor',
-	'TipoCajaCambioMaterialMayor',
-	'TipoCombustibleMaterialMayor',
-	'MarcaBombaMaterialMayor',
-	'ModeloBombaMaterialMayor',
-	'Pais',
-	'AdquisicionCompraMaterialMayor',
-	'ModoAdquisicionMaterialMayor',
-	'AdquisicionDonacionMaterialMayor',
-	'Region'
+    'TipoVehiculoMaterialMayor',
+    'MarcaChasisMaterialMayor',
+    'ColorMaterialMayor',
+    'MaterialMayor',
+    'ModeloChasisMaterialMayor',
+    'MarcaCarrosadoMaterialMayor',
+    'ModeloCarrosadoMaterialMayor',
+    'CondicionMaterialMayor',
+    'MarcaCajaCambioMaterialMayor',
+    'ModeloCajaCambioMaterialMayor',
+    'TipoCajaCambioMaterialMayor',
+    'TipoCombustibleMaterialMayor',
+    'MarcaBombaMaterialMayor',
+    'ModeloBombaMaterialMayor',
+    'Pais',
+    'AdquisicionMaterialMayor',
+    'AdquisicionCompraMaterialMayor',
+    'ModoAdquisicionMaterialMayor',
+    'AdquisicionDonacionMaterialMayor',
+    'Region',
+    'Provincia',
+    'Comuna',
+    'Cuerpo',
+    'Compania',
 ]
