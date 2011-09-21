@@ -7,6 +7,10 @@ $(function() {
         })
         
         generic_refresh(value)
+        
+        if (typeof window['default_modelo_' + value] == 'number') {
+            $('#id_modelo_' + value).val(window['default_modelo_' + value])
+        }
     })
 
     $.datepicker.setDefaults( $.datepicker.regional['es'] );

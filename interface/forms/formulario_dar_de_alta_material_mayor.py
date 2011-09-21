@@ -47,6 +47,16 @@ class FormularioDarDeAltaMaterialMayor(BaseModelForm):
     def picture_fields(self):
         fields = self._field_range('fotografia_frontal', 'fotografia_trasera')
         return [(field, getattr(self.instance, field.name)) for field in fields]
+        
+    @classmethod
+    def get_from_instance(self, instance):
+        form = FormularioDarDeAltaMaterialMayor(instance=instance)
+        form.initial['marca_chasis'] = instance.modelo_chasis.marca.id
+        form.initial['marca_carrosado'] = instance.modelo_carrosado.marca.id
+        form.initial['marca_caja_cambio'] = instance.modelo_caja_cambio.marca.id
+        form.initial['marca_bomba'] = instance.modelo_bomba.marca.id
+        return form
                
     class Meta:
         model = MaterialMayor
+        exclude = ('adquisicion',)

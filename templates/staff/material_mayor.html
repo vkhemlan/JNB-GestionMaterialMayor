@@ -32,6 +32,9 @@
 <div id="main-two-columns" class="main">
 
 	<div id="main-content" class="left">
+	    {% if flash.success %}				    
+			<div class="success">{{ flash.success }}</div>
+	    {% endif %}
 
 		<h3>{{ search_result.title }}</h3>
 		<br />
@@ -39,7 +42,7 @@
 	    <ul>
 	        {% if search_result.potentially_has_material_mayor %}
 	            {% for material_mayor in search_result.material_mayor %}
-	                <li>{{ material_mayor }}</li>
+	                <li><a href="{% url interface.views_staff.material_mayor_details material_mayor.id %}">{{ material_mayor }}</a></li>
                 {% empty %}
                     <i>No hay material mayor a este nivel</i>
 	            {% endfor %}
@@ -57,7 +60,7 @@
 		
             <ul>
                 {% for material_mayor in child.material_mayor %}
-                    <li>{{ material_mayor }}</li>
+                    <li><a href="{% url interface.views_staff.material_mayor_details material_mayor.id %}">{{ material_mayor }}</a></li>
                 {% empty %}
                     <i>No hay material mayor a este nivel</i>
                 {% endfor %}

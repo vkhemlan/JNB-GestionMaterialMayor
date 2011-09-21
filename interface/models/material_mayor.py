@@ -31,6 +31,9 @@ class MaterialMayor(models.Model):
     # Asociacion
     cuerpo = models.ForeignKey('Cuerpo', blank=True, null=True)
     compania = models.ForeignKey('Compania', blank=True, null=True)
+    
+    def __unicode__(self):
+        return '%s %s' % (unicode(self.tipo_vehiculo), unicode(self.modelo_chasis),)
 
     class Meta:
         app_label = 'interface'

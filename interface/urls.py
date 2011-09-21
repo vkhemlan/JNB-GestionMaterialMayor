@@ -15,4 +15,6 @@ urlpatterns += patterns('interface.views_staff',
     (r'^adquisicion_compra_material_mayor/$', 'adquisicion_compra_material_mayor'),
     (r'^adquisicion_donacion_material_mayor/$', 'adquisicion_donacion_material_mayor'),
     (r'material_mayor/$', 'material_mayor'),
+    (r'material_mayor/(?P<material_mayor_id>\d+)/$', 'material_mayor_details'),
+    (r'material_mayor/(?P<material_mayor_id>\d+)/adquisicion/$', 'material_mayor_adquisicion_details'),
 )

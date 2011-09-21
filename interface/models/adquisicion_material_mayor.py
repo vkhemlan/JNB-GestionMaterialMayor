@@ -5,6 +5,19 @@ from . import MaterialMayor
 
 class AdquisicionMaterialMayor(models.Model):
     modo = models.ForeignKey('ModoAdquisicionMaterialMayor')
+    
+    def save(self, *args, **kwargs):
+        from . import ModoAdquisicionMaterialMayor
+        self.modo = ModoAdquisicionMaterialMayor.objects.get(classname=self.__class__.__name__)
+        super(AdquisicionMaterialMayor, self).save(*args, **kwargs)
+        
+    def get_polymorphic_instance(self):
+        from . import AdquisicionCompraMaterialMayor, AdquisicionDonacionMaterialMayor
+        if self.__class__.__name__ != 'AdquisicionMaterialMayor':
+            return self
+        else:
+            BaseClass = eval(self.modo.classname)
+            return BaseClass.objects.get(pk=self.id)
 
     def __unicode__(self):
         try:
