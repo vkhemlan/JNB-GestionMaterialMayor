@@ -4,3 +4,4 @@
 *.log
 static/media/*
 settings/local.py
+uploads
