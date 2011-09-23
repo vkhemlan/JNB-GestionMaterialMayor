@@ -69,11 +69,11 @@ MEDIA_URL = ''
 # Examples: "http://foo.com/media/", "/media/".
 
 STATIC_ROOT = root('static', 'assets')
-STATIC_URL = '/static/assets/'
+STATIC_URL = '/staticfiles/'
 
 STATICFILES_DIRS = (
     root('staticfiles'),
-    root('uploads')
+    root('uploads'),
 )
 
 ADMIN_MEDIA_PREFIX = '%sadmin/' % STATIC_URL

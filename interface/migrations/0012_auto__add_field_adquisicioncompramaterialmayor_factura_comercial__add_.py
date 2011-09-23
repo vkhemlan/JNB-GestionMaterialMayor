@@ -24,7 +24,7 @@ class Migration(SchemaMigration):
         db.add_column('interface_adquisicioncompramaterialmayor', 'numero_declaracion_de_ingreso', self.gf('django.db.models.fields.IntegerField')(default=0), keep_default=False)
 
         # Adding field 'AdquisicionCompraMaterialMayor.fecha_declaracion_de_ingreso'
-        db.add_column('interface_adquisicioncompramaterialmayor', 'fecha_declaracion_de_ingreso', self.gf('django.db.models.fields.DateField')(default=0), keep_default=False)
+        db.add_column('interface_adquisicioncompramaterialmayor', 'fecha_declaracion_de_ingreso', self.gf('django.db.models.fields.DateField')(default=datetime.date.today()), keep_default=False)
 
         # Adding field 'AdquisicionCompraMaterialMayor.solicitud_exencion_de_iva'
         db.add_column('interface_adquisicioncompramaterialmayor', 'solicitud_exencion_de_iva', self.gf('django.db.models.fields.files.FileField')(default=0, max_length=100), keep_default=False)
