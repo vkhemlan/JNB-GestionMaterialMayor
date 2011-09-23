@@ -23,5 +23,5 @@ class AdquisicionCompraMaterialMayor(AdquisicionMaterialMayor):
 
     class Meta:
         app_label = 'interface'
-        verbose_name = u'Adquisición por compra de Material Mayor'
-        verbose_name_plural = u'Adquisiciones por compra de Material Mayor'
+        verbose_name = u'Adquisición por compra'
+        verbose_name_plural = u'Adquisiciones por compra'

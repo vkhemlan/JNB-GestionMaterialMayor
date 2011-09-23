@@ -11,5 +11,5 @@ class TipoCombustibleMaterialMayor(models.Model):
     class Meta:
         ordering = ['name']
         app_label = 'interface'
-        verbose_name = u'Tipo de combustible de cambio de Material Mayor'
-        verbose_name_plural = u'Tipos de combustible de cambio de Material Mayor'
+        verbose_name = u'Tipo de combustible'
+        verbose_name_plural = u'Tipos de combustible'

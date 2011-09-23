@@ -12,5 +12,5 @@ class ModeloCajaCambioMaterialMayor(models.Model):
     class Meta:
         ordering = ['marca', 'name']
         app_label = 'interface'
-        verbose_name = u'Modelo de caja de cambio de Material Mayor'
-        verbose_name_plural = u'Modelos de caja de cambio de Material Mayor'
+        verbose_name = u'Modelo de caja de cambio'
+        verbose_name_plural = u'Modelos de caja de cambio'
