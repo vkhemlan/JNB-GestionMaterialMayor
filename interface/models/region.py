@@ -21,7 +21,11 @@ class Region(models.Model):
             region_numero = int(get_xml_node_contents(raw_region, 'numero'))
             region_nombre = get_xml_node_contents(raw_region, 'nombre')
             
-            region, created = Region.objects.get_or_create(webservice_id=region_ws_id)
+            try:
+                region = Region.objects.get(webservice_id=region_ws_id)
+            except Region.DoesNotExist:
+                region = Region()
+                region.webservice_id = region_ws_id
             region.numero = region_numero
             region.nombre = region_nombre
             region.save()
