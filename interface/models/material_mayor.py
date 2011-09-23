@@ -36,5 +36,5 @@ class MaterialMayor(models.Model):
 
     class Meta:
         app_label = 'interface'
-        verbose_name = u'Material Mayor'
-        verbose_name_plural = u'Material Mayor'
+        verbose_name = u'Material mayor'
+        verbose_name_plural = u'Material mayor'

@@ -12,5 +12,5 @@ class ModoAdquisicionMaterialMayor(models.Model):
     class Meta:
         ordering = ['name']
         app_label = 'interface'
-        verbose_name = u'Modo de adquisición de Material Mayor'
-        verbose_name_plural = u'Modo de adquisición de Material Mayor'
+        verbose_name = u'Modo de adquisición'
+        verbose_name_plural = u'Modos de adquisición'

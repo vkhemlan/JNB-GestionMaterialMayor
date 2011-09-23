@@ -11,5 +11,5 @@ class MarcaChasisMaterialMayor(models.Model):
     class Meta:
         ordering = ['name']
         app_label = 'interface'
-        verbose_name = u'Marca de chasis de Material Mayor'
-        verbose_name_plural = u'Marcas de chasis de Material Mayor'
+        verbose_name = u'Marca de chasis'
+        verbose_name_plural = u'Marcas de chasis'

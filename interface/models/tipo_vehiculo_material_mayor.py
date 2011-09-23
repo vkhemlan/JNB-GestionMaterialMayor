@@ -12,5 +12,5 @@ class TipoVehiculoMaterialMayor(models.Model):
     class Meta:
         ordering = ['ordering', 'name']
         app_label = 'interface'
-        verbose_name = u'Tipo de Vehículo de Material Mayor'
-        verbose_name_plural = u'Tipos de Vehículo de Material Mayor'
+        verbose_name = u'Tipo de vehículo'
+        verbose_name_plural = u'Tipos de vehículo'
