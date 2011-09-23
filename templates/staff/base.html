@@ -10,6 +10,7 @@
 		</div>
 
 		<div class="left navigation" id="main-nav">
+		    <p id="user-information">{{ user.get_full_name }} (<a href="{% url interface.views.logout %}">Cerrar sesión</a>)</p>
 
 			<ul class="tabbed">
 				<li class="current-tab"><a href="{% url interface.views.index %}">Inicio</a></li>

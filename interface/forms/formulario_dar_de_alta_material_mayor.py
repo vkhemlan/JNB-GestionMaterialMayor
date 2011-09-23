@@ -33,7 +33,7 @@ class FormularioDarDeAltaMaterialMayor(BaseModelForm):
         return data
 
     def render_datos_vehiculo(self):
-        fields = self._field_range('tipo_vehiculo', 'placa_patente')
+        fields = self._field_range('tipo_vehiculo', 'color')
         fields.insert(1, self['marca_chasis'])
         return self._render_fields_as_list(fields)
         

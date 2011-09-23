@@ -59,10 +59,24 @@ select {
     display: none;
 }
 
-table#form-table th, td {
-	/*padding: 0;*/
-}
-
 table#form-table input.text, textarea, select{
     padding: 0;
+}
+
+#main-nav {
+    position: relative;
+}
+
+#user-information {
+    position: absolute;
+    top: 20px;
+    font-weight: bold;
+    color: #565656;
+    text-align: right;
+    width: 700px;
+    font-size: 12px;
+}
+
+#user-information a {
+    font-size: 12px;
 }

@@ -23,7 +23,7 @@ JNB_WEBSERVICES_URL = 'http://localhost:8080/JnbWebServices'
 MANAGERS = ADMINS
 
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/account/refresh_base_data/'
+LOGIN_REDIRECT_URL = '/'
 
 DATABASES = {
     'default': {

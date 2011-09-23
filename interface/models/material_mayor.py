@@ -13,7 +13,6 @@ class MaterialMayor(models.Model):
     YEAR_CHOICES = [(year, year) for year in xrange(date.today().year, 1949, -1)]
     ano_vehiculo = models.IntegerField(choices=YEAR_CHOICES, verbose_name=u'Año del vehículo')
     color = models.ForeignKey('ColorMaterialMayor', verbose_name=u'Color')
-    placa_patente = models.CharField(max_length=255, verbose_name=u'Placa patente')
     # Información adicional
     modelo_carrosado = models.ForeignKey('ModeloCarrosadoMaterialMayor', verbose_name=u'Modelo de carrosado')
     condicion = models.ForeignKey('CondicionMaterialMayor', verbose_name=u'Condición')
