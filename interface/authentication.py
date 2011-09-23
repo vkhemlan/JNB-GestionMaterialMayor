@@ -15,7 +15,7 @@ class JnbAuthenticationBackend:
         request_body = u'username=%s&password=%s' % (username, password)
 
         xml_data = request_webservice('/services/login/', request_body)
-        user_id = int(JnbAuthenticationBackend.get_xml_node_contents(xml_data, 
+        user_id = int(get_xml_node_contents(xml_data, 
             'id'))
         if not user_id:
             log("Username / password of the user do not match")
@@ -44,9 +44,9 @@ class JnbAuthenticationBackend:
             user = User.objects.create_user(django_username, 
                 email=username, password=None)
 
-        user.first_name = JnbAuthenticationBackend.get_xml_node_contents(
+        user.first_name = get_xml_node_contents(
             xml_data, 'nombre')
-        user.last_name = JnbAuthenticationBackend.get_xml_node_contents(
+        user.last_name = get_xml_node_contents(
             xml_data, 'apellidoPaterno')
         log("Updated user full name: '%s'" % user.get_full_name())
         user.save()
