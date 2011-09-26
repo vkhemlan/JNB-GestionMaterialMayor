@@ -33,6 +33,14 @@ class MaterialMayor(models.Model):
     
     def __unicode__(self):
         return '%s %s' % (unicode(self.tipo_vehiculo), unicode(self.modelo_chasis),)
+        
+    def get_location(self):
+        if self.compania:
+            return '%s - %s (%s)' % (unicode(self.compania), unicode(self.cuerpo), unicode(self.cuerpo.comuna.provincia.region))
+        elif self.cuerpo:
+            return '%s (%s) - Nivel central' % (unicode(self.cuerpo), unicode(self.cuerpo.comuna.provincia.region))
+        else:
+            return 'Nivel central JNBC'
 
     class Meta:
         app_label = 'interface'

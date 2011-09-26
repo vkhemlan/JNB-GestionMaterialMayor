@@ -1,5 +1,6 @@
 from django.forms import ModelForm
 from django.template import loader, Context
+from django.core.urlresolvers import reverse
 
 class BaseModelForm(ModelForm):
     # Get a range of fields (ordered) between the given field names   
@@ -24,6 +25,12 @@ class BaseModelForm(ModelForm):
     def _render_fields_as_list(self, fields):
         template = loader.get_template('tags/field_list.html')
         errors = self._combine_fields_errors(fields)
+        
+        for field in fields:
+            if field.field.__class__.__name__ == 'ModelChoiceField':
+                field.admin_url = reverse('admin:interface_%s_add' % (field.field.queryset.model.__name__.lower()))
+            else:
+                field.admin_url = None
 
         c = Context({
             'fields': fields,

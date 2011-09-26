@@ -1,0 +1,26 @@
+{% extends 'staff/material_mayor_details_base.html' %}
+
+{% block material_mayor_content %}
+
+	<div id="main-content" class="left">
+	    {% if flash.success %}				    
+			<div class="success">{{ flash.success }}</div>
+	    {% endif %}
+	    
+	    <p class="breadcrumbs">
+	        <a href="{% url interface.views_staff.material_mayor %}">Material mayor</a>
+            &raquo; <a href="{% url interface.views_staff.material_mayor_details material_mayor.id %}">{{ material_mayor }}</a>
+            &raquo; <a href="{% url interface.views_staff.hoja_vida_material_mayor material_mayor.id %}">Hoja de vida</a>
+            &raquo; <a href="{% url interface.views_staff.detalle_evento_hoja_vida_material_mayor material_mayor.id evento.id %}">{{ evento.breadcrumb_details }}</a>
+        </p>
+        
+        <h2>{{ evento.title_details }}</h2>
+        <br />
+        <strong>Fecha y hora:</strong> {{ evento.fecha }} <br/>
+        <strong>Usuario:</strong> {{ evento.usuario.get_full_name }} <br/>
+        
+        {% block event_details %}
+        {% endblock %}
+
+    </div>
+{% endblock %}

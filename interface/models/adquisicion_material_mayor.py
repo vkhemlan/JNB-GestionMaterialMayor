@@ -2,9 +2,12 @@
 
 from django.db import models
 from . import MaterialMayor
+from django.contrib.auth.models import User
 
 class AdquisicionMaterialMayor(models.Model):
     modo = models.ForeignKey('ModoAdquisicionMaterialMayor')
+    usuario = models.ForeignKey(User)
+    fecha = models.DateTimeField(auto_now_add=True)
     
     def save(self, *args, **kwargs):
         from . import ModoAdquisicionMaterialMayor

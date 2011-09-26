@@ -1,18 +1,6 @@
 var dynamic_part_names = ['chasis', 'carrosado', 'caja_cambio', 'bomba']
 
 $(function() {
-    $.each(dynamic_part_names, function(index, value) {
-        $('#id_marca_' + value).change(function() {
-            generic_refresh(value)
-        })
-        
-        generic_refresh(value)
-        
-        if (typeof window['default_modelo_' + value] == 'number') {
-            $('#id_modelo_' + value).val(window['default_modelo_' + value])
-        }
-    })
-
     $.datepicker.setDefaults( $.datepicker.regional['es'] );
     $('.datepicker').datepicker({
         changeMonth: true,

@@ -22,6 +22,9 @@ from .provincia import Provincia
 from .comuna import Comuna
 from .cuerpo import Cuerpo
 from .compania import Compania
+from .tipo_evento_hoja_vida_material_mayor import TipoEventoHojaVidaMaterialMayor
+from .evento_hoja_vida_material_mayor import EventoHojaVidaMaterialMayor
+from .reasignacion_cuerpo_material_mayor import ReasignacionCuerpoMaterialMayor
 
 
 __all__ = [
@@ -49,4 +52,7 @@ __all__ = [
     'Comuna',
     'Cuerpo',
     'Compania',
+    'TipoEventoHojaVidaMaterialMayor',
+    'EventoHojaVidaMaterialMayor',
+    'ReasignacionCuerpoMaterialMayor',
 ]

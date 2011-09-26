@@ -14,4 +14,4 @@ class FormularioAdquisicionCompraMaterialMayor(BaseModelForm):
                
     class Meta:
         model = AdquisicionCompraMaterialMayor
-        exclude = ('modo_adquisicion')
+        exclude = ('modo_adquisicion', 'usuario', 'fecha', 'modo')

@@ -35,6 +35,13 @@
 	    {% if flash.success %}				    
 			<div class="success">{{ flash.success }}</div>
 	    {% endif %}
+	    
+	    <p class="breadcrumbs">
+	        <a href="{% url interface.views_staff.material_mayor %}">Material mayor</a>
+	        {% for breadcrumb in search_result.breadcrumbs %}
+	            &raquo; <a href="{{ breadcrumb.1 }}">{{ breadcrumb.0 }}</a>
+	        {% endfor %}
+        </p>
 
 		<h3>{{ search_result.title }}</h3>
 		<br />

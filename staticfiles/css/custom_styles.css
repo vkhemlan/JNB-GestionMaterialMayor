@@ -80,3 +80,9 @@ table#form-table input.text, textarea, select{
 #user-information a {
     font-size: 12px;
 }
+
+p.breadcrumbs {
+    font-size: 10px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}

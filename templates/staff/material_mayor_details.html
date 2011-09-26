@@ -1,63 +1,18 @@
-{% extends 'staff/base.html' %}
+{% extends 'staff/material_mayor_details_base.html' %}
 
-{% block header_block %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/formulario_dar_de_alta_material_mayor_script.js"></script>
-
-
-<script type="text/javascript">
-    var modelos_chasis = [
-    {% for modelo_chasis in form.fields.modelo_chasis.queryset %}
-        new Array({{ modelo_chasis.id }}, "{{ modelo_chasis }}", {{ modelo_chasis.marca.id }}),
-    {% endfor %}
-    ]
-    
-    var modelos_carrosado = [
-    {% for modelo_carrosado in form.fields.modelo_carrosado.queryset %}
-        new Array({{ modelo_carrosado.id }}, "{{ modelo_carrosado }}", {{ modelo_carrosado.marca.id }}),
-    {% endfor %}
-    ]
-    
-    var modelos_caja_cambio = [
-    {% for modelo_caja_cambio in form.fields.modelo_caja_cambio.queryset %}
-        new Array({{ modelo_caja_cambio.id }}, "{{ modelo_caja_cambio }}", {{ modelo_caja_cambio.marca.id }}),
-    {% endfor %}
-    ]
-    
-    var modelos_bomba = [
-    {% for modelo_bomba in form.fields.modelo_bomba.queryset %}
-        new Array({{ modelo_bomba.id }}, "{{ modelo_bomba }}", {{ modelo_bomba.marca.id }}),
-    {% endfor %}
-    ]
-    
-    var default_modelo_chasis = {{ form.instance.modelo_chasis.id }}
-    var default_modelo_carrosado = {{ form.instance.modelo_carrosado.id }}
-    var default_modelo_caja_cambio = {{ form.instance.modelo_caja_cambio.id }}
-    var default_modelo_bomba = {{ form.instance.modelo_bomba.id }}
-</script>
-
-{% endblock %}
-
-{% block subnav %}
-<div id="sub-nav" class="navigation">
-
-	<ul class="tabbed">
-	    <li><a href="{% url interface.views_staff.material_mayor %}">Explorar</a></li>
-		<li><a href="{% url interface.views_staff.adquisicion_compra_material_mayor %}">Agregar Material Mayor (compra)</a></li>
-		<li><a href="{% url interface.views_staff.adquisicion_donacion_material_mayor %}">Agregar Material Mayor (donación)</a></li>
-	</ul>
-
-	<div class="clearer">&nbsp;</div>
-
-</div>
-{% endblock %}
-
-{% block content %}
-<div id="main-two-columns" class="main">
+{% block material_mayor_content %}
 
 	<div id="main-content" class="left">
 	    {% if flash.success %}				    
 			<div class="success">{{ flash.success }}</div>
 	    {% endif %}
+	    
+	    <p class="breadcrumbs">
+	        <a href="{% url interface.views_staff.material_mayor %}">Material mayor</a>
+            &raquo; <a href="{% url interface.views_staff.material_mayor_details form.instance.id %}">{{ form.instance }}</a>
+        </p>
+        
+        
 
 		<h2>Detalles del material mayor</h2>
 		<br />
@@ -65,6 +20,12 @@
         <form method="post" action="." enctype="multipart/form-data">
             {% csrf_token %}
             <table id="form-table">
+            
+                <tr><td colspan="2"><br /><h3>Información general</h3><br /></tr></td>
+                <tr><th>Fecha de ingreso al sistema</th><td>{{ form.instance.adquisicion.fecha }}</td></tr>
+                <tr><th>Asignación actual</th><td>{{ form.instance.get_location }}</td></tr>
+                <tr><th>Ingresado por</th><td>{{ form.instance.adquisicion.usuario.get_full_name }}</td></tr>
+                <tr><th>Forma de adquisición</th><td>{{ form.instance.adquisicion.modo }} (<a href="{% url interface.views_staff.material_mayor_adquisicion_details form.instance.id %}">Ver detalles</a>)</td></tr>
 
                 <tr><td colspan="2"><br /><h3>Datos del vehículo</h3><br /></tr></td>
                 
@@ -101,21 +62,4 @@
 		
 	</div>
 
-	<div id="sidebar" class="right sidebar">
-
-        <h4>Opciones</h4>
-        <br />
-        
-        <ul>
-            <li><a href="{% url interface.views_staff.material_mayor_adquisicion_details form.instance.id %}">Ver detalles de la adquisición</a></li>
-            <li><a href="#">Ver hoja de vida</a></li>
-            <li><a href="#">Asignar a cuerpo</a></li>
-            <li><a href="#">Asignar a compañía</a></li>
-            <li><a href="#">Dar de baja</a></li>
-        </ul>
-	</div>
-
-	<div class="clearer">&nbsp;</div>
-
-</div>
 {% endblock %}

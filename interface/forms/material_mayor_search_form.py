@@ -1,6 +1,7 @@
 # coding: utf-8
 
 from django import forms
+from django.core.urlresolvers import reverse
 from interface.models import Region, Cuerpo, MaterialMayor, Compania
 
 class MaterialMayorSearchForm(forms.Form):
@@ -31,7 +32,8 @@ class MaterialMayorSearchForm(forms.Form):
                 'title': 'Material mayor a nivel JNBC',
                 'potentially_has_material_mayor': True,
                 'material_mayor': MaterialMayor.objects.filter(cuerpo__isnull=True),
-                'children': []
+                'children': [],
+                'breadcrumbs': []
                 }
         elif not cuerpo:
             children = []
@@ -45,10 +47,11 @@ class MaterialMayorSearchForm(forms.Form):
                 })
             
             result = {
-                'title': 'Material mayor: %s' %  (unicode(region),),
+                'title': 'Material mayor de la %s' %  (unicode(region),),
                 'potentially_has_material_mayor': False,
                 'material_mayor': [],
-                'children': children
+                'children': children,
+                'breadcrumbs': [[unicode(region), reverse('interface.views_staff.material_mayor') + '?region=%d' % region.id]]
                 }
         else:
             children = []
@@ -61,10 +64,14 @@ class MaterialMayorSearchForm(forms.Form):
                 })
             
             result = {
-                'title': 'Material mayor: %s' % (unicode(cuerpo),),
+                'title': 'Material mayor a nivel de cuerpo',
                 'potentially_has_material_mayor': True,
                 'material_mayor': MaterialMayor.objects.filter(cuerpo=cuerpo, compania__isnull=True),
-                'children': children
+                'children': children,
+                'breadcrumbs': [
+                    [unicode(region), reverse('interface.views_staff.material_mayor') + '?region=%d' % region.id],
+                    [unicode(cuerpo), reverse('interface.views_staff.material_mayor') + '?region=%d&cuerpo=%d' % (region.id, cuerpo.id,)]
+                ]
                 }
                 
         return result

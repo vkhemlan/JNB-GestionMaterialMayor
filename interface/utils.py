@@ -2,6 +2,7 @@ import logging
 from django.conf import settings
 from xml.dom.minidom import parseString
 import urllib2
+import re
 
 def log(message):
     logger = logging.getLogger(settings.PROJECT_MODULE)
@@ -32,3 +33,8 @@ def get_xml_node_contents(xml, node_name):
 
 def get_xml_node_attribute(xml, node_name, attribute_name):
     return xml.getElementsByTagName(node_name)[0].attributes.get(attribute_name).value
+    
+def convert_camelcase_to_lowercase(name):
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+

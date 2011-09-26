@@ -1,4 +1,4 @@
-{% extends 'staff/base.html' %}
+{% extends 'staff/material_mayor_details_base.html' %}
 
 {% block header_block %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/formulario_dar_de_alta_material_mayor_script.js"></script>
@@ -37,24 +37,13 @@
 
 {% endblock %}
 
-{% block subnav %}
-<div id="sub-nav" class="navigation">
-
-	<ul class="tabbed">
-	    <li><a href="{% url interface.views_staff.material_mayor %}">Explorar</a></li>
-		<li><a href="{% url interface.views_staff.adquisicion_compra_material_mayor %}">Agregar Material Mayor (compra)</a></li>
-		<li><a href="{% url interface.views_staff.adquisicion_donacion_material_mayor %}">Agregar Material Mayor (donación)</a></li>
-	</ul>
-
-	<div class="clearer">&nbsp;</div>
-
-</div>
-{% endblock %}
-
-{% block content %}
-<div class="main">
-
+{% block material_mayor_content %}
 	<div id="main-content" class="left">
+	    <p class="breadcrumbs">
+	        <a href="{% url interface.views_staff.material_mayor %}">Material mayor</a>
+            &raquo; <a href="{% url interface.views_staff.material_mayor_details form.instance.id %}">{{ form.instance.materialmayor }}</a>
+            &raquo; <a href="{% url interface.views_staff.material_mayor_adquisicion_details form.instance.id %}">Detalles de la adquisición</a>
+        </p>
 
 		<h2>Detalles de adquisición del material mayor</h2>
 		<br />
@@ -72,8 +61,4 @@
         </form>
 		
 	</div>
-
-	<div class="clearer">&nbsp;</div>
-
-</div>
 {% endblock %}

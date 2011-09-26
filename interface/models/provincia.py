@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from django.db import models
-from interface.utils import request_webservice, get_xml_node_contents, get_xml_node_attribute
+from interface.utils import request_webservice, get_xml_node_contents, get_xml_node_attribute, log
 
 class Provincia(models.Model):
     webservice_id = models.IntegerField()
@@ -13,6 +13,7 @@ class Provincia(models.Model):
 
     @classmethod
     def update_from_webservice(self):
+        log('Actualizando provincias desde Webservice')
         from . import Region
 
         provincias_raw_data = request_webservice('/services/provincia/')
@@ -22,6 +23,7 @@ class Provincia(models.Model):
             provincia_webservice_id = int(get_xml_node_contents(raw_provincia, 'id'))
             provincia_region_id = int(get_xml_node_attribute(raw_provincia, 'region', 'id'))
             provincia_nombre = get_xml_node_contents(raw_provincia, 'nombre')
+            log('%d %d %s' % (provincia_webservice_id, provincia_region_id, provincia_nombre))
             
             try:
                 provincia = Provincia.objects.get(webservice_id=provincia_webservice_id)
@@ -33,6 +35,7 @@ class Provincia(models.Model):
             provincia.nombre = provincia_nombre
 
             provincia.save()
+            log('Provincia guardada')
 
     class Meta:
         ordering = ['region', 'nombre']
