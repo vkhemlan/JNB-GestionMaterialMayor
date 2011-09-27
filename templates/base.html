@@ -1,45 +1,82 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
-
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-	<meta name="description" content=""/>
-	<meta name="keywords" content="" />
-	<meta name="author" content="" />
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style.css" media="screen" />
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/custom_styles.css" media="screen" />
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/redmond/jquery-ui-1.8.16.custom.css" media="screen" />
-	<title>Sistema de gestión de material mayor - Bomberos de Chile</title>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui-1.8.16.custom.min.js"></script>
+    <title>Sistema de Gestión de Material Mayor de Bomberos de Chile</title>
+    <link href="{{ STATIC_URL }}img/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/blueprint/screen.css" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/styles.css" type="text/css" media="screen, projection, print" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/menu.css" type="text/css" media="screen, projection, print" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/redmond/jquery-ui-1.8.16.custom.css" media="screen" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/blueprint/print.css" type="text/css" media="print" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/blueprint/print.css" type="text/css" media="print" />
+    <!--[if lt IE 8]>
+      <link rel="stylesheet" href="{{ STATIC_URL }}css/blueprint/ie.css" type="text/css" media="screen, projection">
+    <![endif]-->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/notifications.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui-1.8.16.custom.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/i18n/jquery-ui-i18n.min.js"></script>
-
-	<script type="text/javascript" src="{{ STATIC_URL }}js/notifications.js"></script>
     {% block header_block %}
     {% endblock %}
 </head>
 
 <body>
-
-<div id="site-wrapper">
-	{% block layout %}
-	{% endblock %}
-
-	<div id="footer">
-
-		<div class="left" id="footer-left">			
-			<p>&copy; 2011 Junta Nacional de Bomberos de Chile</p>
-
-			<p class="quiet"><a href="http://templates.arcsin.se/">Website template</a> by <a href="http://arcsin.se/">Arcsin</a></p>
-			
-			<div class="clearer">&nbsp;</div>
-
-		</div>
-
-		<div class="clearer">&nbsp;</div>
-
-	</div>
-</div>
-
+  <div class="container">
+  	<div class="span-21 login-information">
+  	    {% if user.is_authenticated %}
+  	        <strong>{{ user.get_full_name }}</strong> (<a href="{% url logout %}">Cerrar sesión</a>)
+        {% else %}
+            &nbsp;
+  	    {% endif %}
+    </div>
+    
+    <div class="span-21 header-logo">
+  		<img src="{{ STATIC_URL }}img/header.jpg" width="825" height="100" />
+  	</div>
+  	
+  	<div class="span-21 top-navigation">
+  	    <ul id="topnav">
+            <li>
+                <a href="#">Dar de alta</a>
+                <span>
+                    <a href="#">The Company</a> |
+                    <a href="#">The Team</a> |
+                    <a href="#">Careers</a>
+                </span>
+            </li>
+            <li>
+                <a href="#">Services</a>
+                <span>
+                    <a href="#">What We Do</a> |
+                    <a href="#">Our Process</a> |
+                    <a href="#">Testimonials</a>
+                </span>
+            </li>
+            <li>
+                <a href="#">Portfolio</a>
+                <span>
+                    <a href="#">Web Design</a> |
+                    <a href="#">Development</a> |
+                    <a href="#">Identity</a> |
+                    <a href="#">SEO &amp; Internet Marketing</a> |
+                    <a href="#">Print Design</a>
+                </span>
+            </li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+  	</div>
+  	
+  	<div class="span-21 main">
+  	    {% block main_content %}
+  	    {% endblock %}
+  	</div>
+	
+  	<div class="span-21 footer">
+  		(c) 2011 Junta Nacional de Cuerpos de Bomberos de Chile <br />
+  		Esquema de templates provisto por <a href="http://www.blueprintcss.org/">Blueprint</a>
+  	</div>
+  </div>
 </body>
-</html>
+
+</html> 

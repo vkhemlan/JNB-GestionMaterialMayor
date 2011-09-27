@@ -4,7 +4,6 @@ from .color_material_mayor import ColorMaterialMayor
 from .material_mayor import MaterialMayor
 from .modelo_chasis_material_mayor import ModeloChasisMaterialMayor
 from .marca_carrosado_material_mayor import MarcaCarrosadoMaterialMayor
-from .modelo_carrosado_material_mayor import ModeloCarrosadoMaterialMayor
 from .condicion_material_mayor import CondicionMaterialMayor
 from .marca_caja_cambio_material_mayor import MarcaCajaCambioMaterialMayor
 from .modelo_caja_cambio_material_mayor import ModeloCajaCambioMaterialMayor
@@ -34,7 +33,6 @@ __all__ = [
     'MaterialMayor',
     'ModeloChasisMaterialMayor',
     'MarcaCarrosadoMaterialMayor',
-    'ModeloCarrosadoMaterialMayor',
     'CondicionMaterialMayor',
     'MarcaCajaCambioMaterialMayor',
     'ModeloCajaCambioMaterialMayor',

@@ -1,37 +1,13 @@
-{% extends 'base.html' %}
+{% extends 'base_two_columns.html' %}
 
-{% block layout %}
-
-<div id="header">
-	<div id="top">
-
-		<div class="left" id="logo">
-			<img src="{{ STATIC_URL }}img/logo_bomberos.jpg" alt="" />
-		</div>
-
-		<div class="left navigation" id="main-nav">
-		    <p id="user-information">{{ user.get_full_name }} (<a href="{% url interface.views.logout %}">Cerrar sesión</a>)</p>
-
-			<ul class="tabbed">
-				<li class="current-tab"><a href="{% url interface.views.index %}">Inicio</a></li>
-				<li><a href="{% url interface.views_staff.material_mayor %}">Material Mayor</a></li>
-			</ul>
-
-			<div class="clearer">&nbsp;</div>
-
-		</div>
-
-		<div class="clearer">&nbsp;</div>
-
-	</div>
-	
-	{% block subnav %}
-	{% endblock %}
-
-</div>
-
-
-{% block content %}
-{% endblock %}
-
+{% block right_section %}
+    <ul class="sidebar-menu">
+        <li><strong>Dar de alta</strong>
+            <ul class="sidebar-menu">
+                <li><a href="{% url interface.views_staff.adquisicion_compra_material_mayor %}">Alta de vehículo (compra)</a></li>
+                <li><a href="#">Alta de vehículo (donación)</a></li>
+                <li><a href="#">Ver vehículos no asignados</a></li>
+            </ul>
+        </li>
+    </ul>
 {% endblock %}

@@ -21,3 +21,7 @@ urlpatterns += patterns('interface.views_staff',
     (r'material_mayor/(?P<material_mayor_id>\d+)/hoja_vida/$', 'hoja_vida_material_mayor'),
     (r'material_mayor/(?P<material_mayor_id>\d+)/hoja_vida/(?P<evento_id>\d+)/$', 'detalle_evento_hoja_vida_material_mayor'),
 )
+
+urlpatterns += patterns('interface.views_services',
+    (r'^services/part_model_list/$', 'part_model_list'),
+)

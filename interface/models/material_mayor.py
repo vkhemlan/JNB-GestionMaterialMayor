@@ -14,13 +14,14 @@ class MaterialMayor(models.Model):
     ano_vehiculo = models.IntegerField(choices=YEAR_CHOICES, verbose_name=u'Año del vehículo')
     color = models.ForeignKey('ColorMaterialMayor', verbose_name=u'Color')
     # Información adicional
-    modelo_carrosado = models.ForeignKey('ModeloCarrosadoMaterialMayor', verbose_name=u'Modelo de carrosado')
+    marca_carrosado = models.ForeignKey('MarcaCarrosadoMaterialMayor', verbose_name=u'Marca de carrosado')
     condicion = models.ForeignKey('CondicionMaterialMayor', verbose_name=u'Condición')
-    modelo_caja_cambio = models.ForeignKey('ModeloCajaCambioMaterialMayor', verbose_name=u'Modelo de caja de cambio')
     tipo_caja_cambio = models.ForeignKey('TipoCajaCambioMaterialMayor', verbose_name=u'Tipo de caja de cambio')
+    modelo_caja_cambio = models.ForeignKey('ModeloCajaCambioMaterialMayor', verbose_name=u'Modelo de caja de cambio')
     tipo_combustible = models.ForeignKey('TipoCombustibleMaterialMayor', verbose_name=u'Tipo de combustible')
     modelo_bomba = models.ForeignKey('ModeloBombaMaterialMayor', verbose_name=u'Modelo de bomba')
     pais_origen = models.ForeignKey('Pais', verbose_name=u'País de origen')
+    planos = models.FileField(upload_to='planos', verbose_name=u'Planos del vehículo')
     # Fotografías
     fotografia_frontal = ImageField(upload_to='material_mayor', verbose_name=u'Vista Frontal')
     fotografia_lateral = ImageField(upload_to='material_mayor', verbose_name=u'Vista Lateral')

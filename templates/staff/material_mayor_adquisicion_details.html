@@ -11,12 +11,6 @@
     {% endfor %}
     ]
     
-    var modelos_carrosado = [
-    {% for modelo_carrosado in form.fields.modelo_carrosado.queryset %}
-        new Array({{ modelo_carrosado.id }}, "{{ modelo_carrosado }}", {{ modelo_carrosado.marca.id }}),
-    {% endfor %}
-    ]
-    
     var modelos_caja_cambio = [
     {% for modelo_caja_cambio in form.fields.modelo_caja_cambio.queryset %}
         new Array({{ modelo_caja_cambio.id }}, "{{ modelo_caja_cambio }}", {{ modelo_caja_cambio.marca.id }}),

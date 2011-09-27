@@ -2,84 +2,76 @@
 
 {% block header_block %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/formulario_dar_de_alta_material_mayor_script.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/related_object_lookup.js"></script>
+
+<script type="text/javascript">
+    var modelos_chasis = [
+    {% for modelo_chasis in form.fields.modelo_chasis.queryset %}
+        new Array({{ modelo_chasis.id }}, "{{ modelo_chasis }}", {{ modelo_chasis.marca.id }}),
+    {% endfor %}
+    ]
+    
+    var modelos_caja_cambio = [
+    {% for modelo_caja_cambio in form.fields.modelo_caja_cambio.queryset %}
+        new Array({{ modelo_caja_cambio.id }}, "{{ modelo_caja_cambio }}", {{ modelo_caja_cambio.marca.id }}),
+    {% endfor %}
+    ]
+    
+    var modelos_bomba = [
+    {% for modelo_bomba in form.fields.modelo_bomba.queryset %}
+        new Array({{ modelo_bomba.id }}, "{{ modelo_bomba }}", {{ modelo_bomba.marca.id }}),
+    {% endfor %}
+    ]
+</script>
 {% endblock %}
 
-{% block subnav %}
-<div id="sub-nav" class="navigation">
+{% block left_section %}
+    <p class="breadcrumbs">
+        <strong>Dar de alta</strong>
+        &raquo; Dar de alta material mayor (compra)
+    </p>
 
-	<ul class="tabbed">
-	    <li><a href="{% url interface.views_staff.material_mayor %}">Explorar</a></li>
-		<li><a href="{% url interface.views_staff.adquisicion_compra_material_mayor %}">Agregar Material Mayor (compra)</a></li>
-		<li><a href="{% url interface.views_staff.adquisicion_donacion_material_mayor %}">Agregar Material Mayor (donación)</a></li>
-	</ul>
+    <h2>Dar de alta material mayor (Compra)</h2>
+    <hr />
 
-	<div class="clearer">&nbsp;</div>
+    <form method="post" action="." enctype="multipart/form-data">
+        {% csrf_token %}
+        <table id="form-table">
 
-</div>
-{% endblock %}
-
-{% block content %}
-<div class="main">
-    <div class="section">
-        <div class="section-content">
-
-            <div class="post">
-                <p class="breadcrumbs">
-	                <a href="{% url interface.views_staff.material_mayor %}">Material mayor</a>
-	                &raquo; <a href="{% url interface.views_staff.adquisicion_compra_material_mayor %}">Agregar material mayor (compra)</a>
-                </p>
+            <tr><td colspan="3"><br /><h3>Datos del vehículo</h3><br /></tr></td>
             
-                <h2>Dar de alta material mayor (Compra)</h2>
-                <br />
+            {{ form.render_datos_vehiculo }}
             
-                <form method="post" action="." enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <table id="form-table">
-
-                        <tr><td colspan="3"><br /><h3>Datos del vehículo</h3><br /></tr></td>
-                        
-                        {{ form.render_datos_vehiculo }}
-                        
-                        <tr><td colspan="3"><br /><h3>Información Adicional</h3><br /></tr></td>
-                        
-                        {{ form.render_informacion_adicional }}
-
-                        <tr><td colspan="3"><br /><h3>Fotografías</h3><br /></tr></td>
-                        {% for pair in form.picture_fields %}
-                            <tr>
-                                <th>
-                                    {% if pair.0.errors %}
-                                        <ul class="errorlist">
-                                            {% for error in pair.0.errors %}
-                                                <li>{{ error }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                    {% endif %}
-                                    {{ pair.0.label }}
-                                </th>
-
-                                <td>
-                                    {{ pair.0 }}
-                                </td>
-                        {% endfor %}
-
-                        <tr><td colspan="3"><br /><h3>Documentos</h3><br /></tr></td>
-                        
-                        {{ form_adquisicion.render_detalles }}
-                            
-                    </table>
-
-                    <input type="submit" value="Dar de alta" />
-
-                </form>
+            <tr><td colspan="3"><br /><h3>Información Adicional</h3><br /></tr></td>
             
-            </div>
+            {{ form.render_informacion_adicional }}
 
-            <div class="clearer">&nbsp;</div>
+            <tr><td colspan="3"><br /><h3>Fotografías</h3><br /></tr></td>
+            {% for pair in form.picture_fields %}
+                <tr>
+                    <th>
+                        {% if pair.0.errors %}
+                            <ul class="errorlist">
+                                {% for error in pair.0.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {{ pair.0.label }}
+                    </th>
 
-        </div>
+                    <td>
+                        {{ pair.0 }}
+                    </td>
+            {% endfor %}
 
-    </div>
-</div>
+            <tr><td colspan="3"><br /><h3>Documentos</h3><br /></tr></td>
+            
+            {{ form_adquisicion.render_detalles }}
+                
+        </table>
+
+        <input type="submit" value="Dar de alta" />
+
+    </form>
 {% endblock %}
