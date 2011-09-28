@@ -8,6 +8,7 @@ class AdquisicionMaterialMayor(models.Model):
     modo = models.ForeignKey('ModoAdquisicionMaterialMayor')
     usuario = models.ForeignKey(User)
     fecha = models.DateTimeField(auto_now_add=True)
+    cuerpo_destinatario = models.ForeignKey('Cuerpo')
     
     def save(self, *args, **kwargs):
         from . import ModoAdquisicionMaterialMayor

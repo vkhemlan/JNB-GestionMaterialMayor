@@ -1,19 +1,29 @@
-{% extends 'staff/material_mayor_details_base.html' %}
+{% extends 'staff/base.html' %}
 
 {% block header_block %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/formulario_reasignar_cuerpo_script.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/formulario_asignar_cuerpo_script.js"></script>
 
 <script type="text/javascript">
+    var default_region_id = {{ default_cuerpo.comuna.provincia.region.id }}
+    var default_cuerpo_id = {{ default_cuerpo.id }}
+    var default_compania_id = {{ default_compania_id }}
+
     var cuerpos = [
     {% for cuerpo in form.fields.cuerpo.queryset %}
         new Array({{ cuerpo.id }}, "{{ cuerpo }}", {{ cuerpo.comuna.provincia.region.id }}),
+    {% endfor %}
+    ]
+    
+    var companias = [
+    {% for compania in form.fields.compania.queryset %}
+        new Array({{ compania.id }}, "{{ compania }}", {{ compania.cuerpo.id }}),
     {% endfor %}
     ]
 </script>
 
 {% endblock %}
 
-{% block material_mayor_content %}
+{% block main_content %}
 
 	<div id="main-content" class="left">
 	    {% if flash.success %}				    
@@ -21,13 +31,12 @@
 	    {% endif %}
 	    
 	    <p class="breadcrumbs">
-	        <a href="{% url interface.views_staff.material_mayor %}">Material mayor</a>
-            &raquo; <a href="{% url interface.views_staff.material_mayor_details material_mayor.id %}">{{ material_mayor }}</a>
-            &raquo; <a href="{% url interface.views_staff.reasignar_material_mayor_a_cuerpo material_mayor.id %}">(Re) asignar a cuerpo</a>
+	        <strong>Material mayor</strong>
+            &raquo; <a href="{% url interface.views_staff.editar_material_mayor material_mayor.id %}">{{ material_mayor }}</a>
+            &raquo; Asignar a cuerpo
         </p>
 
 		<h2>Asignación a cuerpo de {{ material_mayor }}</h2>
-		<br />
             
         <form method="post" action="." enctype="multipart/form-data">
             {% csrf_token %}

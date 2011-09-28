@@ -6,7 +6,7 @@
     <link href="{{ STATIC_URL }}img/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <link rel="stylesheet" href="{{ STATIC_URL }}css/blueprint/screen.css" type="text/css" media="screen, projection" />
     <link rel="stylesheet" href="{{ STATIC_URL }}css/styles.css" type="text/css" media="screen, projection, print" />
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/menu.css" type="text/css" media="screen, projection, print" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/topnavigation.css" type="text/css" media="screen, projection, print" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/redmond/jquery-ui-1.8.16.custom.css" media="screen" />
     <link rel="stylesheet" href="{{ STATIC_URL }}css/blueprint/print.css" type="text/css" media="print" />
     <link rel="stylesheet" href="{{ STATIC_URL }}css/blueprint/print.css" type="text/css" media="print" />
@@ -14,9 +14,11 @@
       <link rel="stylesheet" href="{{ STATIC_URL }}css/blueprint/ie.css" type="text/css" media="screen, projection">
     <![endif]-->
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/i18n/jquery-ui-i18n.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/notifications.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/formulario_fechas.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/topnavigation.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui-1.8.16.custom.min.js"></script>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/i18n/jquery-ui-i18n.min.js"></script>
     {% block header_block %}
     {% endblock %}
 </head>
@@ -36,35 +38,8 @@
   	</div>
   	
   	<div class="span-21 top-navigation">
-  	    <ul id="topnav">
-            <li>
-                <a href="#">Dar de alta</a>
-                <span>
-                    <a href="#">The Company</a> |
-                    <a href="#">The Team</a> |
-                    <a href="#">Careers</a>
-                </span>
-            </li>
-            <li>
-                <a href="#">Services</a>
-                <span>
-                    <a href="#">What We Do</a> |
-                    <a href="#">Our Process</a> |
-                    <a href="#">Testimonials</a>
-                </span>
-            </li>
-            <li>
-                <a href="#">Portfolio</a>
-                <span>
-                    <a href="#">Web Design</a> |
-                    <a href="#">Development</a> |
-                    <a href="#">Identity</a> |
-                    <a href="#">SEO &amp; Internet Marketing</a> |
-                    <a href="#">Print Design</a>
-                </span>
-            </li>
-            <li><a href="#">Contact</a></li>
-        </ul>
+  	    {% block topnavigation %}
+  	    {% endblock %}
   	</div>
   	
   	<div class="span-21 main">
@@ -72,6 +47,7 @@
   	    {% endblock %}
   	</div>
 	
+	<hr />
   	<div class="span-21 footer">
   		(c) 2011 Junta Nacional de Cuerpos de Bomberos de Chile <br />
   		Esquema de templates provisto por <a href="http://www.blueprintcss.org/">Blueprint</a>

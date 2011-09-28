@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 from django.template import loader, Context
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 class BaseModelForm(ModelForm):
     # Get a range of fields (ordered) between the given field names   
@@ -22,12 +23,12 @@ class BaseModelForm(ModelForm):
                 
         return [self[field] for field in return_fields]
         
-    def _render_fields_as_list(self, fields):
+    def _render_fields_as_list(self, fields, blacklist=[]):
         template = loader.get_template('tags/field_list.html')
         errors = self._combine_fields_errors(fields)
         
         for field in fields:
-            if field.field.__class__.__name__ == 'ModelChoiceField':
+            if field.field.__class__.__name__ == 'ModelChoiceField' and field.name not in blacklist:
                 field.admin_url = reverse('admin:interface_%s_add' % (field.field.queryset.model.__name__.lower()))
             else:
                 field.admin_url = None
@@ -35,6 +36,7 @@ class BaseModelForm(ModelForm):
         c = Context({
             'fields': fields,
             'errors': errors,
+            'STATIC_URL': settings.STATIC_URL
         })
 
         return template.render(c)

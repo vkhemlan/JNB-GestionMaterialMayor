@@ -9,7 +9,7 @@ class Cuerpo(models.Model):
     comuna = models.ForeignKey('Comuna')
     
     def __unicode__(self):
-        return 'Cuerpo de %s ' % (self.nombre,)
+        return 'Cuerpo de %s' % (self.nombre,)
 
     @classmethod
     def update_from_webservice(self):
@@ -35,7 +35,7 @@ class Cuerpo(models.Model):
             cuerpo.save()
 
     class Meta:
-        ordering = ['comuna', 'nombre']
+        ordering = ['nombre']
         app_label = 'interface'
         verbose_name = u'Cuerpo'
         verbose_name_plural = u'Cuerpos'

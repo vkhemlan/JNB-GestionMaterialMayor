@@ -1,13 +1,37 @@
-{% extends 'base_two_columns.html' %}
+{% extends 'base.html' %}
 
-{% block right_section %}
-    <ul class="sidebar-menu">
-        <li><strong>Dar de alta</strong>
-            <ul class="sidebar-menu">
-                <li><a href="{% url interface.views_staff.adquisicion_compra_material_mayor %}">Alta de vehículo (compra)</a></li>
-                <li><a href="#">Alta de vehículo (donación)</a></li>
-                <li><a href="#">Ver vehículos no asignados</a></li>
-            </ul>
+{% block topnavigation %}
+    <ul id="topnav">
+        <li>
+            <a href="{% url interface.views.index %}">Página principal</a>
+        </li>
+        <li>
+            <a href="#">Dar de alta</a>
+            <span>
+                <a href="{% url interface.views_staff.adquisicion_compra_material_mayor %}">Alta de vehículo (compra)</a> |
+                <a href="{% url interface.views_staff.adquisicion_donacion_material_mayor %}">Alta de vehículo (donación)</a> |
+                <a href="{% url interface.views_staff.material_mayor_sin_asignar %}">Ver vehículos no asignados</a>
+            </span>
+        </li>
+        <li>
+            <a href="#">Asignar</a>
+            <span>
+                <a href="{% url interface.views_staff.material_mayor_sin_asignar %}">Asignar material a cuerpo / compañía</a>
+            </span>
+        </li>
+        <li>
+            <a href="#">Mantención</a>
+            <span>
+                <a href="#">Mantención programada</a> |
+                <a href="#">Mantención extraordinaria</a>
+            </span>
+        </li>
+        <li>
+            <a href="#">Dar de baja</a>
+            <span>
+                <a href="#">Enajenación</a> |
+                <a href="#">Reliquia</a>
+            </span>
         </li>
     </ul>
 {% endblock %}

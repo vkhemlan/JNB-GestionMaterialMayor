@@ -13,7 +13,7 @@ class EventoHojaVidaMaterialMayor(models.Model):
         return unicode(self.tipo)
         
     def get_polymorphic_instance(self):
-        from . import ReasignacionCuerpoMaterialMayor
+        from . import AsignacionCuerpoMaterialMayor
         if self.__class__.__name__ != 'EventoHojaVidaMaterialMayor':
             return self
         else:

@@ -1,0 +1,46 @@
+{% extends 'staff/base.html' %}
+
+{% block main_content %}
+    <p class="breadcrumbs">
+        <strong>Asignaciones de material</strong>
+        &raquo; Material mayor sin asignar
+    </p>
+    
+    {% if flash.success %}				    
+		<div class="success">{{ flash.success }}</div>
+    {% endif %}
+
+    <h2>Material mayor sin asignar</h2>
+    <hr />
+
+    <table>
+        <tr>
+            <th>Marca chasis</th>
+            <th>Modelo chasis</th>
+            <th>N° Chasis</th>
+            <th>Marca carrosado</th>
+            <th>N° Motor</th>
+            <th>Cuerpo de destino</th>
+            <th></th>
+            <th></th>
+        </tr>
+        {% for vehiculo in material_mayor %}
+            <tr>
+                <td>{{ vehiculo.modelo_chasis.marca }}</td>
+                <td>{{ vehiculo.modelo_chasis }}</td>
+                <td>{{ vehiculo.numero_chasis }}</td>
+                <td>{{ vehiculo.marca_carrosado }}</td>
+                <td>{{ vehiculo.numero_motor }}</td>
+                <td>{{ vehiculo.adquisicion.cuerpo_destinatario }}</td>
+                <td><a href="{% url interface.views_staff.editar_material_mayor vehiculo.id %}?next={% url interface.views_staff.material_mayor_sin_asignar %}">Editar</a></td>
+                <td><a href="{% url interface.views_staff.asignar_material_mayor_a_cuerpo vehiculo.id %}">Asignar</a></td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6">
+                    <i>No hay material mayor sin asignar</i>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

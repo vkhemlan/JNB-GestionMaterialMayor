@@ -7,7 +7,7 @@ class ModeloChasisMaterialMayor(models.Model):
     name = models.CharField(max_length = 255)
     
     def __unicode__(self):
-        return '%s %s' % (unicode(self.marca), self.name)
+        return self.name
 
     class Meta:
         ordering = ['marca', 'name']

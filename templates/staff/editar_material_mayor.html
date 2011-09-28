@@ -2,7 +2,6 @@
 
 {% block header_block %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/formulario_editar_material_mayor_script.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/formulario_destinatario_cuerpo.js"></script>
 
 <script type="text/javascript">
     var modelos_chasis = [
@@ -28,21 +27,32 @@
         new Array({{ cuerpo.id }}, "{{ cuerpo }}", {{ cuerpo.comuna.provincia.region.id }}),
     {% endfor %}
     ]
+    
 </script>
 {% endblock %}
 
 {% block main_content %}
+    {% if flash.success %}				    
+		<div class="success">{{ flash.success }}</div>
+    {% endif %}
+    
     <p class="breadcrumbs">
-        <strong>Dar de alta</strong>
-        &raquo; Alta de vehículo (donación)
+        <strong>Material mayor</strong>
+        &raquo; Editar material mayor
     </p>
 
-    <h2>Dar de alta material mayor (Donación)</h2>
-    <br />
-
+	<h2>Editar material mayor</h2>
+        
     <form method="post" action="." enctype="multipart/form-data">
         {% csrf_token %}
         <table id="form-table">
+        
+            <tr><td colspan="2"><br /><h3>Información general</h3><br /></tr></td>
+            <tr><th>Fecha de ingreso al sistema</th><td>{{ form.instance.adquisicion.fecha }}</td></tr>
+            <tr><th>Asignación actual</th><td>{{ form.instance.get_location }} (<a href="{% url interface.views_staff.asignar_material_mayor_a_cuerpo form.instance.id %}">Asignar</a>)</td></tr>
+            <tr><th>Ingresado por</th><td>{{ form.instance.adquisicion.usuario.get_full_name }}</td></tr>
+            <tr><th>Forma de adquisición</th><td>{{ form.instance.adquisicion.modo }} (<a href="{% url interface.views_staff.editar_adquisicion_material_mayor form.instance.adquisicion.id %}">Editar detalles</a>)</td></tr>
+            <tr><th>Hoja de vida</th><td><a href="{% url interface.views_staff.detalles_hoja_de_vida_material_mayor form.instance.adquisicion.id %}">Ver hoja de vida</a></td></tr>
 
             <tr><td colspan="2"><br /><h3>Datos del vehículo</h3><br /></tr></td>
             
@@ -69,15 +79,17 @@
                     <td>
                         {{ pair.0 }}
                     </td>
+                </tr>
             {% endfor %}
-
-            <tr><td colspan="2"><br /><h3>Información de la donación</h3><br /></tr></td>
-            
-            {{ form_adquisicion.render_detalles }}
                 
         </table>
+        
+        {% if next %}
+            <input type="hidden" name="next" value="{{ next }}" />
+        {% endif %}
 
-        <input type="submit" value="Dar de alta" />
+        <input type="submit" value="Guardar cambios" />
 
     </form>
+
 {% endblock %}

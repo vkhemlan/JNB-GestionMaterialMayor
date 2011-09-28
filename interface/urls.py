@@ -12,14 +12,14 @@ urlpatterns += patterns('interface.views_account',
 )
 
 urlpatterns += patterns('interface.views_staff',
-    (r'^adquisicion_compra_material_mayor/$', 'adquisicion_compra_material_mayor'),
-    (r'^adquisicion_donacion_material_mayor/$', 'adquisicion_donacion_material_mayor'),
-    (r'material_mayor/$', 'material_mayor'),
-    (r'material_mayor/(?P<material_mayor_id>\d+)/$', 'material_mayor_details'),
-    (r'material_mayor/(?P<material_mayor_id>\d+)/adquisicion/$', 'material_mayor_adquisicion_details'),
-    (r'material_mayor/(?P<material_mayor_id>\d+)/reasignacion_cuerpo/$', 'reasignar_material_mayor_a_cuerpo'),
-    (r'material_mayor/(?P<material_mayor_id>\d+)/hoja_vida/$', 'hoja_vida_material_mayor'),
-    (r'material_mayor/(?P<material_mayor_id>\d+)/hoja_vida/(?P<evento_id>\d+)/$', 'detalle_evento_hoja_vida_material_mayor'),
+    (r'^material_mayor/dar_de_alta/compra/$', 'adquisicion_compra_material_mayor'),
+    (r'^material_mayor/dar_de_alta/donacion/$', 'adquisicion_donacion_material_mayor'),
+    (r'^material_mayor/no_asignados/$', 'material_mayor_sin_asignar'),
+    (r'^material_mayor/(?P<material_mayor_id>\d+)/$', 'editar_material_mayor'),
+    (r'material_mayor/(?P<material_mayor_id>\d+)/adquisicion/$', 'editar_adquisicion_material_mayor'),
+    (r'material_mayor/(?P<material_mayor_id>\d+)/asignar_a_cuerpo/$', 'asignar_material_mayor_a_cuerpo'),
+    (r'material_mayor/(?P<material_mayor_id>\d+)/hoja_de_vida/$', 'detalles_hoja_de_vida_material_mayor'),
+    (r'material_mayor/(?P<material_mayor_id>\d+)/hoja_de_vida/(?P<evento_id>\d+)/$', 'detalle_evento_hoja_de_vida_material_mayor'),
 )
 
 urlpatterns += patterns('interface.views_services',

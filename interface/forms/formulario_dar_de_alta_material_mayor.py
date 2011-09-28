@@ -6,8 +6,8 @@ from . import BaseModelForm
 
 class FormularioDarDeAltaMaterialMayor(BaseModelForm):
     marca_chasis = forms.ModelChoiceField(queryset=MarcaChasisMaterialMayor.objects.all())
-    marca_caja_cambio = forms.ModelChoiceField(queryset=MarcaCajaCambioMaterialMayor.objects.all())
-    marca_bomba = forms.ModelChoiceField(queryset=MarcaBombaMaterialMayor.objects.all())
+    marca_caja_cambio = forms.ModelChoiceField(queryset=MarcaCajaCambioMaterialMayor.objects.all(), required=False)
+    marca_bomba = forms.ModelChoiceField(queryset=MarcaBombaMaterialMayor.objects.all(), required=False)
 
     def clean(self):
         data = self.cleaned_data
@@ -21,7 +21,7 @@ class FormularioDarDeAltaMaterialMayor(BaseModelForm):
             marca_string = 'marca_%s' % (part_type,)
             modelo_string = 'modelo_%s' % (part_type,)
             
-            if marca_string in data and modelo_string in data and data[modelo_string].marca != data[marca_string]:
+            if marca_string in data and modelo_string in data and data[modelo_string] and data[modelo_string].marca != data[marca_string]:
                 self._errors[modelo_string] = self.error_class([u'La marca %s debe coincidir con su modelo' % message])
                 del data[modelo_string]
 
@@ -49,9 +49,10 @@ class FormularioDarDeAltaMaterialMayor(BaseModelForm):
     def get_from_instance(self, instance):
         form = FormularioDarDeAltaMaterialMayor(instance=instance)
         form.initial['marca_chasis'] = instance.modelo_chasis.marca.id
-        form.initial['marca_carrosado'] = instance.modelo_carrosado.marca.id
-        form.initial['marca_caja_cambio'] = instance.modelo_caja_cambio.marca.id
-        form.initial['marca_bomba'] = instance.modelo_bomba.marca.id
+        if instance.modelo_caja_cambio:
+            form.initial['marca_caja_cambio'] = instance.modelo_caja_cambio.marca.id
+        if instance.modelo_bomba:
+            form.initial['marca_bomba'] = instance.modelo_bomba.marca.id
         return form
                
     class Meta:

@@ -1,0 +1,36 @@
+{% extends 'staff/base.html' %}
+
+{% block header_block %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/formulario_destinatario_cuerpo.js"></script>
+    
+    <script type="text/javascript">
+        var cuerpos = [
+        {% for cuerpo in form.fields.cuerpo_destinatario.queryset %}
+            new Array({{ cuerpo.id }}, "{{ cuerpo }}", {{ cuerpo.comuna.provincia.region.id }}),
+        {% endfor %}
+        ]
+    </script>
+{% endblock %}
+
+{% block main_content %}
+    <p class="breadcrumbs">
+        <strong>Material mayor</strong>
+        &raquo; <a href="{% url interface.views_staff.editar_material_mayor form.instance.materialmayor.id %}">{{ form.instance.materialmayor }}</a>
+        &raquo; Detalles de la adquisición
+    </p>
+
+	<h2>Detalles de adquisición del material mayor</h2>
+	<br />
+        
+    <form method="post" action="." enctype="multipart/form-data">
+        {% csrf_token %}
+        <table id="form-table">
+            
+            {{ form.render_detalles }}
+                
+        </table>
+
+        <input type="submit" value="Guardar cambios" />
+
+    </form>
+{% endblock %}

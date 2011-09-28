@@ -1,0 +1,41 @@
+<tr> 
+    <td colspan="3">
+        <table>
+            <tr>
+                <td>{{ form.numero_orden_de_compra.errors }}
+                {{ form.numero_orden_de_compra.label_tag }}</td>
+                <td>{{ form.fecha_orden_de_compra.errors }}
+                {{ form.fecha_orden_de_compra.label_tag }}</td>
+                <td>{{ form.orden_de_compra.errors }}
+                {{ form.orden_de_compra.label_tag }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.numero_orden_de_compra }}</td>
+                <td>{{ form.fecha_orden_de_compra }}</td>
+                <td>{{ form.orden_de_compra }}</td>
+            </tr>
+        </table>
+    </td>
+</tr>
+
+<tr> 
+    <td colspan="3">
+        <table>
+            <tr>
+                <td>{{ form.numero_declaracion_de_ingreso.errors }}
+                {{ form.numero_declaracion_de_ingreso.label_tag }}</td>
+                <td>{{ form.fecha_declaracion_de_ingreso.errors }}
+                {{ form.fecha_declaracion_de_ingreso.label_tag }}</td>
+                <td>{{ form.declaracion_de_ingreso.errors }}
+                {{ form.declaracion_de_ingreso.label_tag }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.numero_declaracion_de_ingreso }}</td>
+                <td>{{ form.fecha_declaracion_de_ingreso }}</td>
+                <td>{{ form.declaracion_de_ingreso }}</td>
+            </tr>
+        </table>
+    </td>
+</tr>
+
+{{ form.render_subdetalles }}

@@ -37,3 +37,7 @@
 .top-navigation {
     margin-bottom: 50px;
 }
+
+select {
+    width: 250px;
+}

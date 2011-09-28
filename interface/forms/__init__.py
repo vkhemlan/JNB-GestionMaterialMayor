@@ -3,7 +3,7 @@ from .formulario_dar_de_alta_material_mayor import FormularioDarDeAltaMaterialMa
 from .formulario_adquisicion_compra_material_mayor import FormularioAdquisicionCompraMaterialMayor
 from .formulario_adquisicion_donacion_material_mayor import FormularioAdquisicionDonacionMaterialMayor
 from .material_mayor_search_form import MaterialMayorSearchForm
-from .formulario_reasignacion_cuerpo_material_mayor import FormularioReasignacionCuerpoMaterialMayor
+from .formulario_asignacion_cuerpo_material_mayor import FormularioAsignacionCuerpoMaterialMayor
 
 
 __all__ = [ 'BaseModelForm',
@@ -11,4 +11,4 @@ __all__ = [ 'BaseModelForm',
 			'FormularioAdquisicionCompraMaterialMayor',
 			'FormularioAdquisicionDonacionMaterialMayor',
 			'MaterialMayorSearchForm',
-			'FormularioReasignacionCuerpoMaterialMayor']
+			'FormularioAsignacionCuerpoMaterialMayor']

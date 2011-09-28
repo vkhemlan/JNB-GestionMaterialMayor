@@ -3,13 +3,19 @@
    <tr class="errorrow"><td colspan="2">{{field.errors}}</td> </tr>
    {% endif %}
     <tr>
-        <th>
-            {{ field.label_tag }}
-        </th>
+        {% if field.field.required %}
+            <th>
+                {{ field.label_tag }}
+            </th>
+        {% else %}
+            <td>
+                {{ field.label_tag }}
+            </td>
+        {% endif %}
         <td>
             {{ field }}
             {% if field.admin_url %}
-                <a onclick="return showAddAnotherPopup(this);" id="add_{{ field.auto_id }}" class="add-another" href="{{ field.admin_url }}"> <img width="10" height="10" alt="Añadir otro" src="/staticfiles/admin/img/admin/icon_addlink.gif"></a>
+                <a onclick="return showAddAnotherPopup(this);" id="add_{{ field.auto_id }}" class="add-another" href="{{ field.admin_url }}"> <img width="10" height="10" alt="Añadir otro" src="{{ STATIC_URL }}admin/img/admin/icon_addlink.gif"></a>
             {% endif %}
         </td>
     </tr>

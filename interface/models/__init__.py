@@ -23,7 +23,7 @@ from .cuerpo import Cuerpo
 from .compania import Compania
 from .tipo_evento_hoja_vida_material_mayor import TipoEventoHojaVidaMaterialMayor
 from .evento_hoja_vida_material_mayor import EventoHojaVidaMaterialMayor
-from .reasignacion_cuerpo_material_mayor import ReasignacionCuerpoMaterialMayor
+from .asignacion_cuerpo_material_mayor import AsignacionCuerpoMaterialMayor
 
 
 __all__ = [
@@ -52,5 +52,5 @@ __all__ = [
     'Compania',
     'TipoEventoHojaVidaMaterialMayor',
     'EventoHojaVidaMaterialMayor',
-    'ReasignacionCuerpoMaterialMayor',
+    'AsignacionCuerpoMaterialMayor',
 ]

@@ -3,5 +3,7 @@
 {% block event_details %}
     
 <strong>Cuerpo de destino:</strong> {{ evento.cuerpo }} ({{ evento.cuerpo.comuna.provincia.region }}) <br/>
+<strong>Fecha de asignación:</strong> {{ evento.fecha_de_asignacion }}<br/>
+<strong>Acta de entrega de asignación:</strong> {{ evento.acta_de_entrega_de_asignacion }}<br/>
     
 {% endblock %}

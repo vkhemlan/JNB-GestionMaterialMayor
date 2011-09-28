@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
+{% block topnavigation %}
+    <ul id="topnav">
+        <li>
+            <a href="{% url login %}">Ingresar al sistema</a>
+        </li>
+    </ul>
+{% endblock %}
+
 {% block main_content %}
     
 	{% if flash.success %}				    
