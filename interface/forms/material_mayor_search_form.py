@@ -51,7 +51,7 @@ class MaterialMayorSearchForm(forms.Form):
                 'potentially_has_material_mayor': False,
                 'material_mayor': [],
                 'children': children,
-                'breadcrumbs': [[unicode(region), reverse('interface.views_staff.material_mayor') + '?region=%d' % region.id]]
+                'breadcrumbs': [[unicode(region), reverse('interface.views.material_mayor') + '?region=%d' % region.id]]
                 }
         else:
             children = []
@@ -69,8 +69,8 @@ class MaterialMayorSearchForm(forms.Form):
                 'material_mayor': MaterialMayor.objects.filter(cuerpo=cuerpo, compania__isnull=True),
                 'children': children,
                 'breadcrumbs': [
-                    [unicode(region), reverse('interface.views_staff.material_mayor') + '?region=%d' % region.id],
-                    [unicode(cuerpo), reverse('interface.views_staff.material_mayor') + '?region=%d&cuerpo=%d' % (region.id, cuerpo.id,)]
+                    [unicode(region), reverse('interface.views.material_mayor') + '?region=%d' % region.id],
+                    [unicode(cuerpo), reverse('interface.views.material_mayor') + '?region=%d&cuerpo=%d' % (region.id, cuerpo.id,)]
                 ]
                 }
                 

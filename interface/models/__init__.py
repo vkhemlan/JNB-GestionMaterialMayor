@@ -24,6 +24,9 @@ from .compania import Compania
 from .tipo_evento_hoja_vida_material_mayor import TipoEventoHojaVidaMaterialMayor
 from .evento_hoja_vida_material_mayor import EventoHojaVidaMaterialMayor
 from .asignacion_cuerpo_material_mayor import AsignacionCuerpoMaterialMayor
+from .rol import Rol
+from .cargo import Cargo
+from .user_profile import UserProfile
 
 
 __all__ = [
@@ -53,4 +56,7 @@ __all__ = [
     'TipoEventoHojaVidaMaterialMayor',
     'EventoHojaVidaMaterialMayor',
     'AsignacionCuerpoMaterialMayor',
+    'UserProfile',
+    'Rol',
+    'Cargo'
 ]

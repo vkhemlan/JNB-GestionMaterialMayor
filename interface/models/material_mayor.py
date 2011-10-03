@@ -42,6 +42,12 @@ class MaterialMayor(models.Model):
             return '%s (%s) - Nivel central' % (unicode(self.cuerpo), unicode(self.cuerpo.comuna.provincia.region))
         else:
             return 'Nivel central JNBC'
+            
+    def notify_operaciones_of_dada_de_alta(self):
+        from . import Rol, UserProfile
+        operaciones_bomberiles_user_profiles = UserProfile.objects.filter(rol=Rol.OPERACIONES())
+        for user_profile in operaciones_bomberiles_user_profiles:
+            user_profile.send_new_dada_de_alta_email(self)
 
     class Meta:
         app_label = 'interface'

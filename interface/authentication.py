@@ -1,7 +1,47 @@
+# coding: utf-8
+
 import urllib2
-from django.contrib.auth.models import User
+from functools import wraps
+
+from utils import log
 from django.conf import settings
-from interface.utils import log, request_webservice, get_xml_node_contents
+from django.shortcuts import redirect
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+
+from interface.models import UserProfile
+from interface.utils import log, request_webservice, get_xml_node_contents, intersect
+
+# Check if user has the role required to the decorated view
+class authorize(object):
+    def __init__(self, roles=(), cargos=()):
+        self.roles = roles
+        self.cargos = cargos
+
+    def __call__(self, func):
+        @wraps(func)
+        def wrap(request, *args, **kwargs):
+            # If it is the superuser, allow everything
+            if request.user.is_superuser:
+                return func(request, *args, **kwargs)    
+        
+            # If user isn't authenticated
+            if not request.user.is_authenticated():
+                log(u'Usuario no autenticado intentó acceder al sistema')
+                request.flash['notice'] = u'Por favor inicie sesión primero'
+                return redirect('login')
+                
+            user_cargo_ids = [cargo.webservice_id for cargo in request.user.get_profile().cargos.all()]
+                
+            # If the user role is not in allowed roles, deny
+            if not request.user.get_profile().rol in self.roles and not intersect(user_cargo_ids, self.cargos):
+                log(u'Usuario autenticado intentó acceder a sección no permitida del sistema')
+                request.flash['error'] = u'Error de acceso'
+                return redirect('index')
+
+            return func(request, *args, **kwargs)
+
+        return wrap
 
 class JnbAuthenticationBackend:
     supports_object_permissions = False
@@ -31,9 +71,9 @@ class JnbAuthenticationBackend:
 
         try:
             log("Checking if the user has logged in before")
-            user = User.objects.get(username=django_username)
+            user = UserProfile.objects.get(webservice_id=user_id).user
             log("The user has logged in before, using existing entry")
-        except User.DoesNotExist:
+        except UserProfile.DoesNotExist:
             '''
             The username is an email
             password as None means that the default auth system will never
@@ -43,13 +83,8 @@ class JnbAuthenticationBackend:
                 proxy user inside the system")
             user = User.objects.create_user(django_username, 
                 email=username, password=None)
-
-        user.first_name = get_xml_node_contents(
-            xml_data, 'nombre')
-        user.last_name = get_xml_node_contents(
-            xml_data, 'apellidoPaterno')
-        log("Updated user full name: '%s'" % user.get_full_name())
-        user.save()
+        
+        user.get_profile().update(django_username, xml_data)
         
         return user
     

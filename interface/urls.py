@@ -3,15 +3,8 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('interface.views',
-    (r'^$', 'index'),
+    url(r'^$', 'index', name='index'),
     url(r'^logout/$', 'logout', name='logout'),
-)
-
-urlpatterns += patterns('interface.views_account',
-    (r'^account/refresh_base_data/$', 'refresh_base_data'),
-)
-
-urlpatterns += patterns('interface.views_staff',
     (r'^material_mayor/dar_de_alta/compra/$', 'adquisicion_compra_material_mayor'),
     (r'^material_mayor/dar_de_alta/donacion/$', 'adquisicion_donacion_material_mayor'),
     (r'^material_mayor/no_asignados/$', 'material_mayor_sin_asignar'),

@@ -32,8 +32,8 @@
                 <td>{{ vehiculo.marca_carrosado }}</td>
                 <td>{{ vehiculo.numero_motor }}</td>
                 <td>{{ vehiculo.adquisicion.cuerpo_destinatario }}</td>
-                <td><a href="{% url interface.views_staff.editar_material_mayor vehiculo.id %}?next={% url interface.views_staff.material_mayor_sin_asignar %}">Editar</a></td>
-                <td><a href="{% url interface.views_staff.asignar_material_mayor_a_cuerpo vehiculo.id %}">Asignar</a></td>
+                <td><a href="{% url interface.views.editar_material_mayor vehiculo.id %}?next={% url interface.views.material_mayor_sin_asignar %}">Editar</a></td>
+                <td><a href="{% url interface.views.asignar_material_mayor_a_cuerpo vehiculo.id %}">Asignar</a></td>
             </tr>
         {% empty %}
             <tr>

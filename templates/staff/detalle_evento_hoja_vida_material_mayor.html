@@ -7,8 +7,8 @@
     
     <p class="breadcrumbs">
         <strong>Material mayor</strong>
-        &raquo; <a href="{% url interface.views_staff.editar_material_mayor material_mayor.id %}">{{ material_mayor }}</a>
-        &raquo; <a href="{% url interface.views_staff.detalles_hoja_de_vida_material_mayor material_mayor.id %}">Hoja de vida</a>
+        &raquo; <a href="{% url interface.views.editar_material_mayor material_mayor.id %}">{{ material_mayor }}</a>
+        &raquo; <a href="{% url interface.views.detalles_hoja_de_vida_material_mayor material_mayor.id %}">Hoja de vida</a>
         &raquo; {{ evento.breadcrumb_details }}
     </p>
     

@@ -18,9 +18,9 @@
 <div id="sub-nav" class="navigation">
 
 	<ul class="tabbed">
-	    <li><a href="{% url interface.views_staff.material_mayor %}">Explorar</a></li>
-		<li><a href="{% url interface.views_staff.adquisicion_compra_material_mayor %}">Agregar Material Mayor (compra)</a></li>
-		<li><a href="{% url interface.views_staff.adquisicion_donacion_material_mayor %}">Agregar Material Mayor (donación)</a></li>
+	    <li><a href="{% url interface.views.material_mayor %}">Explorar</a></li>
+		<li><a href="{% url interface.views.adquisicion_compra_material_mayor %}">Agregar Material Mayor (compra)</a></li>
+		<li><a href="{% url interface.views.adquisicion_donacion_material_mayor %}">Agregar Material Mayor (donación)</a></li>
 	</ul>
 
 	<div class="clearer">&nbsp;</div>
@@ -37,7 +37,7 @@
 	    {% endif %}
 	    
 	    <p class="breadcrumbs">
-	        <a href="{% url interface.views_staff.material_mayor %}">Material mayor</a>
+	        <a href="{% url interface.views.material_mayor %}">Material mayor</a>
 	        {% for breadcrumb in search_result.breadcrumbs %}
 	            &raquo; <a href="{{ breadcrumb.1 }}">{{ breadcrumb.0 }}</a>
 	        {% endfor %}
@@ -49,7 +49,7 @@
 	    <ul>
 	        {% if search_result.potentially_has_material_mayor %}
 	            {% for material_mayor in search_result.material_mayor %}
-	                <li><a href="{% url interface.views_staff.material_mayor_details material_mayor.id %}">{{ material_mayor }}</a></li>
+	                <li><a href="{% url interface.views.material_mayor_details material_mayor.id %}">{{ material_mayor }}</a></li>
                 {% empty %}
                     <i>No hay material mayor a este nivel</i>
 	            {% endfor %}
@@ -58,7 +58,7 @@
         
         {% for child in search_result.children %}
             {% if child.link_url %}
-                <h4><a href="{% url interface.views_staff.material_mayor %}{{ child.link_url }}">{{ child.title }}</a></h4>
+                <h4><a href="{% url interface.views.material_mayor %}{{ child.link_url }}">{{ child.title }}</a></h4>
             {% else %}
                 <h4>{{ child.title }}</h4>
             {% endif %}
@@ -67,7 +67,7 @@
 		
             <ul>
                 {% for material_mayor in child.material_mayor %}
-                    <li><a href="{% url interface.views_staff.material_mayor_details material_mayor.id %}">{{ material_mayor }}</a></li>
+                    <li><a href="{% url interface.views.material_mayor_details material_mayor.id %}">{{ material_mayor }}</a></li>
                 {% empty %}
                     <i>No hay material mayor a este nivel</i>
                 {% endfor %}

@@ -7,7 +7,7 @@
     
     <p class="breadcrumbs">
         <strong>Material mayor</strong>
-        &raquo; <a href="{% url interface.views_staff.editar_material_mayor material_mayor.id %}">{{ material_mayor }}</a>
+        &raquo; <a href="{% url interface.views.editar_material_mayor material_mayor.id %}">{{ material_mayor }}</a>
         &raquo; Hoja de vida
     </p>
 
@@ -15,7 +15,7 @@
         
     <ul>
         {% for event in events %}
-            <li>{{ event.fecha.date }}: {{ event.quick_details }} (<a href="{% url interface.views_staff.detalle_evento_hoja_de_vida_material_mayor event.material_mayor.id event.id %}">Ver detalles</a>)</li>
+            <li>{{ event.fecha.date }}: {{ event.quick_details }} (<a href="{% url interface.views.detalle_evento_hoja_de_vida_material_mayor event.material_mayor.id event.id %}">Ver detalles</a>)</li>
         {% empty %}
             <li><i>No hay eventos en la hoja de vida de este vehículo</i></li>
         {% endfor %}

@@ -49,10 +49,10 @@
         
             <tr><td colspan="2"><br /><h3>Información general</h3><br /></tr></td>
             <tr><th>Fecha de ingreso al sistema</th><td>{{ form.instance.adquisicion.fecha }}</td></tr>
-            <tr><th>Asignación actual</th><td>{{ form.instance.get_location }} (<a href="{% url interface.views_staff.asignar_material_mayor_a_cuerpo form.instance.id %}">Asignar</a>)</td></tr>
+            <tr><th>Asignación actual</th><td>{{ form.instance.get_location }} (<a href="{% url interface.views.asignar_material_mayor_a_cuerpo form.instance.id %}">Asignar</a>)</td></tr>
             <tr><th>Ingresado por</th><td>{{ form.instance.adquisicion.usuario.get_full_name }}</td></tr>
-            <tr><th>Forma de adquisición</th><td>{{ form.instance.adquisicion.modo }} (<a href="{% url interface.views_staff.editar_adquisicion_material_mayor form.instance.adquisicion.id %}">Editar detalles</a>)</td></tr>
-            <tr><th>Hoja de vida</th><td><a href="{% url interface.views_staff.detalles_hoja_de_vida_material_mayor form.instance.adquisicion.id %}">Ver hoja de vida</a></td></tr>
+            <tr><th>Forma de adquisición</th><td>{{ form.instance.adquisicion.modo }} (<a href="{% url interface.views.editar_adquisicion_material_mayor form.instance.adquisicion.id %}">Editar detalles</a>)</td></tr>
+            <tr><th>Hoja de vida</th><td><a href="{% url interface.views.detalles_hoja_de_vida_material_mayor form.instance.adquisicion.id %}">Ver hoja de vida</a></td></tr>
 
             <tr><td colspan="2"><br /><h3>Datos del vehículo</h3><br /></tr></td>
             

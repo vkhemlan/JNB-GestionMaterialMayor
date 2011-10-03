@@ -34,7 +34,14 @@ def get_xml_node_contents(xml, node_name):
 def get_xml_node_attribute(xml, node_name, attribute_name):
     return xml.getElementsByTagName(node_name)[0].attributes.get(attribute_name).value
     
+def get_xml_node_children(xml, node_name):
+    return xml.getElementsByTagName(node_name)
+    
 def convert_camelcase_to_lowercase(name):
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+    
+def intersect(a, b):
+     return bool(set(a) & set(b))
+
 
