@@ -28,7 +28,7 @@ def index(request):
                                 
 def _adquisicion_material_mayor(request, FormularioAdquisicion):
     if request.method == 'POST':
-        form = FormularioDarDeAltaMaterialMayor(request.POST, request.FILES)
+        form = FormularioDarDeAltaMaterialMayor(request.POST, request.FILES, user=request.user)
         form_adquisicion = FormularioAdquisicion(request.POST, request.FILES, user=request.user)
         if form.is_valid() and form_adquisicion.is_valid():
             adquisicion = form_adquisicion.get_instance(request.user)
@@ -44,7 +44,7 @@ def _adquisicion_material_mayor(request, FormularioAdquisicion):
             
             return HttpResponseRedirect(url)
     else:
-        form = FormularioDarDeAltaMaterialMayor()
+        form = FormularioDarDeAltaMaterialMayor(user=request.user)
         form_adquisicion = FormularioAdquisicion(user=request.user)
 
     return render_to_response(
@@ -123,7 +123,7 @@ def material_mayor_sin_asignar(request):
 def editar_material_mayor(request, material_mayor_id):
     material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)
     if request.method == 'POST':
-        form = FormularioDarDeAltaMaterialMayor(request.POST, request.FILES, instance=material_mayor)
+        form = FormularioDarDeAltaMaterialMayor(request.POST, request.FILES, instance=material_mayor, user=request.user)
         if form.is_valid():
             material_mayor = form.instance
             material_mayor.save()

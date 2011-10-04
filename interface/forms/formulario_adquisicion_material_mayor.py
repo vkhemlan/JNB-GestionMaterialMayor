@@ -10,7 +10,6 @@ class FormularioAdquisicionMaterialMayor(BaseModelForm):
     
     def __init__(self, *args, **kwargs):
         profile = kwargs['user'].get_profile()
-        del kwargs['user']
         
         super(FormularioAdquisicionMaterialMayor, self).__init__(*args, **kwargs)
 
