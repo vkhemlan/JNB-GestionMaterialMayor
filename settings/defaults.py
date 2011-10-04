@@ -80,7 +80,9 @@ ADMIN_MEDIA_PREFIX = '%sadmin/' % STATIC_URL
 
 AUTH_PROFILE_MODULE = 'interface.UserProfile'
 
-ID_COMANDANTE = 4
+CARGOS_CUERPO = {
+    'Comandante': 4,
+}
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.debug',

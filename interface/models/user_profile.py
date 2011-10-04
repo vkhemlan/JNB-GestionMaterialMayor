@@ -15,7 +15,7 @@ class UserProfile(models.Model):
     cuerpo = models.ForeignKey('Cuerpo', blank=True, null=True)
     
     def is_comandante(self):
-        return settings.ID_COMANDANTE in [cargo.webservice_id for cargo in self.cargos.all()]
+        return settings.CARGOS_CUERPO['Comandante'] in [cargo.webservice_id for cargo in self.cargos.all()]
         
     def is_staff_cuerpo(self):
         # Si el usuario tiene un rol significa que trabaja en la JNB
@@ -26,7 +26,10 @@ class UserProfile(models.Model):
         
         # Para que el usuario sea considerado staff de cuerpo alguno de sus cargos
         # tiene que estar en el listado de cargos con permisos en el sistema.
-        return intersect(cargo_ids, (settings.ID_COMANDANTE,))
+        return intersect(cargo_ids, settings.CARGOS_CUERPO.values())
+        
+    def is_staff_jnbc(self):
+        return bool(self.rol)
 
     def __str__(self):  
           return '%s\'s profile' % self.user

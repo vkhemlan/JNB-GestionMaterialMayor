@@ -41,3 +41,7 @@
 select {
     width: 250px;
 }
+
+.table-material-mayor-sin-asignar-title {
+    padding-top: 15px;
+}

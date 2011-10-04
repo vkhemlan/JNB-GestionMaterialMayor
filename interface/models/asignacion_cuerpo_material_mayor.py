@@ -5,8 +5,8 @@ from . import EventoHojaVidaMaterialMayor
 
 class AsignacionCuerpoMaterialMayor(EventoHojaVidaMaterialMayor):
     cuerpo = models.ForeignKey('Cuerpo')
-    compania = models.ForeignKey('Compania', blank=True, null=True)
-    fecha_de_asignacion = models.DateField(verbose_name=u'Fecha de asignación')
+    compania = models.ForeignKey('Compania', blank=True, null=True, verbose_name='Compañía')
+    fecha_de_asignacion = models.DateField()
     acta_de_entrega_de_asignacion = models.FileField(upload_to='actas_de_entrega_de_asignacion', verbose_name=u'Acta de entrega de asignación')
     listado_de_material_menor = models.FileField(upload_to='listados_de_material_menor', verbose_name=u'Listado de material menor')
     observaciones = models.TextField(blank=True, null=True)

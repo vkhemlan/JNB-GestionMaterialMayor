@@ -8,7 +8,7 @@ class MaterialMayor(models.Model):
     # Datos del vehículo
     tipo_vehiculo = models.ForeignKey('TipoVehiculoMaterialMayor', verbose_name=u'Tipo de vehículo', blank=True, null=True)
     modelo_chasis = models.ForeignKey('ModeloChasisMaterialMayor', verbose_name=u'Modelo de chasis')
-    numero_chasis = models.CharField(max_length=255, verbose_name=u'Numero de chasis')
+    numero_chasis = models.CharField(max_length=255, verbose_name=u'Número de chasis')
     numero_motor = models.CharField(max_length=255, verbose_name=u'Número de motor')
     YEAR_CHOICES = [(year, year) for year in xrange(date.today().year, 1949, -1)]
     ano_vehiculo = models.IntegerField(choices=YEAR_CHOICES, verbose_name=u'Año del vehículo', blank=True, null=True)
@@ -34,6 +34,15 @@ class MaterialMayor(models.Model):
     
     def __unicode__(self):
         return '%s %s' % (unicode(self.tipo_vehiculo), unicode(self.modelo_chasis),)
+        
+    def extract_data(self, keys):
+        return_data = []
+        for key in keys:
+            return_data.append(unicode(eval('self.%s' % key)))
+        return {
+            'data': return_data,
+            'id': self.id
+        }
         
     def get_location(self):
         if self.compania:

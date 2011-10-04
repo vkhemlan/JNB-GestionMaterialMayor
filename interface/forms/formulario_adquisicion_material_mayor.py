@@ -2,7 +2,7 @@
 
 from django import forms
 from interface.models import AdquisicionMaterialMayor, Rol, Region, Cuerpo
-from . import BaseModelForm, FormularioDestinatarioAdquisicionMaterialMayor
+from . import BaseModelForm
 from django.conf import settings
 from django.template import loader, Context
 
@@ -14,8 +14,8 @@ class FormularioAdquisicionMaterialMayor(BaseModelForm):
         
         super(FormularioAdquisicionMaterialMayor, self).__init__(*args, **kwargs)
 
-        if profile.rol == Rol.OPERACIONES() or profile.rol == Rol.ADQUISICIONES():
-            self.fields['region_cuerpo_destinatario'] = forms.ModelChoiceField(queryset=Region.objects.all())
+        if profile.is_staff_jnbc():
+            self.fields['region_cuerpo_destinatario'] = forms.ModelChoiceField(queryset=Region.objects.all(), label='Región del cuerpo destinatario')
             self.fields['cuerpo_destinatario'] = forms.ModelChoiceField(queryset=Cuerpo.objects.all())
             
     def get_instance(self, user):

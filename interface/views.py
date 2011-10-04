@@ -55,25 +55,70 @@ def _adquisicion_material_mayor(request, FormularioAdquisicion):
         }, 
         context_instance=RequestContext(request))   
 
-@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES()), cargos=(settings.ID_COMANDANTE,))
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
 def adquisicion_compra_material_mayor(request):
     return _adquisicion_material_mayor(request, FormularioAdquisicionCompraMaterialMayor)
 
-@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES()), cargos=(settings.ID_COMANDANTE,))
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
 def adquisicion_donacion_material_mayor(request):
     return _adquisicion_material_mayor(request, FormularioAdquisicionDonacionMaterialMayor)
     
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
+def material_mayor_sin_asignar(request):
+    materiales_mayores_sin_asignar = MaterialMayor.objects.filter(cuerpo__isnull=True)
+    
+    fields = [
+            ['modelo_chasis.marca', 'Marca chasis'],
+            ['modelo_chasis', 'Modelo chasis'],
+            ['numero_chasis', 'N° chasis'],
+            ['marca_carrosado', 'Marca carrosado'],
+            ['numero_motor', 'N° motor'],
+        ]
+        
+    may_assign_material_mayor = False
+    
+    if request.user.get_profile().is_staff_cuerpo():    
+        materiales_mayores_por_fuente = [
+            {
+                'predicate': 'is_staff_cuerpo',
+                'title': 'Dados de alta por el cuerpo de %s' % (unicode(request.user.get_profile().cuerpo),)
+            }
+        ]
+                
+    else:
+        may_assign_material_mayor = True
+    
+        fields.insert(5, ['adquisicion.cuerpo_destinatario', 'Cuerpo de destino'])
+        materiales_mayores_por_fuente = [
+            {
+                'predicate': 'is_staff_jnbc',
+                'title': 'Dados de alta por la JNBC'
+            },
+            {
+                'predicate': 'is_staff_cuerpo',
+                'title': 'Dados de alta por cuerpos'
+            }
+        ]
+        
+        
+    field_keys = [field[0] for field in fields]
+        
+    for material_mayor_por_fuente in materiales_mayores_por_fuente:
+        material_mayor_por_fuente['material_mayor'] = []
+        for material_mayor in materiales_mayores_sin_asignar:            
+            if getattr(material_mayor.adquisicion.usuario.get_profile(), material_mayor_por_fuente['predicate'])():
+                material_mayor_por_fuente['material_mayor'].append(material_mayor.extract_data(field_keys))
+    
+    return render_to_response('staff/material_mayor_sin_asignar.html', {
+            'material_mayor': materiales_mayores_por_fuente,
+            'fields': fields,
+            'may_assign_material_mayor': may_assign_material_mayor
+        }, 
+        context_instance=RequestContext(request))
              
 ################
 # Pending
 ################
-                  
-def material_mayor_sin_asignar(request):
-    material_mayor = MaterialMayor.objects.filter(cuerpo__isnull=True)
-    return render_to_response('staff/material_mayor_sin_asignar.html', {
-            'material_mayor': material_mayor
-        }, 
-        context_instance=RequestContext(request))
 
 def editar_material_mayor(request, material_mayor_id):
     material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)

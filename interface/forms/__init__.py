@@ -1,5 +1,4 @@
 from .base_model_form import BaseModelForm
-from .formulario_destinatario_adquisicion_material_mayor import FormularioDestinatarioAdquisicionMaterialMayor
 from .formulario_dar_de_alta_material_mayor import FormularioDarDeAltaMaterialMayor
 from .formulario_adquisicion_material_mayor import FormularioAdquisicionMaterialMayor
 from .formulario_adquisicion_compra_material_mayor import FormularioAdquisicionCompraMaterialMayor
@@ -9,7 +8,6 @@ from .formulario_asignacion_cuerpo_material_mayor import FormularioAsignacionCue
 
 
 __all__ = [ 'BaseModelForm',
-            'FormularioDestinatarioAdquisicionMaterialMayor',
 			'FormularioDarDeAltaMaterialMayor',
 			'FormularioAdquisicionMaterialMayor',
 			'FormularioAdquisicionCompraMaterialMayor',

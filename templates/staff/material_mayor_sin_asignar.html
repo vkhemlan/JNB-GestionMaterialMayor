@@ -13,34 +13,37 @@
     <h2>Material mayor sin asignar</h2>
     <hr />
 
-    <table>
-        <tr>
-            <th>Marca chasis</th>
-            <th>Modelo chasis</th>
-            <th>N° Chasis</th>
-            <th>Marca carrosado</th>
-            <th>N° Motor</th>
-            <th>Cuerpo de destino</th>
-            <th></th>
-            <th></th>
-        </tr>
-        {% for vehiculo in material_mayor %}
-            <tr>
-                <td>{{ vehiculo.modelo_chasis.marca }}</td>
-                <td>{{ vehiculo.modelo_chasis }}</td>
-                <td>{{ vehiculo.numero_chasis }}</td>
-                <td>{{ vehiculo.marca_carrosado }}</td>
-                <td>{{ vehiculo.numero_motor }}</td>
-                <td>{{ vehiculo.adquisicion.cuerpo_destinatario }}</td>
-                <td><a href="{% url interface.views.editar_material_mayor vehiculo.id %}?next={% url interface.views.material_mayor_sin_asignar %}">Editar</a></td>
-                <td><a href="{% url interface.views.asignar_material_mayor_a_cuerpo vehiculo.id %}">Asignar</a></td>
-            </tr>
-        {% empty %}
+    <table>    
+        {% for value in material_mayor %}
+            
             <tr>
                 <td colspan="6">
-                    <i>No hay material mayor sin asignar</i>
+                    <h3 class="table-material-mayor-sin-asignar-title">{{ value.title }}</h3>
                 </td>
             </tr>
+
+            <tr>
+                {% for field in fields %}
+                    <th>{{ field.1 }}</th>
+                {% endfor %}
+            </tr>
+            {% for vehiculo in value.material_mayor %}
+                <tr>
+                    {% for field in vehiculo.data %}
+                        <td>{{ field }}</td>
+                    {% endfor %}
+                    <td><a href="{% url interface.views.editar_material_mayor vehiculo.id %}?next={% url interface.views.material_mayor_sin_asignar %}">Editar</a></td>
+                    {% if may_assign_material_mayor %}
+                        <td><a href="{% url interface.views.asignar_material_mayor_a_cuerpo vehiculo.id %}">Asignar</a></td>
+                    {% endif %}
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">
+                        <i>No hay material mayor sin asignar</i>
+                    </td>
+                </tr>
+            {% endfor %}
         {% endfor %}
     </table>
 {% endblock %}

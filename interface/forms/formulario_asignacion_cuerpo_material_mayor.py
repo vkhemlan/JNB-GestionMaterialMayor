@@ -5,8 +5,8 @@ from interface.models import AsignacionCuerpoMaterialMayor, Region
 from datetime import date
 
 class FormularioAsignacionCuerpoMaterialMayor(forms.ModelForm):
-    region = forms.ModelChoiceField(queryset=Region.objects.all())
-    fecha_de_asignacion = forms.DateField(widget=forms.DateInput(attrs={'class': 'datepicker'}))
+    region = forms.ModelChoiceField(queryset=Region.objects.all(), label='Región')
+    fecha_de_asignacion = forms.DateField(widget=forms.DateInput(attrs={'class': 'datepicker'}), label=u'Fecha de asignación')
     
     def clean(self):
         d = self.cleaned_data
