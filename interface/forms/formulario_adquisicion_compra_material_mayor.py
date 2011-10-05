@@ -2,6 +2,7 @@
 
 from django import forms
 from interface.models import AdquisicionCompraMaterialMayor, Region
+from interface.widgets import PrivateFileInput
 from . import FormularioAdquisicionMaterialMayor
 from django.conf import settings
 from django.template import loader, Context

@@ -15,6 +15,13 @@ urlpatterns = patterns('interface.views',
     (r'material_mayor/(?P<material_mayor_id>\d+)/hoja_de_vida/(?P<evento_id>\d+)/$', 'detalle_evento_hoja_de_vida_material_mayor'),
 )
 
+urlpatterns += patterns('interface.views_media',
+    (r'media/documentos/material_mayor/(?P<material_mayor_id>\d+)/(?P<field_name>\w+)\.(?P<extension>\w+)$','descargar_documento_material_mayor'),
+    (r'media/fotografias/material_mayor/(?P<material_mayor_id>\d+)/(?P<field_name>\w+)\.(?P<extension>\w+)$','descargar_fotografia_material_mayor'),
+    (r'media/documentos/material_mayor/(?P<material_mayor_id>\d+)/adquisicion/(?P<field_name>\w+)\.(?P<extension>\w+)$','descargar_documento_adquisicion_material_mayor'),
+    (r'media/documentos/material_mayor/(?P<material_mayor_id>\d+)/evento_hoja_vida/(?P<evento_id>\d+)-(?P<field_name>\w+)\.(?P<extension>\w+)$','descargar_documento_evento_material_mayor'),
+)
+
 urlpatterns += patterns('interface.views_services',
     (r'^services/part_model_list/$', 'part_model_list'),
 )

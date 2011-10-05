@@ -2,6 +2,7 @@
 
 from django import forms
 from interface.models import MaterialMayor, MarcaChasisMaterialMayor, MarcaCarrosadoMaterialMayor, MarcaCajaCambioMaterialMayor, MarcaBombaMaterialMayor
+from interface.widgets import PrivateFileInput
 from . import BaseModelForm
 
 class FormularioDarDeAltaMaterialMayor(BaseModelForm):
@@ -32,7 +33,7 @@ class FormularioDarDeAltaMaterialMayor(BaseModelForm):
 
     def render_datos_vehiculo(self):
         fields = self._field_range('tipo_vehiculo', 'color')
-        fields.insert(1, self['marca_chasis'])
+        fields.insert(2, self['marca_chasis'])
         return self._render_fields_as_list(fields)
         
     def render_informacion_adicional(self):
@@ -46,8 +47,8 @@ class FormularioDarDeAltaMaterialMayor(BaseModelForm):
         return [(field, getattr(self.instance, field.name)) for field in fields]
         
     @classmethod
-    def get_from_instance(self, instance):
-        form = FormularioDarDeAltaMaterialMayor(instance=instance)
+    def get_from_instance(self, instance, user):
+        form = FormularioDarDeAltaMaterialMayor(instance=instance, user=user)
         form.initial['marca_chasis'] = instance.modelo_chasis.marca.id
         if instance.modelo_caja_cambio:
             form.initial['marca_caja_cambio'] = instance.modelo_caja_cambio.marca.id

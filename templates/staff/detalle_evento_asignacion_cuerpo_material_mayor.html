@@ -2,8 +2,16 @@
         
 {% block event_details %}
     
-<strong>Cuerpo de destino:</strong> {{ evento.cuerpo }} ({{ evento.cuerpo.comuna.provincia.region }}) <br/>
-<strong>Fecha de asignación:</strong> {{ evento.fecha_de_asignacion }}<br/>
-<strong>Acta de entrega de asignación:</strong> {{ evento.acta_de_entrega_de_asignacion }}<br/>
+<strong>Cuerpo de destino:</strong> {{ form.instance.cuerpo }} ({{ form.instance.cuerpo.comuna.provincia.region }}) <br/>
+<strong>Compañía de destino:</strong> {% if form.instance.compania %} {{ form.instance.compania }} {% else %} Nivel central del cuerpo {% endif %} <br/>
+
+<form method="post" action="." enctype="multipart/form-data">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+
+    <input type="submit" value="Guardar" />
+</form>
     
 {% endblock %}

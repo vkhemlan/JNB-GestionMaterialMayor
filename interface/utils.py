@@ -43,5 +43,13 @@ def convert_camelcase_to_lowercase(name):
     
 def intersect(a, b):
      return bool(set(a) & set(b))
-
-
+    
+def uploaded_document_rename(container_attribute, field_name, instance, filename):
+    left_path, extension = filename.rsplit('.',1)
+    
+    return 'documentos/%d_%s-%s.%s' % (instance.id, container_attribute, field_name, extension)
+    
+def generate_uploaded_hoja_de_vida_file_name(field_name, evento, filename):
+    left_path, extension = filename.rsplit('.',1)
+    
+    return 'documentos/material_mayor/%d/evento_hoja_vida/%d-%s.%s' % (evento.material_mayor.id, evento.id, field_name, extension)

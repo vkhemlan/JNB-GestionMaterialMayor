@@ -15,7 +15,7 @@ class FormularioAdquisicionMaterialMayor(BaseModelForm):
 
         if profile.is_staff_jnbc():
             self.fields['region_cuerpo_destinatario'] = forms.ModelChoiceField(queryset=Region.objects.all(), label='Región del cuerpo destinatario')
-            self.fields['cuerpo_destinatario'] = forms.ModelChoiceField(queryset=Cuerpo.objects.all())
+            self.fields['cuerpo_destinatario'] = forms.ModelChoiceField(queryset=Cuerpo.objects.all(), label='Cuerpo de bomberos destinatario')
             
     def get_instance(self, user):
         adquisicion = self.instance
@@ -27,8 +27,8 @@ class FormularioAdquisicionMaterialMayor(BaseModelForm):
         return adquisicion
         
     @classmethod
-    def get_from_instance(self, adquisicion):
-        form = self(instance=adquisicion)
+    def get_from_instance(self, adquisicion, user):
+        form = self(instance=adquisicion, user=user)
         if adquisicion.cuerpo_destinatario:
             form.initial['region_cuerpo_destinatario'] = adquisicion.cuerpo_destinatario.comuna.provincia.region
         return form

@@ -73,7 +73,6 @@ STATIC_URL = '/staticfiles/'
 
 STATICFILES_DIRS = (
     root('staticfiles'),
-    root('uploads'),
 )
 
 ADMIN_MEDIA_PREFIX = '%sadmin/' % STATIC_URL

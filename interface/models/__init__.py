@@ -1,3 +1,5 @@
+from .familia_uso_material_mayor import FamiliaUsoMaterialMayor
+from .uso_material_mayor import UsoMaterialMayor
 from .tipo_vehiculo_material_mayor import TipoVehiculoMaterialMayor
 from .marca_chasis_material_mayor import MarcaChasisMaterialMayor
 from .color_material_mayor import ColorMaterialMayor
@@ -58,5 +60,7 @@ __all__ = [
     'AsignacionCuerpoMaterialMayor',
     'UserProfile',
     'Rol',
-    'Cargo'
+    'Cargo',
+    'FamiliaUsoMaterialMayor',
+    'UsoMaterialMayor',
 ]

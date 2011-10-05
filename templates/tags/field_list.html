@@ -3,15 +3,9 @@
    <tr class="errorrow"><td colspan="2">{{field.errors}}</td> </tr>
    {% endif %}
     <tr>
-        {% if field.field.required %}
-            <th>
-                {{ field.label_tag }}
-            </th>
-        {% else %}
-            <td>
-                {{ field.label_tag }}
-            </td>
-        {% endif %}
+        <td>
+            {{ field.label_tag }} {% if field.field.required %}(*){% endif %}
+        </td>
         <td>
             {{ field }}
             {% if field.admin_url %}

@@ -9,7 +9,7 @@ class Cuerpo(models.Model):
     comuna = models.ForeignKey('Comuna')
     
     def __unicode__(self):
-        return 'Cuerpo de %s' % (self.nombre,)
+        return self.nombre
 
     @classmethod
     def update_from_webservice(self):

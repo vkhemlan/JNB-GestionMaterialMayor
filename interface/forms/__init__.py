@@ -5,6 +5,7 @@ from .formulario_adquisicion_compra_material_mayor import FormularioAdquisicionC
 from .formulario_adquisicion_donacion_material_mayor import FormularioAdquisicionDonacionMaterialMayor
 from .material_mayor_search_form import MaterialMayorSearchForm
 from .formulario_asignacion_cuerpo_material_mayor import FormularioAsignacionCuerpoMaterialMayor
+from .formulario_hoja_vida_asignacion_cuerpo_material_mayor import FormularioHojaVidaAsignacionCuerpoMaterialMayor
 
 
 __all__ = [ 'BaseModelForm',
@@ -13,4 +14,5 @@ __all__ = [ 'BaseModelForm',
 			'FormularioAdquisicionCompraMaterialMayor',
 			'FormularioAdquisicionDonacionMaterialMayor',
 			'MaterialMayorSearchForm',
-			'FormularioAsignacionCuerpoMaterialMayor']
+			'FormularioAsignacionCuerpoMaterialMayor',
+			'FormularioHojaVidaAsignacionCuerpoMaterialMayor']

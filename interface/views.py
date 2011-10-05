@@ -5,9 +5,10 @@ from django.contrib import auth
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, redirect
+from django.http import HttpResponse, Http404
 
 from interface.models import Cuerpo, MaterialMayor, AdquisicionCompraMaterialMayor, AdquisicionDonacionMaterialMayor, TipoEventoHojaVidaMaterialMayor, EventoHojaVidaMaterialMayor, Rol
-from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioDarDeAltaMaterialMayor, FormularioAsignacionCuerpoMaterialMayor
+from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioDarDeAltaMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioHojaVidaAsignacionCuerpoMaterialMayor
 from django.http import HttpResponseRedirect
 from interface.utils import convert_camelcase_to_lowercase, log
 from django.contrib.auth.decorators import login_required
@@ -16,6 +17,7 @@ from authentication import authorize
 
 @login_required
 def logout(request):
+    # Vista de cierre de sesión, todo boilerplate
     request.flash['success'] = 'Ha salido exitosamente del sistema'
     log('User %s logged out' % request.user.username)
     auth.logout(request)
@@ -23,11 +25,21 @@ def logout(request):
 
 @login_required
 def index(request):
+    # Vista de la página de inicio para cualquier usuario logueado
     return render_to_response('staff/index.html', {}, 
                                 context_instance=RequestContext(request))
                                 
-def _adquisicion_material_mayor(request, FormularioAdquisicion):
+def _adquisicion_material_mayor(request, FormularioAdquisicion, template):
+    # Método genérico que procesa el agregado de un nuevo material mayor mediante
+    # compra o donación.
+    # Parámetros:
+    #   FormularioAdquisicion: Clase del formulario seleccionado por el usuario, de tipo
+    #       FormularioAdquisicionMaterialMayor e instanciado por 
+    #       FormularioAdquisicionCompraMaterialMayor o FormularioAdquisicionDonacionMaterialMayor
     if request.method == 'POST':
+        # Los formularios deben recibir el usuario en su constructor porque al desplegarse pueden
+        # mostrar íconos para agregar opciones a sus combobox, pero esa posibilidad sólo está disponible
+        # para el staff de la JNBC, no para los usuarios de cuerpos bomberiles.
         form = FormularioDarDeAltaMaterialMayor(request.POST, request.FILES, user=request.user)
         form_adquisicion = FormularioAdquisicion(request.POST, request.FILES, user=request.user)
         if form.is_valid() and form_adquisicion.is_valid():
@@ -44,11 +56,15 @@ def _adquisicion_material_mayor(request, FormularioAdquisicion):
             
             return HttpResponseRedirect(url)
     else:
+        # Utilizamos dos formularios pues uno se encarga estrictamente de la parte técnica del
+        # vehículo (motor, chasis, etc) y el otro de sus detalles de adquisicion (orden de compra, 
+        # factura comercial, etc). Además el formulario técnico es único, pero el de adquisicion
+        # es instanciado dependiendo del origen de la adquisición (compra o donacion)
         form = FormularioDarDeAltaMaterialMayor(user=request.user)
         form_adquisicion = FormularioAdquisicion(user=request.user)
 
     return render_to_response(
-        'staff/adquisicion_compra_material_mayor.html', 
+        template, 
         {
             'form': form,
             'form_adquisicion': form_adquisicion,
@@ -57,36 +73,59 @@ def _adquisicion_material_mayor(request, FormularioAdquisicion):
 
 @authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
 def adquisicion_compra_material_mayor(request):
-    return _adquisicion_material_mayor(request, FormularioAdquisicionCompraMaterialMayor)
+    # Vista para dar de alta material mayor adquirido por compra
+    return _adquisicion_material_mayor(request, FormularioAdquisicionCompraMaterialMayor, 'staff/adquisicion_compra_material_mayor.html')
 
 @authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
 def adquisicion_donacion_material_mayor(request):
-    return _adquisicion_material_mayor(request, FormularioAdquisicionDonacionMaterialMayor)
+    # Vista para dar de alta material mayor adquirido por donación
+    return _adquisicion_material_mayor(request, FormularioAdquisicionDonacionMaterialMayor, 'staff/adquisicion_donacion_material_mayor.html')
     
 @authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
 def material_mayor_sin_asignar(request):
+    # Vista que muestra el listado de material mayor que aun no ha sido asignado a un cuerpo
+    # Para el staff de la JNBC le muestra todo el material mayor a nivel nacional que no ha sido asignado
+    # Para los usuarios de cuerpos bomberiles les muestra solamente aquel material mayor que tiene 
+    # como destinatario su cuerpo
+    
     materiales_mayores_sin_asignar = MaterialMayor.objects.filter(cuerpo__isnull=True)
+    
+    # Fields es un arreglo que contiene los campos que se quieren desplegar en la tabla del template
+    # Este arreglo es necesario porque hay información que no le queremos mostrar
+    # a los usuarios de cuerpo porque, por ejemplo, el campo es redundante ("Cuerpo destinario")
     
     fields = [
             ['modelo_chasis.marca', 'Marca chasis'],
             ['modelo_chasis', 'Modelo chasis'],
-            ['numero_chasis', 'N° chasis'],
             ['marca_carrosado', 'Marca carrosado'],
+            ['numero_chasis', 'N° chasis'],
             ['numero_motor', 'N° motor'],
         ]
         
-    may_assign_material_mayor = False
+    # may_assign_material_mayor es un flag para ver si mostramos el link al proceso de "Asignar"
+    # para cada material mayor en la tabla resumen. Es necesario pues sólo Operaciones Bomberiles puede 
+    # asignar material mayor.
+        
+    may_assign_material_mayor = request.user.get_profile().rol == Rol.OPERACIONES()
     
-    if request.user.get_profile().is_staff_cuerpo():    
+    # materiales_mayores_por_fuente es la estructura de datos que almacenará temporalmemte los
+    # resultados de la consulta. Es una lista en la que cada elemento representa una "sección"
+    # de la página mostrada. Por ejemplo, operaciones bomberiles ve dos secciones, correspondientes
+    # al material subido desde la JNBC y aquel subido directamente por los cuerpos, mientras que los
+    # usuarios cuerpo solo pueden ver el material subido por ellos mismos.
+    # Cada sección tiene dos atributos:
+    #  predicate: Nombre de una función en UserProfile que será aplicada al usuario que subió el material mayor
+    #             Si el filtro retorna True entonces ese material mayor será agregado a esta sección.
+    #  title: Título en texto plano de la sección para ser desplegado en el template
+    
+    if request.user.get_profile().is_staff_cuerpo():   
         materiales_mayores_por_fuente = [
             {
                 'predicate': 'is_staff_cuerpo',
                 'title': 'Dados de alta por el cuerpo de %s' % (unicode(request.user.get_profile().cuerpo),)
             }
-        ]
-                
+        ]    
     else:
-        may_assign_material_mayor = True
     
         fields.insert(5, ['adquisicion.cuerpo_destinatario', 'Cuerpo de destino'])
         materiales_mayores_por_fuente = [
@@ -103,9 +142,12 @@ def material_mayor_sin_asignar(request):
         
     field_keys = [field[0] for field in fields]
         
+    # Para cada sección...
     for material_mayor_por_fuente in materiales_mayores_por_fuente:
         material_mayor_por_fuente['material_mayor'] = []
+        # Para cada posible vehículo...
         for material_mayor in materiales_mayores_sin_asignar:            
+            # Si el usuario que subió dicho vehiculo cumple con el predicado de la sección, agregarlo a ella
             if getattr(material_mayor.adquisicion.usuario.get_profile(), material_mayor_por_fuente['predicate'])():
                 material_mayor_por_fuente['material_mayor'].append(material_mayor.extract_data(field_keys))
     
@@ -115,10 +157,11 @@ def material_mayor_sin_asignar(request):
             'may_assign_material_mayor': may_assign_material_mayor
         }, 
         context_instance=RequestContext(request))
+    
              
-################
-# Pending
-################
+###########
+# Pending #
+###########
 
 def editar_material_mayor(request, material_mayor_id):
     material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)
@@ -132,10 +175,10 @@ def editar_material_mayor(request, material_mayor_id):
             if 'next' in request.POST:
                 url = request.POST['next']
             else:
-                url = reverse('interface.views.index')
+                url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
             return HttpResponseRedirect(url)
     else:
-        form = FormularioDarDeAltaMaterialMayor.get_from_instance(material_mayor)
+        form = FormularioDarDeAltaMaterialMayor.get_from_instance(material_mayor, request.user)
         if 'next' in request.GET:
             next = request.GET['next']
         else:
@@ -152,7 +195,7 @@ def editar_adquisicion_material_mayor(request, material_mayor_id):
     adquisicion = material_mayor.adquisicion.get_polymorphic_instance()
     Form = eval('Formulario%s' % (adquisicion.__class__.__name__))
     if request.method == 'POST':
-        form = Form(request.POST, request.FILES, instance=adquisicion)
+        form = Form(request.POST, request.FILES, instance=adquisicion, user=request.user)
         if form.is_valid():
             adquisicion = form.instance
             adquisicion.save()
@@ -160,7 +203,7 @@ def editar_adquisicion_material_mayor(request, material_mayor_id):
             url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
             return HttpResponseRedirect(url)
     else:
-        form = Form.get_from_instance(adquisicion)
+        form = Form.get_from_instance(adquisicion, request.user)
     
     return render_to_response('staff/editar_adquisicion_material_mayor.html', {
             'form': form,
@@ -225,11 +268,24 @@ def detalle_evento_hoja_de_vida_material_mayor(request, material_mayor_id, event
     if evento.material_mayor != material_mayor:
         raise ValueError
         
+    Form = eval('FormularioHojaVida' + evento.__class__.__name__)
+    
+    if request.method == 'POST':
+        form = Form(request.POST, request.FILES, instance=evento)
+        if form.is_valid():
+            form.instance.save()
+            
+            request.flash['success'] = u'Evento actualizado exitosamente'
+            url = reverse('interface.views.detalle_evento_hoja_de_vida_material_mayor', args=[material_mayor.id, evento.id])
+            return HttpResponseRedirect(url)
+    else:
+        form = Form(instance=evento)
+        
     template = convert_camelcase_to_lowercase(evento.__class__.__name__)
         
     return render_to_response('staff/detalle_evento_%s.html' % template, {
             'material_mayor': material_mayor,
-            'evento': evento
+            'form': form
         }, 
         context_instance=RequestContext(request))
         

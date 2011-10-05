@@ -45,3 +45,7 @@ select {
 .table-material-mayor-sin-asignar-title {
     padding-top: 15px;
 }
+
+.mandatory-field-notice {
+    font-style: italic;
+}

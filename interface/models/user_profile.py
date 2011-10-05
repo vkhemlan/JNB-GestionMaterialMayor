@@ -93,6 +93,15 @@ class UserProfile(models.Model):
             
         self.save()
         
+    def may_access_material_mayor(self, material_mayor):
+        if self.user.is_superuser:
+            return True
+        if self.is_staff_jnbc():
+            return True
+        if self.is_staff_cuerpo() and (self.cuerpo == material_mayor.cuerpo or self.cuerpo == material_mayor.adquisicion.cuerpo_destinatario):
+            return True
+        return False
+        
 
     class Meta:
         app_label = 'interface'

@@ -7,6 +7,7 @@ from datetime import date
 class FormularioAsignacionCuerpoMaterialMayor(forms.ModelForm):
     region = forms.ModelChoiceField(queryset=Region.objects.all(), label='Región')
     fecha_de_asignacion = forms.DateField(widget=forms.DateInput(attrs={'class': 'datepicker'}), label=u'Fecha de asignación')
+    fecha_de_transferencia = forms.DateField(widget=forms.DateInput(attrs={'class': 'datepicker'}), label=u'Fecha de transferencia')
     
     def clean(self):
         d = self.cleaned_data
@@ -50,5 +51,5 @@ class FormularioAsignacionCuerpoMaterialMayor(forms.ModelForm):
     
     class Meta:
         model = AsignacionCuerpoMaterialMayor
-        fields = ('region', 'cuerpo', 'compania', 'fecha_de_asignacion', 'acta_de_entrega_de_asignacion', 'listado_de_material_menor', 'observaciones')
+        fields = ('region', 'cuerpo', 'compania', 'fecha_de_asignacion', 'fecha_de_transferencia', 'notaria', 'numero_de_repertorio', 'acta_de_entrega_de_asignacion', 'listado_de_material_menor', 'observaciones')
 
