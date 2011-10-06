@@ -9,8 +9,23 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
-from interface.models import UserProfile
+from interface.models import UserProfile, MaterialMayor
 from interface.utils import log, request_webservice, get_xml_node_contents, intersect
+
+# Decorador que verifica si un usuario ya autenticado puede ver a priori los detalles
+# de un material mayor
+def authorize_material_mayor_access(f):
+    def wrap(request, *args, **kwargs):
+        material_mayor = MaterialMayor.objects.get(pk=kwargs['material_mayor_id'])
+        if not request.user.get_profile().may_access_material_mayor(material_mayor):
+            request.flash['error'] = u'Error de acceso'
+            return redirect('index')
+        else:
+            return f(request, *args, **kwargs)
+    
+    wrap.__doc__ = f.__doc__
+    wrap.__name__ = f.__name__
+    return wrap
 
 # Check if user has the role required to the decorated view
 class authorize(object):

@@ -26,10 +26,11 @@ from .compania import Compania
 from .tipo_evento_hoja_vida_material_mayor import TipoEventoHojaVidaMaterialMayor
 from .evento_hoja_vida_material_mayor import EventoHojaVidaMaterialMayor
 from .asignacion_cuerpo_material_mayor import AsignacionCuerpoMaterialMayor
+from .asignacion_compania_material_mayor import AsignacionCompaniaMaterialMayor
 from .rol import Rol
 from .cargo import Cargo
 from .user_profile import UserProfile
-
+from .asignacion_patente_material_mayor import AsignacionPatenteMaterialMayor
 
 __all__ = [
     'TipoVehiculoMaterialMayor',
@@ -63,4 +64,6 @@ __all__ = [
     'Cargo',
     'FamiliaUsoMaterialMayor',
     'UsoMaterialMayor',
+    'AsignacionCompaniaMaterialMayor',
+    'AsignacionPatenteMaterialMayor',
 ]

@@ -47,9 +47,39 @@
         {% csrf_token %}
         <table id="form-table">
         
-            <tr><td colspan="2"><br /><h3>Información general</h3><br /></tr></td>
-            <tr><th>Fecha de ingreso al sistema</th><td>{{ form.instance.adquisicion.fecha }}</td></tr>
-            <tr><th>Asignación actual</th><td>{{ form.instance.get_location }} (<a href="{% url interface.views.asignar_material_mayor_a_cuerpo form.instance.id %}">Asignar</a>)</td></tr>
+            <tr><td colspan="2"><br /><h3>Información general</h3><br /></td></tr>
+            <tr>
+                <th>Fecha de ingreso al sistema</th>
+                <td>{{ form.instance.adquisicion.fecha }}</td>
+            </tr>
+            <tr>
+                <th>Cuerpo destinatario original</th>
+                <td>{{ form.instance.adquisicion.cuerpo_destinatario }} ({{ form.instance.adquisicion.cuerpo_destinatario.comuna.provincia.region }})</td>
+            </tr>
+            <tr>
+                <th>Asignación actual</th>
+                <td>{{ form.instance.get_location }} 
+                
+                {% if asignacion_link %}
+                    (<a href="{{ asignacion_link }}">Asignar</a>)
+                {% endif %}
+                
+                </td>
+            </tr>
+            <tr>
+                <th>Patente</th>
+                <td>
+                    {% if form.instance.asignacion_de_patente %}
+                        {{ form.instance.asignacion_de_patente }}
+                        (<a href="{% url interface.views.detalles_patente_material_mayor form.instance.id %}">Ver detalles</a>)
+                    {% else %}
+                        <i>Sin patente</i>
+                        {% if user.get_profile.puede_asignar_patente %}
+                            (<a href="{% url interface.views.asignar_patente_a_material_mayor form.instance.id %}">Asignar patente</a>)
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
             <tr><th>Ingresado por</th><td>{{ form.instance.adquisicion.usuario.get_full_name }}</td></tr>
             <tr><th>Forma de adquisición</th><td>{{ form.instance.adquisicion.modo }} (<a href="{% url interface.views.editar_adquisicion_material_mayor form.instance.adquisicion.id %}">Editar detalles</a>)</td></tr>
             <tr><th>Hoja de vida</th><td><a href="{% url interface.views.detalles_hoja_de_vida_material_mayor form.instance.adquisicion.id %}">Ver hoja de vida</a></td></tr>

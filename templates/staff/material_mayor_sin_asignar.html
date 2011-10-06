@@ -3,14 +3,14 @@
 {% block main_content %}
     <p class="breadcrumbs">
         <strong>Asignaciones de material</strong>
-        &raquo; Material mayor sin asignar
+        &raquo; {{ title }}
     </p>
     
     {% if flash.success %}				    
 		<div class="success">{{ flash.success }}</div>
     {% endif %}
 
-    <h2>Material mayor sin asignar</h2>
+    <h2>{{ title }}</h2>
     <hr />
 
     <table>    

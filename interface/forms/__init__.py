@@ -5,8 +5,11 @@ from .formulario_adquisicion_compra_material_mayor import FormularioAdquisicionC
 from .formulario_adquisicion_donacion_material_mayor import FormularioAdquisicionDonacionMaterialMayor
 from .material_mayor_search_form import MaterialMayorSearchForm
 from .formulario_asignacion_cuerpo_material_mayor import FormularioAsignacionCuerpoMaterialMayor
+from .formulario_asignacion_compania_material_mayor import FormularioAsignacionCompaniaMaterialMayor
 from .formulario_hoja_vida_asignacion_cuerpo_material_mayor import FormularioHojaVidaAsignacionCuerpoMaterialMayor
-
+from .formulario_hoja_vida_asignacion_compania_material_mayor import FormularioHojaVidaAsignacionCompaniaMaterialMayor
+from .formulario_asignacion_patente_material_mayor import FormularioAsignacionPatenteMaterialMayor
+from .formulario_hoja_vida_asignacion_patente_material_mayor import FormularioHojaVidaAsignacionPatenteMaterialMayor
 
 __all__ = [ 'BaseModelForm',
 			'FormularioDarDeAltaMaterialMayor',
@@ -15,4 +18,8 @@ __all__ = [ 'BaseModelForm',
 			'FormularioAdquisicionDonacionMaterialMayor',
 			'MaterialMayorSearchForm',
 			'FormularioAsignacionCuerpoMaterialMayor',
-			'FormularioHojaVidaAsignacionCuerpoMaterialMayor']
+			'FormularioHojaVidaAsignacionCuerpoMaterialMayor',
+			'FormularioAsignacionCompaniaMaterialMayor',
+			'FormularioHojaVidaAsignacionCompaniaMaterialMayor',
+			'FormularioAsignacionPatenteMaterialMayor',
+			'FormularioHojaVidaAsignacionPatenteMaterialMayor',]

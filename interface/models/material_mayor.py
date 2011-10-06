@@ -40,12 +40,13 @@ class MaterialMayor(models.Model):
     fotografia_trasera = ImageField(upload_to=lambda i, fn: uploaded_image_rename('fotografia_trasera', i, fn), verbose_name=u'Vista Trasera', blank=True, null=True)
     # Metadata
     adquisicion = models.OneToOneField('AdquisicionMaterialMayor')
+    asignacion_de_patente = models.OneToOneField('AsignacionPatenteMaterialMayor', blank=True, null=True)
     # Asociacion
     cuerpo = models.ForeignKey('Cuerpo', blank=True, null=True)
     compania = models.ForeignKey('Compania', blank=True, null=True)
     
     def __unicode__(self):
-        return '%s %s' % (unicode(self.tipo_vehiculo), unicode(self.modelo_chasis),)
+        return self.breadcrumbs_string()
         
     def extract_data(self, keys):
         return_data = []

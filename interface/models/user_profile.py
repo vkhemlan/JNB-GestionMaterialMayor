@@ -6,6 +6,7 @@ from django.template import loader, Context
 from interface.utils import log, request_webservice, get_xml_node_contents, get_xml_node_children, get_xml_node_attribute
 from django.conf import settings
 from interface.utils import intersect
+from . import Rol
 
 class UserProfile(models.Model):  
     user = models.OneToOneField(User)  
@@ -30,6 +31,13 @@ class UserProfile(models.Model):
         
     def is_staff_jnbc(self):
         return bool(self.rol)
+        
+    def puede_asignar_patente(self):
+        if self.user.is_superuser:
+            return True
+        if self.rol == Rol.OPERACIONES():
+            return True
+        return False
 
     def __str__(self):  
           return '%s\'s profile' % self.user
@@ -94,14 +102,20 @@ class UserProfile(models.Model):
         self.save()
         
     def may_access_material_mayor(self, material_mayor):
+        # Si el usuario es administrador
         if self.user.is_superuser:
             return True
+        # Si el usuario trabaja en la JNBC
         if self.is_staff_jnbc():
             return True
-        if self.is_staff_cuerpo() and (self.cuerpo == material_mayor.cuerpo or self.cuerpo == material_mayor.adquisicion.cuerpo_destinatario):
+        # Si el usuario trabaja en un cuerpo y el material mayor esta actualmente asignado a ese cuerpo
+        if self.is_staff_cuerpo() and self.cuerpo == material_mayor.cuerpo:
+            return True
+        # Si el usuario trabaja en un cuerpo y el material aun no ha sido asignado, pero que el cuerpo del usuario
+        # es el destinatario original del material
+        if self.is_staff_cuerpo() and not material_mayor.cuerpo and material_mayor.adquisicion.cuerpo_destinatario == self.cuerpo:
             return True
         return False
-        
 
     class Meta:
         app_label = 'interface'

@@ -1,0 +1,29 @@
+{% extends 'staff/base.html' %}
+
+{% block main_content %}
+
+	<div id="main-content" class="left">
+	    {% if flash.success %}				    
+			<div class="success">{{ flash.success }}</div>
+	    {% endif %}
+	    
+	    <p class="breadcrumbs">
+	        <strong>Material mayor</strong>
+            &raquo; <a href="{% url interface.views.editar_material_mayor material_mayor.id %}">{{ material_mayor.breadcrumbs_string }}</a>
+            &raquo; Asignar a compañía
+        </p>
+
+		<h2>Asignación a compañía de {{ material_mayor.breadcrumbs_string }}</h2>
+            
+        <form method="post" action="." enctype="multipart/form-data">
+            {% csrf_token %}
+            <table id="form-table">
+                {{ form.as_table }}
+            </table>
+
+            <input type="submit" value="Asignar" />
+
+        </form>
+		
+	</div>
+{% endblock %}

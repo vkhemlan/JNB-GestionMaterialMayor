@@ -14,72 +14,88 @@
 
 {% endblock %}
 
-{% block subnav %}
-<div id="sub-nav" class="navigation">
-
-	<ul class="tabbed">
-	    <li><a href="{% url interface.views.material_mayor %}">Explorar</a></li>
-		<li><a href="{% url interface.views.adquisicion_compra_material_mayor %}">Agregar Material Mayor (compra)</a></li>
-		<li><a href="{% url interface.views.adquisicion_donacion_material_mayor %}">Agregar Material Mayor (donación)</a></li>
-	</ul>
-
-	<div class="clearer">&nbsp;</div>
-
-</div>
-{% endblock %}
-
-{% block content %}
-<div id="main-two-columns" class="main">
-
-	<div id="main-content" class="left">
-	    {% if flash.success %}				    
-			<div class="success">{{ flash.success }}</div>
-	    {% endif %}
-	    
-	    <p class="breadcrumbs">
-	        <a href="{% url interface.views.material_mayor %}">Material mayor</a>
-	        {% for breadcrumb in search_result.breadcrumbs %}
-	            &raquo; <a href="{{ breadcrumb.1 }}">{{ breadcrumb.0 }}</a>
-	        {% endfor %}
-        </p>
-
-		<h3>{{ search_result.title }}</h3>
-		<br />
-		
-	    <ul>
-	        {% if search_result.potentially_has_material_mayor %}
-	            {% for material_mayor in search_result.material_mayor %}
-	                <li><a href="{% url interface.views.material_mayor_details material_mayor.id %}">{{ material_mayor }}</a></li>
+{% block main_content %}
+    <p class="breadcrumbs">
+        <strong>Navegar material mayor</strong>
+        {% for breadcrumb in search_result.breadcrumbs %}
+            &raquo; <a href="{{ breadcrumb.1 }}">{{ breadcrumb.0 }}</a>
+        {% endfor %}
+    </p>
+    
+    {% if flash.success %}				    
+		<div class="success">{{ flash.success }}</div>
+    {% endif %}
+    
+    <div class="span-13 colborder">
+        <table>
+            <tr>
+                <td colspan="5">
+                    <h3>{{ search_result.title }}</h3>
+                </td>
+            </tr>
+            
+            <tr>
+                <th>Chasis</th>
+                <th>Marca carrosado</th>
+                <th>N° chasis</th>
+                <th>N° motor</th>
+                <th></th>
+            </tr>
+            
+            {% if search_result.potentially_has_material_mayor %}
+                {% for material_mayor in search_result.material_mayor %}
+                    <tr>
+                        <td>{{ material_mayor.modelo_chasis.marca }} {{ material_mayor.modelo_chasis }}</td>
+                        <td>{{ material_mayor.marca_carrosado }}</td>
+                        <td>{{ material_mayor.numero_chasis }}</td>
+                        <td>{{ material_mayor.numero_motor }}</td>
+                        <td><a href="{% url interface.views.editar_material_mayor material_mayor.id %}">Editar</a></td>
+                    </tr>
                 {% empty %}
-                    <i>No hay material mayor a este nivel</i>
-	            {% endfor %}
+                    <tr>
+                        <td colspan="5">No hay material mayor a nivel central</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
             {% endif %}
-	    </ul>
+        </ul>
         
         {% for child in search_result.children %}
-            {% if child.link_url %}
-                <h4><a href="{% url interface.views.material_mayor %}{{ child.link_url }}">{{ child.title }}</a></h4>
-            {% else %}
-                <h4>{{ child.title }}</h4>
-            {% endif %}
-            
-            <br />
-		
-            <ul>
-                {% for material_mayor in child.material_mayor %}
-                    <li><a href="{% url interface.views.material_mayor_details material_mayor.id %}">{{ material_mayor }}</a></li>
-                {% empty %}
-                    <i>No hay material mayor a este nivel</i>
-                {% endfor %}
-            </ul>
+            <tr>
+                <td colspan="5">
+                    {% if child.link_url %}
+                        <h4><a href="{% url interface.views.material_mayor %}{{ child.link_url }}">{{ child.title }}</a></h4>
+                    {% else %}
+                        <h4>{{ child.title }}</h4>
+                    {% endif %}
+                </td>
+            </tr>
+            {% for material_mayor in child.material_mayor %}
+                <tr>
+                    <td>{{ material_mayor.modelo_chasis.marca }} {{ material_mayor.modelo_chasis }}</td>
+                    <td>{{ material_mayor.marca_carrosado }}</td>
+                    <td>{{ material_mayor.numero_chasis }}</td>
+                    <td>{{ material_mayor.numero_motor }}</td>
+                    <td><a href="{% url interface.views.editar_material_mayor material_mayor.id %}">Editar</a></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td><i>No hay material mayor a este nivel</i></td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
         {% endfor %}
-		
-	</div>
+        
+        </table>
+    </div>
 
-	<div id="sidebar" class="right sidebar">
+	<div id="sidebar" class="span-5 last">
 
         <h4>Navegador</h4>
-        <br />
             
         <form method="get" action=".">        
             <strong>Región</strong>
@@ -96,11 +112,6 @@
             <br />
             <input type="submit" value="Buscar" />
         </form>
-        
 
 	</div>
-
-	<div class="clearer">&nbsp;</div>
-
-</div>
 {% endblock %}

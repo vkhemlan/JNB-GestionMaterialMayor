@@ -27,28 +27,6 @@ class FormularioAsignacionCuerpoMaterialMayor(forms.ModelForm):
                 
         return d
     
-    @classmethod
-    def initialize_from_material_mayor(self, material_mayor):
-        default_cuerpo = material_mayor.adquisicion.cuerpo_destinatario
-        default_compania_id = None
-        
-        if material_mayor.cuerpo:
-            default_cuerpo = material_mayor.cuerpo
-            
-        if material_mayor.compania:
-            default_compania_id = material_mayor.compania.id
-        
-        initial = {
-            'region': default_cuerpo.comuna.provincia.region.id,
-            'cuerpo': default_cuerpo.id,
-            'compania': default_compania_id,
-            'fecha_de_asignacion': date.today(),
-            'acta_de_entrega_de_asignacion': 'adf',
-        }
-        
-        form = self(initial)
-        return form
-    
     class Meta:
         model = AsignacionCuerpoMaterialMayor
         fields = ('region', 'cuerpo', 'compania', 'fecha_de_asignacion', 'fecha_de_transferencia', 'notaria', 'numero_de_repertorio', 'acta_de_entrega_de_asignacion', 'listado_de_material_menor', 'observaciones')

@@ -58,4 +58,4 @@ class FormularioDarDeAltaMaterialMayor(BaseModelForm):
                
     class Meta:
         model = MaterialMayor
-        exclude = ('adquisicion',)
+        exclude = ('adquisicion', 'asignacion_de_patente')

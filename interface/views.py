@@ -7,13 +7,13 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, Http404
 
-from interface.models import Cuerpo, MaterialMayor, AdquisicionCompraMaterialMayor, AdquisicionDonacionMaterialMayor, TipoEventoHojaVidaMaterialMayor, EventoHojaVidaMaterialMayor, Rol
-from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioDarDeAltaMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioHojaVidaAsignacionCuerpoMaterialMayor
+from interface.models import Cuerpo, MaterialMayor, AdquisicionCompraMaterialMayor, AdquisicionDonacionMaterialMayor, TipoEventoHojaVidaMaterialMayor, EventoHojaVidaMaterialMayor, Rol, AsignacionPatenteMaterialMayor
+from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioDarDeAltaMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioHojaVidaAsignacionCuerpoMaterialMayor, FormularioAsignacionCompaniaMaterialMayor, FormularioHojaVidaAsignacionCompaniaMaterialMayor, FormularioAsignacionPatenteMaterialMayor, FormularioHojaVidaAsignacionPatenteMaterialMayor
 from django.http import HttpResponseRedirect
 from interface.utils import convert_camelcase_to_lowercase, log
 from django.contrib.auth.decorators import login_required
 
-from authentication import authorize
+from authentication import authorize, authorize_material_mayor_access
 
 @login_required
 def logout(request):
@@ -125,6 +125,8 @@ def material_mayor_sin_asignar(request):
                 'title': 'Dados de alta por el cuerpo de %s' % (unicode(request.user.get_profile().cuerpo),)
             }
         ]    
+        
+        title = 'Material pendiente de asignación al cuerpo'
     else:
     
         fields.insert(5, ['adquisicion.cuerpo_destinatario', 'Cuerpo de destino'])
@@ -139,6 +141,7 @@ def material_mayor_sin_asignar(request):
             }
         ]
         
+        title = 'Material mayor sin asignar'
         
     field_keys = [field[0] for field in fields]
         
@@ -154,17 +157,23 @@ def material_mayor_sin_asignar(request):
     return render_to_response('staff/material_mayor_sin_asignar.html', {
             'material_mayor': materiales_mayores_por_fuente,
             'fields': fields,
-            'may_assign_material_mayor': may_assign_material_mayor
+            'may_assign_material_mayor': may_assign_material_mayor,
+            'title': title,
         }, 
         context_instance=RequestContext(request))
-    
-             
-###########
-# Pending #
-###########
 
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
+@authorize_material_mayor_access
 def editar_material_mayor(request, material_mayor_id):
+    # Vista de edición de los datos técnicos de un material mayor
     material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)
+    
+    asignacion_link = None
+    if request.user.get_profile().rol == Rol.OPERACIONES():
+        asignacion_link = reverse('interface.views.asignar_material_mayor_a_cuerpo', args=[material_mayor.id])
+    elif request.user.get_profile().is_staff_cuerpo():
+        asignacion_link = reverse('interface.views.asignar_material_mayor_a_compania', args=[material_mayor.id])
+    
     if request.method == 'POST':
         form = FormularioDarDeAltaMaterialMayor(request.POST, request.FILES, instance=material_mayor, user=request.user)
         if form.is_valid():
@@ -187,10 +196,17 @@ def editar_material_mayor(request, material_mayor_id):
     return render_to_response('staff/editar_material_mayor.html', {
             'form': form,
             'next': next,
+            'asignacion_link': asignacion_link,
         }, 
         context_instance=RequestContext(request))
-        
+
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
+@authorize_material_mayor_access
 def editar_adquisicion_material_mayor(request, material_mayor_id):
+    # Vista de edición de los datos de adquisición de cierto material mayor
+    # Nota: La adquisicion puede ser o por compra o por donación, pero
+    # el sistema carga la correcta a través de un polimorfismo simulado
+    
     material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)
     adquisicion = material_mayor.adquisicion.get_polymorphic_instance()
     Form = eval('Formulario%s' % (adquisicion.__class__.__name__))
@@ -209,8 +225,12 @@ def editar_adquisicion_material_mayor(request, material_mayor_id):
             'form': form,
         }, 
         context_instance=RequestContext(request))
-        
+
+@authorize(roles=(Rol.OPERACIONES(),))
+@authorize_material_mayor_access
 def asignar_material_mayor_a_cuerpo(request, material_mayor_id):
+    # Vista de (re)asignación de material mayor a cierto cuerpo/compañía
+    # Sólo Operaciones tiene acceso a esta capacidad
     material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)
     if request.method == 'POST':
         form = FormularioAsignacionCuerpoMaterialMayor(request.POST, request.FILES)
@@ -247,9 +267,44 @@ def asignar_material_mayor_a_cuerpo(request, material_mayor_id):
             'default_cuerpo': default_cuerpo,
             'default_compania_id': default_compania_id
         }, 
-        context_instance=RequestContext(request))        
+        context_instance=RequestContext(request))
+        
+@authorize(cargos=(settings.CARGOS_CUERPO['Comandante'],))
+@authorize_material_mayor_access
+def asignar_material_mayor_a_compania(request, material_mayor_id):
+    # Vista de (re)asignación de material mayor a cierta compañía
+    # Sólo los responsables de cada cuerpo tienen acceso a esta funcionalidad
+    material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)
+    if request.method == 'POST':
+        form = FormularioAsignacionCompaniaMaterialMayor(material_mayor, request.POST, request.FILES)
+        if form.is_valid():
+            asignacion_material_mayor = form.instance
+            
+            asignacion_material_mayor.material_mayor = material_mayor
+            asignacion_material_mayor.usuario = request.user
+            asignacion_material_mayor.tipo = TipoEventoHojaVidaMaterialMayor.objects.get(classname='AsignacionCompaniaMaterialMayor')
+            asignacion_material_mayor.save()
 
+            material_mayor.compania = asignacion_material_mayor.compania
+            material_mayor.save()
+
+            request.flash['success'] = u'Material mayor asignado correctamente'
+            url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
+            return HttpResponseRedirect(url)
+    else:
+        form = FormularioAsignacionCompaniaMaterialMayor(material_mayor)
+    
+    return render_to_response('staff/asignar_material_mayor_a_compania.html', {
+            'material_mayor': material_mayor,
+            'form': form,
+        }, 
+        context_instance=RequestContext(request))      
+
+
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
+@authorize_material_mayor_access
 def detalles_hoja_de_vida_material_mayor(request, material_mayor_id):
+    # Vista que despliega el listado de eventos en la hoja de vida de un material mayor en particular
     material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)
     
     events = [event.get_polymorphic_instance() for event in EventoHojaVidaMaterialMayor.objects.filter(material_mayor=material_mayor).order_by('fecha')]
@@ -260,8 +315,11 @@ def detalles_hoja_de_vida_material_mayor(request, material_mayor_id):
         }, 
         context_instance=RequestContext(request))
         
-        
+
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
+@authorize_material_mayor_access
 def detalle_evento_hoja_de_vida_material_mayor(request, material_mayor_id, evento_id):
+    # Vista que despliega el detalle de alguno de los eventos de la hoja de vida de cierto material mayor
     material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)
     evento = EventoHojaVidaMaterialMayor.objects.get(pk=evento_id).get_polymorphic_instance()
     
@@ -288,12 +346,65 @@ def detalle_evento_hoja_de_vida_material_mayor(request, material_mayor_id, event
             'form': form
         }, 
         context_instance=RequestContext(request))
-        
+
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
 def material_mayor(request):
-    form = MaterialMayorSearchForm(request.GET)
+    if request.user.get_profile().is_staff_jnbc():
+        data = request.GET
+        template = 'staff/material_mayor.html'
+    else:
+        data = {
+            'region': request.user.get_profile().cuerpo.comuna.provincia.region.id,
+            'cuerpo': request.user.get_profile().cuerpo.id
+        }
+        template = 'staff/material_mayor_cuerpo.html'
+    form = MaterialMayorSearchForm(data)
     search_result = form.get_filtered_material_mayor()
-    return render_to_response('staff/material_mayor.html', {
+    return render_to_response(template, {
             'form': form,
             'search_result': search_result,
         }, 
         context_instance=RequestContext(request))
+        
+@authorize(roles=(Rol.OPERACIONES(),))
+@authorize_material_mayor_access
+def asignar_patente_a_material_mayor(request, material_mayor_id):
+    material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)
+    if material_mayor.asignacion_de_patente:
+        request.flash['error'] = 'Material mayor ya tiene patente'
+        url = reverse('interface.views.material_mayor')
+        
+        return HttpResponseRedirect(url)
+        
+    if request.method == 'POST':
+        form = FormularioAsignacionPatenteMaterialMayor(request.POST)
+        import ipdb
+        ipdb.set_trace()
+        if form.is_valid():
+            instance = form.instance
+            
+            instance.material_mayor = material_mayor
+            instance.usuario = request.user
+            instance.tipo = TipoEventoHojaVidaMaterialMayor.objects.get(classname='AsignacionPatenteMaterialMayor')
+            instance.save()
+            
+            material_mayor.asignacion_de_patente = instance
+            material_mayor.save()
+            
+            request.flash['success'] = 'Patente asignada correctamente'
+            url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
+            
+            return HttpResponseRedirect(url)
+    else:
+        form = FormularioAsignacionPatenteMaterialMayor()
+    return render_to_response('staff/asignar_patente_a_material_mayor.html', {
+            'form': form,
+            'material_mayor': material_mayor
+        }, 
+        context_instance=RequestContext(request))
+
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
+@authorize_material_mayor_access        
+def detalles_patente_material_mayor(request, material_mayor_id):
+    asignacion_patente = AsignacionPatenteMaterialMayor.objects.get(material_mayor__pk=material_mayor_id)
+    return detalle_evento_hoja_de_vida_material_mayor(request, material_mayor_id=material_mayor_id, evento_id=asignacion_patente.id)

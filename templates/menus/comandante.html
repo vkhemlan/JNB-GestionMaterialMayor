@@ -6,14 +6,14 @@
         <a href="#">Dar de alta</a>
         <span>
             <a href="{% url interface.views.adquisicion_compra_material_mayor %}">Alta de vehículo (compra)</a> |
-            <a href="{% url interface.views.adquisicion_donacion_material_mayor %}">Alta de vehículo (donación)</a> |
-            <a href="{% url interface.views.material_mayor_sin_asignar %}">Ver vehículos no asignados</a>
+            <a href="{% url interface.views.adquisicion_donacion_material_mayor %}">Alta de vehículo (donación)</a>
         </span>
     </li>
     <li>
-        <a href="#">Asignar</a>
+        <a href="#">Asignar / Reasignar</a>
         <span>
-            <a href="{% url interface.views.material_mayor_sin_asignar %}">Asignar material a cuerpo / compañía</a>
+            <a href="{% url interface.views.material_mayor_sin_asignar %}">Ver material pendiente de asignación al cuerpo</a> |
+            <a href="{% url interface.views.material_mayor %}">Asignar / reasignar material mayor a compañía</a>
         </span>
     </li>
     <li>

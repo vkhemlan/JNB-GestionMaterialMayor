@@ -5,8 +5,7 @@ from django.core.urlresolvers import reverse
 from interface.models import Region, Cuerpo, MaterialMayor, Compania
 
 class MaterialMayorSearchForm(forms.Form):
-    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, 
-        empty_label='JNBC')
+    region = forms.ModelChoiceField(queryset=Region.objects.all(), required=False, empty_label='Nivel JNBC')
     cuerpo = forms.ModelChoiceField(queryset=Cuerpo.objects.order_by('nombre'), required=False,
         empty_label='Ver todos')
         
