@@ -43,11 +43,25 @@ def _adquisicion_material_mayor(request, FormularioAdquisicion, template):
         form = FormularioDarDeAltaMaterialMayor(request.POST, request.FILES, user=request.user)
         form_adquisicion = FormularioAdquisicion(request.POST, request.FILES, user=request.user)
         if form.is_valid() and form_adquisicion.is_valid():
-            adquisicion = form_adquisicion.get_instance(request.user)
-            adquisicion.save()
+            data_form = FormularioDarDeAltaMaterialMayor(request.POST, user=request.user)
+            data_form.is_valid()
+            material_mayor_data = data_form.instance
+            material_mayor_data.save()
+            
+            form = FormularioDarDeAltaMaterialMayor(request.POST, request.FILES, user=request.user, instance=material_mayor_data)
+            form.is_valid()
+            
             material_mayor = form.instance
+            
+            adquisicion = form_adquisicion.get_instance(request.user)
+            material_mayor.save()
+            
+            adquisicion.materialmayor = material_mayor
+            adquisicion.save()
+            
             material_mayor.adquisicion = adquisicion
             material_mayor.save()
+            
             request.flash['success'] = 'Material mayor dado de alta exitosamente'
             url = reverse('interface.views.material_mayor_sin_asignar')
             
@@ -378,8 +392,6 @@ def asignar_patente_a_material_mayor(request, material_mayor_id):
         
     if request.method == 'POST':
         form = FormularioAsignacionPatenteMaterialMayor(request.POST)
-        import ipdb
-        ipdb.set_trace()
         if form.is_valid():
             instance = form.instance
             

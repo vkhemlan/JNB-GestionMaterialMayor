@@ -4,6 +4,12 @@ from django.db import models
 from . import MaterialMayor
 from django.contrib.auth.models import User
 
+def generate_uploaded_adquisicion_file_name(field_name, instance, filename):
+    left_path, extension = filename.rsplit('.',1)
+    
+    return 'documentos/material_mayor/%d/adquisicion/%s.%s' % (instance.materialmayor.id, field_name, extension)
+
+
 class AdquisicionMaterialMayor(models.Model):
     modo = models.ForeignKey('ModoAdquisicionMaterialMayor')
     usuario = models.ForeignKey(User)

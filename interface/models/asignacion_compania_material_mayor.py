@@ -2,7 +2,6 @@
 
 from django.db import models
 from . import EventoHojaVidaMaterialMayor
-from interface.utils import generate_uploaded_hoja_de_vida_file_name
 
 class AsignacionCompaniaMaterialMayor(EventoHojaVidaMaterialMayor):
     compania = models.ForeignKey('Compania', verbose_name='Compañía')

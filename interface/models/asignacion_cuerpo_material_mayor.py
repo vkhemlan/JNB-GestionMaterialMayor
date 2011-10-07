@@ -2,7 +2,7 @@
 
 from django.db import models
 from . import EventoHojaVidaMaterialMayor
-from interface.utils import generate_uploaded_hoja_de_vida_file_name
+from interface.models.evento_hoja_vida_material_mayor import generate_uploaded_hoja_de_vida_file_name
 
 class AsignacionCuerpoMaterialMayor(EventoHojaVidaMaterialMayor):
     cuerpo = models.ForeignKey('Cuerpo')

@@ -2,11 +2,7 @@
 
 from django.db import models
 from . import AdquisicionMaterialMayor
-
-def generate_uploaded_adquisicion_file_name(field_name, instance, filename):
-    left_path, extension = filename.rsplit('.',1)
-    
-    return 'documentos/material_mayor/%d/adquisicion/%s.%s' % (instance.materialmayor.id, field_name, extension)
+from adquisicion_material_mayor import generate_uploaded_adquisicion_file_name
 
 class AdquisicionCompraMaterialMayor(AdquisicionMaterialMayor):
     orden_de_compra = models.FileField(upload_to=lambda i, fn: generate_uploaded_adquisicion_file_name('orden_de_compra', i, fn), verbose_name=u'Orden de compra', blank=True, null=True)

@@ -3,6 +3,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+def generate_uploaded_hoja_de_vida_file_name(field_name, evento, filename):
+    left_path, extension = filename.rsplit('.',1)
+    
+    return 'documentos/material_mayor/%d/evento_hoja_vida/%d-%s.%s' % (evento.material_mayor.id, evento.id, field_name, extension)
+
 class EventoHojaVidaMaterialMayor(models.Model):
     material_mayor = models.ForeignKey('MaterialMayor')
     usuario = models.ForeignKey(User)

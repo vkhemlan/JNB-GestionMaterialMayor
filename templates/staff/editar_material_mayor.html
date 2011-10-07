@@ -81,8 +81,8 @@
                 </td>
             </tr>
             <tr><th>Ingresado por</th><td>{{ form.instance.adquisicion.usuario.get_full_name }}</td></tr>
-            <tr><th>Forma de adquisición</th><td>{{ form.instance.adquisicion.modo }} (<a href="{% url interface.views.editar_adquisicion_material_mayor form.instance.adquisicion.id %}">Editar detalles</a>)</td></tr>
-            <tr><th>Hoja de vida</th><td><a href="{% url interface.views.detalles_hoja_de_vida_material_mayor form.instance.adquisicion.id %}">Ver hoja de vida</a></td></tr>
+            <tr><th>Forma de adquisición</th><td>{{ form.instance.adquisicion.modo }} (<a href="{% url interface.views.editar_adquisicion_material_mayor form.instance.id %}">Editar detalles</a>)</td></tr>
+            <tr><th>Hoja de vida</th><td><a href="{% url interface.views.detalles_hoja_de_vida_material_mayor form.instance.id %}">Ver hoja de vida</a></td></tr>
 
             <tr><td colspan="2"><br /><h3>Datos del vehículo</h3><br /></tr></td>
             
