@@ -19,6 +19,7 @@ class MaterialMayor(models.Model):
     # Datos del vehículo
     tipo_vehiculo = models.ForeignKey('TipoVehiculoMaterialMayor', verbose_name=u'Tipo de vehículo', blank=True, null=True)
     uso = models.ForeignKey('UsoMaterialMayor', blank=True, null=True)
+    otro_uso = models.CharField(max_length=255, blank=True, null=True, verbose_name='Uso vehículo especial')
     modelo_chasis = models.ForeignKey('ModeloChasisMaterialMayor', verbose_name=u'Modelo de chasis')
     numero_chasis = models.CharField(max_length=255, verbose_name=u'Número de chasis')
     numero_motor = models.CharField(max_length=255, verbose_name=u'Número de motor')

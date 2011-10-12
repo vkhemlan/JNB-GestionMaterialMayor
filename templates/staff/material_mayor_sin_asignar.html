@@ -3,28 +3,24 @@
 {% block main_content %}
     <p class="breadcrumbs">
         <strong>Asignaciones de material</strong>
-        &raquo; {{ title }}
+        &raquo; Material mayor sin asignar
     </p>
     
     {% if flash.success %}				    
 		<div class="success">{{ flash.success }}</div>
     {% endif %}
 
-    <h2>{{ title }}</h2>
+    <h2>Material mayor sin asignar</h2>
+    
+    <p><a href="{% url interface.views.material_mayor_sin_asignar_excel %}">Descargar este informe como Excel</a></p>
     <hr />
 
     <table>    
         {% for value in material_mayor %}
-            
-            <tr>
-                <td colspan="6">
-                    <h3 class="table-material-mayor-sin-asignar-title">{{ value.title }}</h3>
-                </td>
-            </tr>
 
             <tr>
                 {% for field in fields %}
-                    <th>{{ field.1 }}</th>
+                    <th>{{ field }}</th>
                 {% endfor %}
             </tr>
             {% for vehiculo in value.material_mayor %}

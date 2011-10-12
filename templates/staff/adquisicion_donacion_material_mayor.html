@@ -1,35 +1,4 @@
-{% extends 'staff/base.html' %}
-
-{% block header_block %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/formulario_editar_material_mayor_script.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/formulario_destinatario_cuerpo.js"></script>
-
-<script type="text/javascript">
-    var modelos_chasis = [
-    {% for modelo_chasis in form.fields.modelo_chasis.queryset %}
-        new Array({{ modelo_chasis.id }}, "{{ modelo_chasis }}", {{ modelo_chasis.marca.id }}),
-    {% endfor %}
-    ]
-    
-    var modelos_caja_cambio = [
-    {% for modelo_caja_cambio in form.fields.modelo_caja_cambio.queryset %}
-        new Array({{ modelo_caja_cambio.id }}, "{{ modelo_caja_cambio }}", {{ modelo_caja_cambio.marca.id }}),
-    {% endfor %}
-    ]
-    
-    var modelos_bomba = [
-    {% for modelo_bomba in form.fields.modelo_bomba.queryset %}
-        new Array({{ modelo_bomba.id }}, "{{ modelo_bomba }}", {{ modelo_bomba.marca.id }}),
-    {% endfor %}
-    ]
-    
-    var cuerpos = [
-    {% for cuerpo in form_adquisicion.fields.cuerpo_destinatario.queryset %}
-        new Array({{ cuerpo.id }}, "{{ cuerpo }}", {{ cuerpo.comuna.provincia.region.id }}),
-    {% endfor %}
-    ]
-</script>
-{% endblock %}
+{% extends 'staff/adquisicion_material_mayor.html' %}
 
 {% block main_content %}
     <p class="breadcrumbs">

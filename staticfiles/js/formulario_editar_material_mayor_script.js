@@ -12,7 +12,25 @@ $(function() {
             $('#id_modelo_' + value).val(window['default_modelo_' + value])
         }
     })
+    
+    $('#id_uso').change(function() {
+        refresh_otros_usos()
+    })
+    
+    refresh_otros_usos()
 })
+
+function refresh_otros_usos() {
+    var selected_uso = parseInt($('#id_uso').val())
+    var select_otros_usos = $('#id_otro_uso')
+    
+    if ($.inArray(selected_uso, otros_usos_material_mayor_ids) != -1) {
+        select_otros_usos.parents('tr').slideDown()
+    } else {
+        select_otros_usos.parents('tr').slideUp()
+        select_otros_usos.val('')
+    }
+}
 
 function generic_refresh(part_name) {
     var selected_marca = parseInt($('#id_marca_' + part_name).val())

@@ -7,7 +7,10 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, Http404
 
-from interface.models import Cuerpo, MaterialMayor, AdquisicionCompraMaterialMayor, AdquisicionDonacionMaterialMayor, TipoEventoHojaVidaMaterialMayor, EventoHojaVidaMaterialMayor, Rol, AsignacionPatenteMaterialMayor
+from datetime import date
+from xlwt import Workbook, easyxf, Formula, XFStyle, Font
+
+from interface.models import Cuerpo, MaterialMayor, AdquisicionCompraMaterialMayor, AdquisicionDonacionMaterialMayor, TipoEventoHojaVidaMaterialMayor, EventoHojaVidaMaterialMayor, Rol, AsignacionPatenteMaterialMayor, UsoMaterialMayor
 from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioDarDeAltaMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioHojaVidaAsignacionCuerpoMaterialMayor, FormularioAsignacionCompaniaMaterialMayor, FormularioHojaVidaAsignacionCompaniaMaterialMayor, FormularioAsignacionPatenteMaterialMayor, FormularioHojaVidaAsignacionPatenteMaterialMayor
 from django.http import HttpResponseRedirect
 from interface.utils import convert_camelcase_to_lowercase, log
@@ -63,9 +66,11 @@ def _adquisicion_material_mayor(request, FormularioAdquisicion, template):
             material_mayor.save()
             
             request.flash['success'] = 'Material mayor dado de alta exitosamente'
-            url = reverse('interface.views.material_mayor_sin_asignar')
+            url = reverse('interface.views.material_mayor')
             
             if request.user.get_profile().is_staff_cuerpo():
+                material_mayor.cuerpo = request.user.get_profile().cuerpo
+                material_mayor.save()
                 material_mayor.notify_operaciones_of_dada_de_alta()
             
             return HttpResponseRedirect(url)
@@ -76,12 +81,15 @@ def _adquisicion_material_mayor(request, FormularioAdquisicion, template):
         # es instanciado dependiendo del origen de la adquisición (compra o donacion)
         form = FormularioDarDeAltaMaterialMayor(user=request.user)
         form_adquisicion = FormularioAdquisicion(user=request.user)
+        
+    others_uses_ids = [uso.id for uso in UsoMaterialMayor.objects.filter(is_others_option=True)]
 
     return render_to_response(
         template, 
         {
             'form': form,
             'form_adquisicion': form_adquisicion,
+            'others_uses_ids': others_uses_ids
         }, 
         context_instance=RequestContext(request))   
 
@@ -95,25 +103,16 @@ def adquisicion_donacion_material_mayor(request):
     # Vista para dar de alta material mayor adquirido por donación
     return _adquisicion_material_mayor(request, FormularioAdquisicionDonacionMaterialMayor, 'staff/adquisicion_donacion_material_mayor.html')
     
-@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
-def material_mayor_sin_asignar(request):
-    # Vista que muestra el listado de material mayor que aun no ha sido asignado a un cuerpo
-    # Para el staff de la JNBC le muestra todo el material mayor a nivel nacional que no ha sido asignado
-    # Para los usuarios de cuerpos bomberiles les muestra solamente aquel material mayor que tiene 
-    # como destinatario su cuerpo
-    
+def _material_mayor_sin_asignar(request):
     materiales_mayores_sin_asignar = MaterialMayor.objects.filter(cuerpo__isnull=True)
     
-    # Fields es un arreglo que contiene los campos que se quieren desplegar en la tabla del template
-    # Este arreglo es necesario porque hay información que no le queremos mostrar
-    # a los usuarios de cuerpo porque, por ejemplo, el campo es redundante ("Cuerpo destinario")
-    
     fields = [
-            ['modelo_chasis.marca', 'Marca chasis'],
-            ['modelo_chasis', 'Modelo chasis'],
-            ['marca_carrosado', 'Marca carrosado'],
-            ['numero_chasis', 'N° chasis'],
-            ['numero_motor', 'N° motor'],
+            ['modelo_chasis.marca', u'Marca chasis'],
+            ['modelo_chasis', u'Modelo chasis'],
+            ['marca_carrosado', u'Marca carrosado'],
+            ['numero_chasis', u'N° chasis'],
+            ['numero_motor', u'N° motor'],
+            ['adquisicion.cuerpo_destinatario', u'Cuerpo de destino']
         ]
         
     # may_assign_material_mayor es un flag para ver si mostramos el link al proceso de "Asignar"
@@ -125,39 +124,20 @@ def material_mayor_sin_asignar(request):
     # materiales_mayores_por_fuente es la estructura de datos que almacenará temporalmemte los
     # resultados de la consulta. Es una lista en la que cada elemento representa una "sección"
     # de la página mostrada. Por ejemplo, operaciones bomberiles ve dos secciones, correspondientes
-    # al material subido desde la JNBC y aquel subido directamente por los cuerpos, mientras que los
-    # usuarios cuerpo solo pueden ver el material subido por ellos mismos.
+    # al material subido desde la JNBC y aquel subido directamente por los cuerpos
     # Cada sección tiene dos atributos:
     #  predicate: Nombre de una función en UserProfile que será aplicada al usuario que subió el material mayor
     #             Si el filtro retorna True entonces ese material mayor será agregado a esta sección.
-    #  title: Título en texto plano de la sección para ser desplegado en el template
     
-    if request.user.get_profile().is_staff_cuerpo():   
-        materiales_mayores_por_fuente = [
-            {
-                'predicate': 'is_staff_cuerpo',
-                'title': 'Dados de alta por el cuerpo de %s' % (unicode(request.user.get_profile().cuerpo),)
-            }
-        ]    
-        
-        title = 'Material pendiente de asignación al cuerpo'
-    else:
-    
-        fields.insert(5, ['adquisicion.cuerpo_destinatario', 'Cuerpo de destino'])
-        materiales_mayores_por_fuente = [
-            {
-                'predicate': 'is_staff_jnbc',
-                'title': 'Dados de alta por la JNBC'
-            },
-            {
-                'predicate': 'is_staff_cuerpo',
-                'title': 'Dados de alta por cuerpos'
-            }
-        ]
-        
-        title = 'Material mayor sin asignar'
+    materiales_mayores_por_fuente = [
+        {
+            'predicate': 'is_staff_jnbc',
+            'title': 'Dados de alta por la JNBC'
+        }
+    ]
         
     field_keys = [field[0] for field in fields]
+    field_values = [field[1] for field in fields]
         
     # Para cada sección...
     for material_mayor_por_fuente in materiales_mayores_por_fuente:
@@ -167,14 +147,80 @@ def material_mayor_sin_asignar(request):
             # Si el usuario que subió dicho vehiculo cumple con el predicado de la sección, agregarlo a ella
             if getattr(material_mayor.adquisicion.usuario.get_profile(), material_mayor_por_fuente['predicate'])():
                 material_mayor_por_fuente['material_mayor'].append(material_mayor.extract_data(field_keys))
+                
+    return materiales_mayores_por_fuente, field_values, may_assign_material_mayor
+    
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES()))
+def material_mayor_sin_asignar(request):
+    # Vista que muestra el listado de material mayor que aun no ha sido asignado a un cuerpo
+    
+    materiales_mayores_por_fuente, fields, may_assign_material_mayor = _material_mayor_sin_asignar(request)
     
     return render_to_response('staff/material_mayor_sin_asignar.html', {
             'material_mayor': materiales_mayores_por_fuente,
             'fields': fields,
             'may_assign_material_mayor': may_assign_material_mayor,
-            'title': title,
         }, 
         context_instance=RequestContext(request))
+        
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES()))
+def material_mayor_sin_asignar_excel(request):
+    material_mayor, fields, may_assign_material_mayor = _material_mayor_sin_asignar(request)
+
+    response = HttpResponse(mimetype="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename=material_mayor_sin_asignar_%s.xls' % str(date.today())
+    
+    title_style = XFStyle()
+    title_font = Font()
+    title_font.bold = True
+    title_font.height = 300
+    title_style.font = title_font
+    
+    wb = Workbook()
+    ws = wb.add_sheet('Material Mayor sin asignar')
+    
+    ws.row(0).height = 500
+    ws.col(0).width = 5000
+    ws.col(1).width = 5000
+    ws.col(2).width = 7000
+    ws.col(3).width = 7000
+    ws.col(4).width = 7000
+    ws.col(5).width = 7000
+    ws.col(6).width = 4000
+    ws.col(7).width = 4000
+    
+    current_row = 0
+    ws.write(current_row, 0, 'Material mayor sin asignar', title_style)
+    current_row += 1
+    
+    link_style = easyxf('font: underline single') 
+    
+    bold_style = XFStyle()
+    bold_font = Font()
+    bold_font.bold = True
+    bold_style.font = bold_font
+
+    
+    for value in material_mayor:
+        for idx, field in enumerate(fields):
+            ws.write(current_row, idx, field, bold_style)
+            
+        current_row += 1
+        
+        for vehiculo in value['material_mayor']:
+            for idx, field in enumerate(vehiculo['data']):
+                ws.write(current_row, idx, field)
+                 
+            editar_link = settings.SITE_URL + reverse('interface.views.editar_material_mayor', args=[vehiculo['id']])
+            ws.write(current_row, idx+1, Formula('HYPERLINK("%s";"Editar")' % editar_link), link_style)
+            
+            if may_assign_material_mayor:
+                asignar_link = settings.SITE_URL + reverse('interface.views.asignar_material_mayor_a_cuerpo', args=[vehiculo['id']])
+                ws.write(current_row, idx+2, Formula('HYPERLINK("%s";"Asignar")' % asignar_link), link_style)
+            current_row += 1
+
+    wb.save(response)
+    return response
 
 @authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
 @authorize_material_mayor_access

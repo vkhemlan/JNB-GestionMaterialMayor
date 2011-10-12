@@ -33,4 +33,8 @@ admin.site.register(UserProfile)
 admin.site.register(Rol)
 admin.site.register(Cargo)
 admin.site.register(FamiliaUsoMaterialMayor)
-admin.site.register(UsoMaterialMayor)
+
+class UsoMaterialMayorAdmin(admin.ModelAdmin):
+    exclude = ('is_others_option',)
+    
+admin.site.register(UsoMaterialMayor, UsoMaterialMayorAdmin)

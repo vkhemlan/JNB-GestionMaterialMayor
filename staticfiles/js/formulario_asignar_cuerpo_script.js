@@ -9,7 +9,25 @@ $(function() {
     
     $('#id_region').val(default_region_id)
     refresh_cuerpos(default_cuerpo_id, default_compania_id)
+    
+    $('#id_transferencia_por_escritura_publica').change(refresh_transferencia_escritura_publica)
+    refresh_transferencia_escritura_publica()
 })
+
+function refresh_transferencia_escritura_publica() {
+    var checkbox = $('#id_transferencia_por_escritura_publica')
+    
+    if (checkbox.is(':checked')) {
+        $('#id_fecha_de_escritura').parents('tr').show()
+        $('#id_escritura_publica').parents('tr').show()
+    } else {
+        $('#id_fecha_de_escritura').parents('tr').hide()
+        $('#id_fecha_de_escritura').val('')
+        $('#id_escritura_publica').parents('tr').hide()
+        $("#id_escritura_publica").replaceWith("<input type='file' id='id_escritura_publica' />");
+
+    }
+}
 
 function refresh_cuerpos(default_cuerpo_id, default_compania_id) {
     var selected_region = parseInt($('#id_region').val())

@@ -15,18 +15,23 @@
 {% endblock %}
 
 {% block main_content %}
-    <p class="breadcrumbs">
-        <strong>Navegar material mayor</strong>
-        {% for breadcrumb in search_result.breadcrumbs %}
-            &raquo; <a href="{{ breadcrumb.1 }}">{{ breadcrumb.0 }}</a>
-        {% endfor %}
-    </p>
+
+	<div class="span-21">
+            
+        <form method="get" action=".">        
+            <strong>Región</strong> {{ form.region }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <strong>Cuerpo</strong> {{ form.cuerpo }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            
+            <input type="submit" value="Buscar" />
+        </form>
+        <br />
+	</div>
     
     {% if flash.success %}				    
 		<div class="success">{{ flash.success }}</div>
     {% endif %}
     
-    <div class="span-13 colborder">
+    <div class="span-21">
         <table>
             <tr>
                 <td colspan="5">
@@ -35,20 +40,26 @@
             </tr>
             
             <tr>
-                <th>Chasis</th>
+                <th>Marca chasis</th>
+                <th>Modelo chasis</th>
                 <th>Marca carrosado</th>
                 <th>N° chasis</th>
                 <th>N° motor</th>
+                <th>Cuerpo</th>
+                <th>Compañía</th>
                 <th></th>
             </tr>
             
             {% if search_result.potentially_has_material_mayor %}
                 {% for material_mayor in search_result.material_mayor %}
                     <tr>
-                        <td>{{ material_mayor.modelo_chasis.marca }} {{ material_mayor.modelo_chasis }}</td>
+                        <td>{{ material_mayor.modelo_chasis.marca }}</td>
+                        <td>{{ material_mayor.modelo_chasis }}</td>
                         <td>{{ material_mayor.marca_carrosado }}</td>
                         <td>{{ material_mayor.numero_chasis }}</td>
                         <td>{{ material_mayor.numero_motor }}</td>
+                        <td>{{ material_mayor.cuerpo }}</td>
+                        <td>{{ material_mayor.compania }}</td>
                         <td><a href="{% url interface.views.editar_material_mayor material_mayor.id %}">Editar</a></td>
                     </tr>
                 {% empty %}
@@ -92,26 +103,4 @@
         
         </table>
     </div>
-
-	<div id="sidebar" class="span-5 last">
-
-        <h4>Navegador</h4>
-            
-        <form method="get" action=".">        
-            <strong>Región</strong>
-            <br />
-            {{ form.region }}
-            
-            <br />
-            <br />
-            <strong>Cuerpo</strong>
-            <br />
-            {{ form.cuerpo }}
-            
-            <br />
-            <br />
-            <input type="submit" value="Buscar" />
-        </form>
-
-	</div>
 {% endblock %}

@@ -49,3 +49,8 @@ select {
 .mandatory-field-notice {
     font-style: italic;
 }
+
+input.disabled-input {
+    color: gray;
+    background-color: #efefef;
+}

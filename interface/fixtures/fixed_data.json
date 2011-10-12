@@ -1,5 +1,47 @@
 [
   {
+    "model": "interface.marcacarrosadomaterialmayor",
+    "pk": 1,
+    "fields": {
+      "name": "Camiva"
+    }
+  },
+  {
+    "model": "interface.marcacarrosadomaterialmayor",
+    "pk": 2,
+    "fields": {
+      "name": "Crimson Fire"
+    }
+  },
+  {
+    "model": "interface.marcacarrosadomaterialmayor",
+    "pk": 3,
+    "fields": {
+      "name": "E-One"
+    }
+  },
+  {
+    "model": "interface.marcacarrosadomaterialmayor",
+    "pk": 4,
+    "fields": {
+      "name": "Iturri"
+    }
+  },
+  {
+    "model": "interface.marcacarrosadomaterialmayor",
+    "pk": 5,
+    "fields": {
+      "name": "Pierce"
+    }
+  },
+  {
+    "model": "interface.marcacarrosadomaterialmayor",
+    "pk": 6,
+    "fields": {
+      "name": "Rosenbauer"
+    }
+  },
+  {
     "model": "interface.marcachasismaterialmayor",
     "pk": 1,
     "fields": {
@@ -59,96 +101,311 @@
     "model": "interface.tipovehiculomaterialmayor",
     "pk": 1,
     "fields": {
-      "name": "Automóvil",
-      "ordering": "1"
+      "name": "Automóvil"
     }
   },
   {
     "model": "interface.tipovehiculomaterialmayor",
     "pk": 2,
     "fields": {
-      "name": "Camioneta",
-      "ordering": "2"
+      "name": "Camioneta"
     }
   },
   {
     "model": "interface.tipovehiculomaterialmayor",
     "pk": 3,
     "fields": {
-      "name": "Camión",
-      "ordering": "3"
+      "name": "Camión"
     }
   },
   {
     "model": "interface.colormaterialmayor",
     "pk": 1,
     "fields": {
-      "name": "Rojo",
-      "ordering": "1"
+      "name": "Rojo"
     }
   },
   {
     "model": "interface.colormaterialmayor",
     "pk": 2,
     "fields": {
-      "name": "Verde",
-      "ordering": "2"
+      "name": "Verde"
     }
   },
   {
     "model": "interface.colormaterialmayor",
     "pk": 3,
     "fields": {
-      "name": "Verde limón",
-      "ordering": "3"
+      "name": "Verde limón"
     }
   },
   {
     "model": "interface.colormaterialmayor",
     "pk": 4,
     "fields": {
-      "name": "Azul",
-      "ordering": "4"
+      "name": "Azul"
     }
   },
   {
     "model": "interface.colormaterialmayor",
     "pk": 5,
     "fields": {
-      "name": "Granate",
-      "ordering": "5"
+      "name": "Granate"
     }
   },
   {
     "model": "interface.colormaterialmayor",
     "pk": 6,
     "fields": {
-      "name": "Amarillo",
-      "ordering": "6"
+      "name": "Amarillo"
     }
   },
   {
     "model": "interface.colormaterialmayor",
     "pk": 7,
     "fields": {
-      "name": "Anaranjado",
-      "ordering": "7"
+      "name": "Anaranjado"
     }
   },
   {
     "model": "interface.colormaterialmayor",
     "pk": 8,
     "fields": {
-      "name": "Blanco",
-      "ordering": "8"
+      "name": "Blanco"
     }
   },
   {
     "model": "interface.colormaterialmayor",
     "pk": 9,
     "fields": {
-      "name": "Otro",
-      "ordering": "9"
+      "name": "Otro"
+    }
+  },
+  {
+    "model": "interface.condicionmaterialmayor",
+    "pk": 1,
+    "fields": {
+      "name": "Nuevo"
+    }
+  },
+  {
+    "model": "interface.condicionmaterialmayor",
+    "pk": 2,
+    "fields": {
+      "name": "Usado"
+    }
+  },
+  {
+    "model": "interface.familiausomaterialmayor",
+    "pk": 1,
+    "fields": {
+      "nombre": "Bomba"
+    }
+  },
+  {
+    "model": "interface.familiausomaterialmayor",
+    "pk": 2,
+    "fields": {
+      "nombre": "Carro"
+    }
+  },
+  {
+    "model": "interface.familiausomaterialmayor",
+    "pk": 3,
+    "fields": {
+      "nombre": "Camionetas"
+    }
+  },
+  {
+    "model": "interface.familiausomaterialmayor",
+    "pk": 4,
+    "fields": {
+      "nombre": "Furgones y buses"
+    }
+  },
+  {
+    "model": "interface.familiausomaterialmayor",
+    "pk": 5,
+    "fields": {
+      "nombre": "Puestos de comando"
+    }
+  },
+  {
+    "model": "interface.familiausomaterialmayor",
+    "pk": 6,
+    "fields": {
+      "nombre": "Vehículos especiales"
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 1,
+    "fields": {
+      "nombre": "Primera intervencion",
+      "familia": 1,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 2,
+    "fields": {
+      "nombre": "Urbano Estándar",
+      "familia": 1,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 3,
+    "fields": {
+      "nombre": "Urbano mayor",
+      "familia": 1,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 4,
+    "fields": {
+      "nombre": "Semi urbano",
+      "familia": 1,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 5,
+    "fields": {
+      "nombre": "Forestal",
+      "familia": 1,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 6,
+    "fields": {
+      "nombre": "con Escala Telescópica",
+      "familia": 2,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 7,
+    "fields": {
+      "nombre": "con Escala Telescópica con Bomba y Estanque",
+      "familia": 2,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 8,
+    "fields": {
+      "nombre": "Porta escala Básico",
+      "familia": 2,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 9,
+    "fields": {
+      "nombre": "Porta escala Tradicional",
+      "familia": 2,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 10,
+    "fields": {
+      "nombre": "Rescate estándar",
+      "familia": 2,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 11,
+    "fields": {
+      "nombre": "Rescate mediano",
+      "familia": 2,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 12,
+    "fields": {
+      "nombre": "Rescate Técnico - Pesado",
+      "familia": 2,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 13,
+    "fields": {
+      "nombre": "Aljibe",
+      "familia": 2,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 14,
+    "fields": {
+      "nombre": "HAZ MAT",
+      "familia": 2,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 15,
+    "fields": {
+      "nombre": "de transporte sanitario",
+      "familia": 2,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 16,
+    "fields": {
+      "nombre": "de apoyo",
+      "familia": 3,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 17,
+    "fields": {
+      "nombre": " ",
+      "familia": 4,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 18,
+    "fields": {
+      "nombre": " ",
+      "familia": 5,
+      "is_others_option": false
+    }
+  },
+  {
+    "model": "interface.usomaterialmayor",
+    "pk": 19,
+    "fields": {
+      "nombre": " ",
+      "familia": 6,
+      "is_others_option": true
     }
   }
 ]
