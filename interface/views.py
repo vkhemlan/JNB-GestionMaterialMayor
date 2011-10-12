@@ -406,25 +406,110 @@ def detalle_evento_hoja_de_vida_material_mayor(request, material_mayor_id, event
             'form': form
         }, 
         context_instance=RequestContext(request))
-
-@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
-def material_mayor(request):
+        
+def _material_mayor(request):
     if request.user.get_profile().is_staff_jnbc():
         data = request.GET
-        template = 'staff/material_mayor.html'
+        title = 'Navegador de material mayor'
     else:
         data = {
             'region': request.user.get_profile().cuerpo.comuna.provincia.region.id,
             'cuerpo': request.user.get_profile().cuerpo.id
         }
-        template = 'staff/material_mayor_cuerpo.html'
+        title = 'Material mayor del cuerpo'
+        
     form = MaterialMayorSearchForm(data)
-    search_result = form.get_filtered_material_mayor()
+    material_mayor = form.get_filtered_material_mayor()
+    return form, material_mayor, title
+
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
+def material_mayor(request):
+    form, material_mayor, title = _material_mayor(request)
+    
+    if request.user.get_profile().is_staff_jnbc():
+        template = 'staff/material_mayor.html'
+    else:
+        template = 'staff/material_mayor_cuerpo.html'
+        
     return render_to_response(template, {
             'form': form,
-            'search_result': search_result,
+            'material_mayor': material_mayor,
+            'title': title
         }, 
         context_instance=RequestContext(request))
+        
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
+def material_mayor_excel(request):
+    form, material_mayor, title = _material_mayor(request)
+    
+    response = HttpResponse(mimetype="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename=material_mayor_%s.xls' % str(date.today())
+    
+    title_style = XFStyle()
+    title_font = Font()
+    title_font.bold = True
+    title_font.height = 300
+    title_style.font = title_font
+    
+    wb = Workbook()
+    ws = wb.add_sheet('Material Mayor')
+    
+    ws.row(0).height = 500
+    ws.col(0).width = 5000
+    ws.col(1).width = 5000
+    ws.col(2).width = 7000
+    ws.col(3).width = 7000
+    ws.col(4).width = 7000
+    ws.col(5).width = 7000
+    ws.col(6).width = 4000
+    ws.col(7).width = 4000
+    
+    current_row = 0
+    ws.write(current_row, 0, title, title_style)
+    current_row += 1
+    
+    link_style = easyxf('font: underline single') 
+    
+    bold_style = XFStyle()
+    bold_font = Font()
+    bold_font.bold = True
+    bold_style.font = bold_font
+
+    
+    ws.write(current_row, 0, u'Marca chasis', bold_style)
+    ws.write(current_row, 1, u'Modelo chasis', bold_style)
+    ws.write(current_row, 2, u'Marca carrosado', bold_style)
+    ws.write(current_row, 3, u'N° chasis', bold_style)
+    ws.write(current_row, 4, u'N° motor', bold_style)
+    ws.write(current_row, 5, u'Cuerpo', bold_style)
+    ws.write(current_row, 6, u'Compañía', bold_style)
+            
+    current_row += 1
+        
+    for material_mayor in material_mayor:
+        ws.write(current_row, 0, unicode(material_mayor.modelo_chasis.marca))
+        ws.write(current_row, 1, unicode(material_mayor.modelo_chasis))
+        ws.write(current_row, 2, unicode(material_mayor.marca_carrosado))
+        ws.write(current_row, 3, unicode(material_mayor.numero_chasis))
+        ws.write(current_row, 4, unicode(material_mayor.numero_motor))
+        if material_mayor.cuerpo:
+            cuerpo_string = unicode(material_mayor.cuerpo)
+        else:
+            cuerpo_string = 'No asignado'
+        ws.write(current_row, 5, cuerpo_string)
+        if material_mayor.compania:
+            compania_string = unicode(material_mayor.compania)
+        else:
+            compania_string = 'No asignado'
+        ws.write(current_row, 6, compania_string)
+             
+        editar_link = settings.SITE_URL + reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
+        ws.write(current_row, 7, Formula('HYPERLINK("%s";"Editar")' % editar_link), link_style)
+        
+        current_row += 1
+
+    wb.save(response)
+    return response
         
 @authorize(roles=(Rol.OPERACIONES(),))
 @authorize_material_mayor_access

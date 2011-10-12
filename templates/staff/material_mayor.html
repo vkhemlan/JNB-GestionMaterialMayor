@@ -10,11 +10,20 @@
         new Array({{ cuerpo.id }}, "{{ cuerpo }}", {{ cuerpo.comuna.provincia.region.id }}),
     {% endfor %}
     ]
+    
+    var default_cuerpo = {{ form.cuerpo.data|default_if_none:0 }}
 </script>
 
 {% endblock %}
 
 {% block main_content %}
+    <p class="breadcrumbs">
+        <strong>Material mayor</strong>
+    </p>
+    
+    <h2>{{ title }}</h2>
+    
+    <hr />
 
 	<div class="span-21">
             
@@ -26,6 +35,10 @@
         </form>
         <br />
 	</div>
+	
+	<hr />
+	
+	<p><a href="{% url interface.views.material_mayor_excel %}?{{ form.get_path }}">Descargar esta búsqueda como Excel</a></p>
     
     {% if flash.success %}				    
 		<div class="success">{{ flash.success }}</div>
@@ -50,57 +63,22 @@
                 <th></th>
             </tr>
             
-            {% if search_result.potentially_has_material_mayor %}
-                {% for material_mayor in search_result.material_mayor %}
-                    <tr>
-                        <td>{{ material_mayor.modelo_chasis.marca }}</td>
-                        <td>{{ material_mayor.modelo_chasis }}</td>
-                        <td>{{ material_mayor.marca_carrosado }}</td>
-                        <td>{{ material_mayor.numero_chasis }}</td>
-                        <td>{{ material_mayor.numero_motor }}</td>
-                        <td>{{ material_mayor.cuerpo }}</td>
-                        <td>{{ material_mayor.compania }}</td>
-                        <td><a href="{% url interface.views.editar_material_mayor material_mayor.id %}">Editar</a></td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="5">No hay material mayor a nivel central</td>
-                    </tr>
-                {% endfor %}
+            {% for material_mayor in material_mayor %}
                 <tr>
-                    <td>&nbsp;</td>
-                </tr>
-            {% endif %}
-        </ul>
-        
-        {% for child in search_result.children %}
-            <tr>
-                <td colspan="5">
-                    {% if child.link_url %}
-                        <h4><a href="{% url interface.views.material_mayor %}{{ child.link_url }}">{{ child.title }}</a></h4>
-                    {% else %}
-                        <h4>{{ child.title }}</h4>
-                    {% endif %}
-                </td>
-            </tr>
-            {% for material_mayor in child.material_mayor %}
-                <tr>
-                    <td>{{ material_mayor.modelo_chasis.marca }} {{ material_mayor.modelo_chasis }}</td>
+                    <td>{{ material_mayor.modelo_chasis.marca }}</td>
+                    <td>{{ material_mayor.modelo_chasis }}</td>
                     <td>{{ material_mayor.marca_carrosado }}</td>
                     <td>{{ material_mayor.numero_chasis }}</td>
                     <td>{{ material_mayor.numero_motor }}</td>
+                    <td>{{ material_mayor.cuerpo|default_if_none:"No asignado" }}</td>
+                    <td>{{ material_mayor.compania|default_if_none:"No asignado" }}</td>
                     <td><a href="{% url interface.views.editar_material_mayor material_mayor.id %}">Editar</a></td>
                 </tr>
             {% empty %}
                 <tr>
-                    <td><i>No hay material mayor a este nivel</i></td>
+                    <td colspan="5">Ningún material mayor coincide con los criterios de búsqueda</td>
                 </tr>
             {% endfor %}
-            <tr>
-                <td>&nbsp;</td>
-            </tr>
-        {% endfor %}
-        
         </table>
     </div>
 {% endblock %}
