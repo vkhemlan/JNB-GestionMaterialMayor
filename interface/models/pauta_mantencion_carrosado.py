@@ -6,7 +6,7 @@ from . import PautaMantencion
 class PautaMantencionCarrosado(PautaMantencion):
     
     def __unicode__(self):
-        return unicode(self.pautamantencion)
+        return unicode(self.pautamantencion_ptr)
 
     class Meta:
         app_label = 'interface'
