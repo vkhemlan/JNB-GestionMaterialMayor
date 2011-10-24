@@ -71,6 +71,7 @@ def _adquisicion_material_mayor(request, FormularioAdquisicion, template):
             if request.user.get_profile().is_staff_cuerpo():
                 material_mayor.cuerpo = request.user.get_profile().cuerpo
                 material_mayor.save()
+                material_mayor.validado_por_operaciones = False
                 material_mayor.notify_operaciones_of_dada_de_alta()
             
             return HttpResponseRedirect(url)
@@ -223,16 +224,16 @@ def material_mayor_sin_asignar_excel(request):
     return response
 
 @authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
-@authorize_material_mayor_access
-def editar_material_mayor(request, material_mayor_id):
+@authorize_material_mayor_access(requiere_validacion_operaciones=False)
+def editar_material_mayor(request, material_mayor):
     # Vista de edición de los datos técnicos de un material mayor
-    material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)
     
     asignacion_link = None
-    if request.user.get_profile().rol == Rol.OPERACIONES():
-        asignacion_link = reverse('interface.views.asignar_material_mayor_a_cuerpo', args=[material_mayor.id])
-    elif request.user.get_profile().is_staff_cuerpo():
-        asignacion_link = reverse('interface.views.asignar_material_mayor_a_compania', args=[material_mayor.id])
+    if material_mayor.validado_por_operaciones:
+        if request.user.get_profile().rol == Rol.OPERACIONES():
+            asignacion_link = reverse('interface.views.asignar_material_mayor_a_cuerpo', args=[material_mayor.id])
+        elif request.user.get_profile().is_staff_cuerpo():
+            asignacion_link = reverse('interface.views.asignar_material_mayor_a_compania', args=[material_mayor.id])
     
     if request.method == 'POST':
         form = FormularioDarDeAltaMaterialMayor(request.POST, request.FILES, instance=material_mayor, user=request.user)
@@ -261,13 +262,12 @@ def editar_material_mayor(request, material_mayor_id):
         context_instance=RequestContext(request))
 
 @authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
-@authorize_material_mayor_access
-def editar_adquisicion_material_mayor(request, material_mayor_id):
+@authorize_material_mayor_access(requiere_validacion_operaciones=False)
+def editar_adquisicion_material_mayor(request, material_mayor):
     # Vista de edición de los datos de adquisición de cierto material mayor
     # Nota: La adquisicion puede ser o por compra o por donación, pero
     # el sistema carga la correcta a través de un polimorfismo simulado
     
-    material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)
     adquisicion = material_mayor.adquisicion.get_polymorphic_instance()
     Form = eval('Formulario%s' % (adquisicion.__class__.__name__))
     if request.method == 'POST':
@@ -287,11 +287,10 @@ def editar_adquisicion_material_mayor(request, material_mayor_id):
         context_instance=RequestContext(request))
 
 @authorize(roles=(Rol.OPERACIONES(),))
-@authorize_material_mayor_access
-def asignar_material_mayor_a_cuerpo(request, material_mayor_id):
+@authorize_material_mayor_access(requiere_validacion_operaciones=True)
+def asignar_material_mayor_a_cuerpo(request, material_mayor):
     # Vista de (re)asignación de material mayor a cierto cuerpo/compañía
     # Sólo Operaciones tiene acceso a esta capacidad
-    material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)
     if request.method == 'POST':
         form = FormularioAsignacionCuerpoMaterialMayor(request.POST, request.FILES)
         if form.is_valid():
@@ -330,11 +329,10 @@ def asignar_material_mayor_a_cuerpo(request, material_mayor_id):
         context_instance=RequestContext(request))
         
 @authorize(cargos=(settings.CARGOS_CUERPO['Comandante'],))
-@authorize_material_mayor_access
-def asignar_material_mayor_a_compania(request, material_mayor_id):
+@authorize_material_mayor_access(requiere_validacion_operaciones=True)
+def asignar_material_mayor_a_compania(request, material_mayor):
     # Vista de (re)asignación de material mayor a cierta compañía
     # Sólo los responsables de cada cuerpo tienen acceso a esta funcionalidad
-    material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)
     if request.method == 'POST':
         form = FormularioAsignacionCompaniaMaterialMayor(material_mayor, request.POST, request.FILES)
         if form.is_valid():
@@ -362,10 +360,9 @@ def asignar_material_mayor_a_compania(request, material_mayor_id):
 
 
 @authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
-@authorize_material_mayor_access
-def detalles_hoja_de_vida_material_mayor(request, material_mayor_id):
+@authorize_material_mayor_access(requiere_validacion_operaciones=False)
+def detalles_hoja_de_vida_material_mayor(request, material_mayor):
     # Vista que despliega el listado de eventos en la hoja de vida de un material mayor en particular
-    material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)
     
     events = [event.get_polymorphic_instance() for event in EventoHojaVidaMaterialMayor.objects.filter(material_mayor=material_mayor).order_by('fecha')]
     
@@ -377,10 +374,9 @@ def detalles_hoja_de_vida_material_mayor(request, material_mayor_id):
         
 
 @authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
-@authorize_material_mayor_access
-def detalle_evento_hoja_de_vida_material_mayor(request, material_mayor_id, evento_id):
+@authorize_material_mayor_access(requiere_validacion_operaciones=False)
+def detalle_evento_hoja_de_vida_material_mayor(request, material_mayor, evento_id):
     # Vista que despliega el detalle de alguno de los eventos de la hoja de vida de cierto material mayor
-    material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)
     evento = EventoHojaVidaMaterialMayor.objects.get(pk=evento_id).get_polymorphic_instance()
     
     if evento.material_mayor != material_mayor:
@@ -512,9 +508,8 @@ def material_mayor_excel(request):
     return response
         
 @authorize(roles=(Rol.OPERACIONES(),))
-@authorize_material_mayor_access
-def asignar_patente_a_material_mayor(request, material_mayor_id):
-    material_mayor = MaterialMayor.objects.get(pk=material_mayor_id)
+@authorize_material_mayor_access(requiere_validacion_operaciones=True)
+def asignar_patente_a_material_mayor(request, material_mayor):
     if material_mayor.asignacion_de_patente:
         request.flash['error'] = 'Material mayor ya tiene patente'
         url = reverse('interface.views.material_mayor')
@@ -547,7 +542,21 @@ def asignar_patente_a_material_mayor(request, material_mayor_id):
         context_instance=RequestContext(request))
 
 @authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
-@authorize_material_mayor_access        
-def detalles_patente_material_mayor(request, material_mayor_id):
-    asignacion_patente = AsignacionPatenteMaterialMayor.objects.get(material_mayor__pk=material_mayor_id)
-    return detalle_evento_hoja_de_vida_material_mayor(request, material_mayor_id=material_mayor_id, evento_id=asignacion_patente.id)
+@authorize_material_mayor_access(requiere_validacion_operaciones=True)
+def detalles_patente_material_mayor(request, material_mayor):
+    asignacion_patente = AsignacionPatenteMaterialMayor.objects.get(material_mayor=material_mayor)
+    return detalle_evento_hoja_de_vida_material_mayor(request, material_mayor_id=material_mayor.id, evento_id=asignacion_patente.id)
+    
+@authorize(roles=(Rol.OPERACIONES(),),)
+@authorize_material_mayor_access(requiere_validacion_operaciones=False)
+def validar_material_mayor(request, material_mayor):
+    if request.method == 'POST':
+        material_mayor.validado_por_operaciones = True
+        material_mayor.save()
+        request.flash['success'] = 'Material mayor validado exitosamente'
+        url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
+        return HttpResponseRedirect(url)
+        
+@authorize(roles=(Rol.OPERACIONES(),),)
+def agregar_pauta_mantencion_chasis(request):
+    pass

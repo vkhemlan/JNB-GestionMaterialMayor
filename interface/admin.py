@@ -38,3 +38,9 @@ class UsoMaterialMayorAdmin(admin.ModelAdmin):
     exclude = ('is_others_option',)
     
 admin.site.register(UsoMaterialMayor, UsoMaterialMayorAdmin)
+
+admin.site.register(FrecuenciaOperacion)
+admin.site.register(PautaMantencion)
+admin.site.register(PautaMantencionChasis)
+admin.site.register(PautaMantencionCarrosado)
+admin.site.register(OperacionMantencion)

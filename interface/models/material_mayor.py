@@ -34,6 +34,7 @@ class MaterialMayor(models.Model):
     tipo_combustible = models.ForeignKey('TipoCombustibleMaterialMayor', verbose_name=u'Tipo de combustible', blank=True, null=True)
     modelo_bomba = models.ForeignKey('ModeloBombaMaterialMayor', verbose_name=u'Modelo de bomba', blank=True, null=True)
     pais_origen = models.ForeignKey('Pais', verbose_name=u'País de origen', blank=True, null=True)
+    pauta_mantencion_carrosado = models.ForeignKey('PautaMantencionCarrosado', verbose_name=u'Pauta de mantención del carrosado', blank=True, null=True)
     planos = models.FileField(upload_to=lambda i, fn: generate_uploaded_material_mayor_file_name('planos', i, fn), verbose_name=u'Planos del vehículo', blank=True, null=True)
     # Fotografías
     fotografia_frontal = ImageField(upload_to=lambda i, fn: uploaded_image_rename('fotografia_frontal', i, fn), verbose_name=u'Vista Frontal', blank=True, null=True)
@@ -42,6 +43,7 @@ class MaterialMayor(models.Model):
     # Metadata
     adquisicion = models.OneToOneField('AdquisicionMaterialMayor')
     asignacion_de_patente = models.OneToOneField('AsignacionPatenteMaterialMayor', blank=True, null=True)
+    validado_por_operaciones = models.BooleanField(default=True)
     # Asociacion
     cuerpo = models.ForeignKey('Cuerpo', blank=True, null=True)
     compania = models.ForeignKey('Compania', blank=True, null=True)

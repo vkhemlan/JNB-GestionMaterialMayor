@@ -2,6 +2,6 @@ Estimado(a) {{ usuario.get_full_name }},
 
 Un nuevo material mayor ha sido dado de alta en el sistema por el usuario {{ material_mayor.adquisicion.usuario.get_full_name }} del Cuerpo de {{ material_mayor.adquisicion.usuario.get_profile.cuerpo }}.
 
-Para ver los detalles de este proceso por favor diríjase al siguiente sitio:
+Para validar este material por favor diríjase al siguiente sitio:
 
 {{ SITE_URL }}{% url interface.views.editar_material_mayor material_mayor.id %}

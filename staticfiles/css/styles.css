@@ -54,3 +54,9 @@ input.disabled-input {
     color: gray;
     background-color: #efefef;
 }
+
+.error_message {
+    color:red;
+    font-weight: bold;
+    font-size: 10px;
+}

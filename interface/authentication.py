@@ -2,7 +2,7 @@
 
 import urllib2
 from functools import wraps
-
+from django.core.urlresolvers import reverse
 from utils import log
 from django.conf import settings
 from django.shortcuts import redirect
@@ -12,21 +12,27 @@ from django.core.exceptions import ValidationError
 from interface.models import UserProfile, MaterialMayor
 from interface.utils import log, request_webservice, get_xml_node_contents, intersect
 
-# Decorador que verifica si un usuario ya autenticado puede ver a priori los detalles
-# de un material mayor
-def authorize_material_mayor_access(f):
-    def wrap(request, *args, **kwargs):
-        material_mayor = MaterialMayor.objects.get(pk=kwargs['material_mayor_id'])
-        if not request.user.get_profile().may_access_material_mayor(material_mayor):
-            request.flash['error'] = u'Error de acceso'
-            return redirect('index')
-        else:
-            return f(request, *args, **kwargs)
-    
-    wrap.__doc__ = f.__doc__
-    wrap.__name__ = f.__name__
-    return wrap
+class authorize_material_mayor_access(object):
+    def __init__(self, requiere_validacion_operaciones):
+        self.requiere_validacion_operaciones = requiere_validacion_operaciones
 
+    def __call__(self, func):
+        @wraps(func)
+        def wrap(request, *args, **kwargs):
+            material_mayor = MaterialMayor.objects.get(pk=kwargs['material_mayor'])
+            if not request.user.get_profile().may_access_material_mayor(material_mayor):
+                request.flash['error'] = u'Error de acceso'
+                return redirect('index')
+            if self.requiere_validacion_operaciones and not material_mayor.validado_por_operaciones:
+                request.flash['error'] = u'El material aún no ha sido validado por la JNBC'
+                url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
+                return redirect(url)
+            else:
+                kwargs['material_mayor'] = material_mayor
+                return func(request, *args, **kwargs)
+
+        return wrap
+        
 # Check if user has the role required to the decorated view
 class authorize(object):
     def __init__(self, roles=(), cargos=()):

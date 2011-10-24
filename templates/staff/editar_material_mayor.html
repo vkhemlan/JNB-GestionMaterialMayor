@@ -31,17 +31,23 @@
 </script>
 {% endblock %}
 
-{% block main_content %}
-    {% if flash.success %}				    
-		<div class="success">{{ flash.success }}</div>
-    {% endif %}
-    
+{% block staff_content %}
     <p class="breadcrumbs">
-	        <strong>Material mayor</strong>
-            &raquo; {{ form.instance.breadcrumbs_string }}
-        </p>
+        <strong>Material mayor</strong>
+        &raquo; {{ form.instance.breadcrumbs_string }}
+    </p>
 
 	<h2>Editar material mayor</h2>
+	
+	{% if not form.instance.validado_por_operaciones %}
+        <p class="error_message">Este material aún no ha sido validado por la JNBC por lo que no podrá acceder a la mayoría de sus opciones.</p>
+        {% if user.get_profile.puede_validar_material_mayor %}
+            <form method="post" action="{% url interface.views.validar_material_mayor form.instance.id %}">
+                {% csrf_token %}
+                <input type="submit" value="Validar Material Mayor" />
+            </form>
+        {% endif %}
+    {% endif %}
         
     <form method="post" action="." enctype="multipart/form-data">
         {% csrf_token %}
@@ -108,7 +114,7 @@
 
                     <td>
                         {{ pair.0 }}
-                    </td>
+                    </td>   
                 </tr>
             {% endfor %}
                 

@@ -1,3 +1,8 @@
+from .frecuencia_operacion import FrecuenciaOperacion
+from .pauta_mantencion import PautaMantencion
+from .pauta_mantencion_chasis import PautaMantencionChasis
+from .pauta_mantencion_carrosado import PautaMantencionCarrosado
+from .operacion_mantencion import OperacionMantencion
 from .familia_uso_material_mayor import FamiliaUsoMaterialMayor
 from .uso_material_mayor import UsoMaterialMayor
 from .tipo_vehiculo_material_mayor import TipoVehiculoMaterialMayor
@@ -66,4 +71,9 @@ __all__ = [
     'UsoMaterialMayor',
     'AsignacionCompaniaMaterialMayor',
     'AsignacionPatenteMaterialMayor',
+    'FrecuenciaOperacion',
+    'PautaMantencion',
+    'PautaMantencionChasis',
+    'PautaMantencionCarrosado',
+    'OperacionMantencion'
 ]

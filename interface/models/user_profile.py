@@ -29,6 +29,9 @@ class UserProfile(models.Model):
         # tiene que estar en el listado de cargos con permisos en el sistema.
         return intersect(cargo_ids, settings.CARGOS_CUERPO.values())
         
+    def puede_validar_material_mayor(self):
+        return self.rol == Rol.OPERACIONES()
+        
     def is_staff_jnbc(self):
         return bool(self.rol)
         

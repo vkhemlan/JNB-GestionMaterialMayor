@@ -13,6 +13,11 @@ class FormularioDarDeAltaMaterialMayor(BaseModelForm):
     def clean(self):
         data = self.cleaned_data
         
+        if 'uso' in data and data['uso'] and data['uso'].is_others_option:
+            if 'otro_uso' in data and not data['otro_uso']:
+                self._errors['otro_uso'] = self.error_class([u'Este campo es obligatorio'])
+                del data['otro_uso']
+        
         validation_pairs = [
             ['chasis', 'del chasis'],
             ['caja_cambio', 'de la caja de cambio'],
@@ -40,7 +45,7 @@ class FormularioDarDeAltaMaterialMayor(BaseModelForm):
         fields = self._field_range('marca_carrosado', 'planos')
         fields.insert(3, self['marca_caja_cambio'])
         fields.insert(6, self['marca_bomba'])
-        return self._render_fields_as_list(fields)
+        return self._render_fields_as_list(fields, blacklist=['pauta_mantencion_carrosado'])
 
     def picture_fields(self):
         fields = self._field_range('fotografia_frontal', 'fotografia_trasera')

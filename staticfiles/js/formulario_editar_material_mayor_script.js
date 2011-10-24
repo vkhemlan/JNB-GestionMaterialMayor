@@ -29,6 +29,11 @@ function refresh_otros_usos() {
     } else {
         select_otros_usos.parents('tr').slideUp()
         select_otros_usos.val('')
+        
+        var tr_otros_usos = $(select_otros_usos.parents()[1])
+        if (tr_otros_usos.prev().attr('class') === 'errorrow') {
+            tr_otros_usos.prev().hide()
+        }
     }
 }
 
