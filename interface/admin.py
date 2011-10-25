@@ -32,6 +32,7 @@ admin.site.register(AsignacionPatenteMaterialMayor)
 admin.site.register(UserProfile)
 admin.site.register(Rol)
 admin.site.register(Cargo)
+
 admin.site.register(FamiliaUsoMaterialMayor)
 
 class UsoMaterialMayorAdmin(admin.ModelAdmin):
@@ -44,3 +45,4 @@ admin.site.register(PautaMantencion)
 admin.site.register(PautaMantencionChasis)
 admin.site.register(PautaMantencionCarrosado)
 admin.site.register(OperacionMantencion)
+admin.site.register(CambioPautaMantencionCarrosadoMaterialMayor)

@@ -1,0 +1,11 @@
+# coding: utf-8
+
+from django import forms
+from interface.models import CambioPautaMantencionCarrosadoMaterialMayor
+
+class FormularioHojaVidaCambioPautaMantencionCarrosadoMaterialMayor(forms.ModelForm):
+    
+    class Meta:
+        model = CambioPautaMantencionCarrosadoMaterialMayor
+        fields = ()
+

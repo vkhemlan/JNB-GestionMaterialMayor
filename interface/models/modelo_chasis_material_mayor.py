@@ -5,6 +5,7 @@ from django.db import models
 class ModeloChasisMaterialMayor(models.Model):
     marca = models.ForeignKey('MarcaChasisMaterialMayor')
     name = models.CharField(max_length = 255)
+    pauta_mantencion = models.ForeignKey('PautaMantencionChasis')
     
     def __unicode__(self):
         return self.name

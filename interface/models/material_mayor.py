@@ -28,13 +28,13 @@ class MaterialMayor(models.Model):
     color = models.ForeignKey('ColorMaterialMayor', verbose_name=u'Color', blank=True, null=True)
     # Información adicional
     marca_carrosado = models.ForeignKey('MarcaCarrosadoMaterialMayor', verbose_name=u'Marca de carrosado')
+    pauta_mantencion_carrosado = models.ForeignKey('PautaMantencionCarrosado', verbose_name=u'Pauta de mantención del carrosado', blank=True, null=True)
     condicion = models.ForeignKey('CondicionMaterialMayor', verbose_name=u'Condición', blank=True, null=True)
     tipo_caja_cambio = models.ForeignKey('TipoCajaCambioMaterialMayor', verbose_name=u'Tipo de caja de cambio', blank=True, null=True)
     modelo_caja_cambio = models.ForeignKey('ModeloCajaCambioMaterialMayor', verbose_name=u'Modelo de caja de cambio', blank=True, null=True)
     tipo_combustible = models.ForeignKey('TipoCombustibleMaterialMayor', verbose_name=u'Tipo de combustible', blank=True, null=True)
     modelo_bomba = models.ForeignKey('ModeloBombaMaterialMayor', verbose_name=u'Modelo de bomba', blank=True, null=True)
     pais_origen = models.ForeignKey('Pais', verbose_name=u'País de origen', blank=True, null=True)
-    pauta_mantencion_carrosado = models.ForeignKey('PautaMantencionCarrosado', verbose_name=u'Pauta de mantención del carrosado', blank=True, null=True)
     planos = models.FileField(upload_to=lambda i, fn: generate_uploaded_material_mayor_file_name('planos', i, fn), verbose_name=u'Planos del vehículo', blank=True, null=True)
     # Fotografías
     fotografia_frontal = ImageField(upload_to=lambda i, fn: uploaded_image_rename('fotografia_frontal', i, fn), verbose_name=u'Vista Frontal', blank=True, null=True)

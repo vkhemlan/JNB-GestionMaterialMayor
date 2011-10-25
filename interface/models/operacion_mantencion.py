@@ -11,7 +11,7 @@ class OperacionMantencion(models.Model):
         return self.descripcion
 
     class Meta:
-        ordering = ['descripcion']
+        ordering = ['id']
         app_label = 'interface'
         verbose_name = u'Operación'
         verbose_name_plural = u'Operaciones'

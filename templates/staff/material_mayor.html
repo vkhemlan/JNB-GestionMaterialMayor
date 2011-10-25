@@ -16,7 +16,7 @@
 
 {% endblock %}
 
-{% block main_content %}
+{% block staff_content %}
     <p class="breadcrumbs">
         <strong>Material mayor</strong>
     </p>
@@ -39,10 +39,6 @@
 	<hr />
 	
 	<p><a href="{% url interface.views.material_mayor_excel %}?{{ form.get_path }}">Descargar esta búsqueda como Excel</a></p>
-    
-    {% if flash.success %}				    
-		<div class="success">{{ flash.success }}</div>
-    {% endif %}
     
     <div class="span-21">
         <table>

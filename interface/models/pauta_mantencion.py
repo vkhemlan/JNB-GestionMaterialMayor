@@ -3,7 +3,7 @@
 from django.db import models
 
 class PautaMantencion(models.Model):
-    name = models.CharField(max_length = 255)
+    name = models.CharField(max_length = 255, verbose_name='Nombre')
     
     def __unicode__(self):
         return self.name

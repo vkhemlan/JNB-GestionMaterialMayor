@@ -1,14 +1,21 @@
 # coding: utf-8
 
 from django import forms
-from interface.models import MaterialMayor, MarcaChasisMaterialMayor, MarcaCarrosadoMaterialMayor, MarcaCajaCambioMaterialMayor, MarcaBombaMaterialMayor
-from interface.widgets import PrivateFileInput
+from interface.models import MaterialMayor, MarcaChasisMaterialMayor, MarcaCarrosadoMaterialMayor, MarcaCajaCambioMaterialMayor, MarcaBombaMaterialMayor, PautaMantencionCarrosado
 from . import BaseModelForm
 
 class FormularioDarDeAltaMaterialMayor(BaseModelForm):
     marca_chasis = forms.ModelChoiceField(queryset=MarcaChasisMaterialMayor.objects.all())
     marca_caja_cambio = forms.ModelChoiceField(queryset=MarcaCajaCambioMaterialMayor.objects.all(), required=False)
     marca_bomba = forms.ModelChoiceField(queryset=MarcaBombaMaterialMayor.objects.all(), required=False)
+    
+    def __init__(self, *args, **kwargs):
+        profile = kwargs['user'].get_profile()
+        
+        super(FormularioDarDeAltaMaterialMayor, self).__init__(*args, **kwargs)
+
+        if profile.is_staff_jnbc():
+            self.fields['pauta_mantencion_carrosado'] = forms.ModelChoiceField(queryset=PautaMantencionCarrosado.objects.all(), label='Pauta de mantención del carrosado')
 
     def clean(self):
         data = self.cleaned_data
@@ -43,6 +50,10 @@ class FormularioDarDeAltaMaterialMayor(BaseModelForm):
         
     def render_informacion_adicional(self):
         fields = self._field_range('marca_carrosado', 'planos')
+        try:
+            fields.insert(1, self['pauta_mantencion_carrosado']) 
+        except KeyError:
+            pass
         fields.insert(3, self['marca_caja_cambio'])
         fields.insert(6, self['marca_bomba'])
         return self._render_fields_as_list(fields, blacklist=['pauta_mantencion_carrosado'])
@@ -50,6 +61,14 @@ class FormularioDarDeAltaMaterialMayor(BaseModelForm):
     def picture_fields(self):
         fields = self._field_range('fotografia_frontal', 'fotografia_trasera')
         return [(field, getattr(self.instance, field.name)) for field in fields]
+        
+    def get_instance(self):
+        instance = self.instance
+        if 'pauta_mantencion_carrosado' in self.fields:
+            instance.pauta_mantencion_carrosado = self.cleaned_data['pauta_mantencion_carrosado']
+            
+        instance.validado_por_operaciones = True
+        return instance
         
     @classmethod
     def get_from_instance(self, instance, user):
@@ -63,4 +82,4 @@ class FormularioDarDeAltaMaterialMayor(BaseModelForm):
                
     class Meta:
         model = MaterialMayor
-        exclude = ('adquisicion', 'asignacion_de_patente')
+        exclude = ('adquisicion', 'asignacion_de_patente', 'pauta_mantencion_carrosado')

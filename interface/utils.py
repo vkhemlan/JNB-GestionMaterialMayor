@@ -43,3 +43,26 @@ def convert_camelcase_to_lowercase(name):
     
 def intersect(a, b):
      return bool(set(a) & set(b))
+     
+def remove_deleted_fields_from_data(data, prefix):
+    total_forms = int(data['%s-TOTAL_FORMS' % prefix])
+    
+    return_data = {}
+    insertion_index = 0
+    new_initial_count = 0
+    
+    for i in range(total_forms):
+        base_pattern = '%s-%d' % (prefix, i)
+        if '%s-DELETE' % base_pattern not in data:
+            for key, value in data.items():
+                if base_pattern in key:
+                    new_key = re.sub(r'^(%s-)\d+(-.+)$' % prefix, r'\1%d\2', key) % insertion_index
+                    return_data[new_key] = value
+                    if key == '%s-id' % base_pattern and value:
+                        new_initial_count += 1
+            insertion_index += 1
+                        
+    return_data['%s-TOTAL_FORMS' % prefix] = insertion_index
+    return_data['%s-MAX_NUM_FORMS' % prefix] = data['%s-MAX_NUM_FORMS' % prefix]
+    return_data['%s-INITIAL_FORMS' % prefix] = new_initial_count
+    return return_data

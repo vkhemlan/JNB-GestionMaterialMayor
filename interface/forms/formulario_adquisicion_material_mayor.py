@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from django import forms
-from interface.models import AdquisicionMaterialMayor, Rol, Region, Cuerpo
+from interface.models import AdquisicionMaterialMayor, Rol, Region, Cuerpo, PautaMantencionCarrosado
 from . import BaseModelForm
 from django.conf import settings
 from django.template import loader, Context

@@ -1,0 +1,45 @@
+{% extends 'staff/base.html' %}
+
+{% block staff_content %}
+    <p class="breadcrumbs">
+        <strong>Pautas de mantención de carrosado</strong>
+        &raquo; {{ pauta }}
+        &raquo; Eliminar
+    </p>
+    
+    <h2>Eliminar pauta de mantención</h2>
+    
+    <p><strong>Pauta:</strong> <a href="{% url interface.views.pauta_mantencion_carrosado_editar pauta.id %}">{{ pauta }}</a></p>
+    
+    {% if material_mayor %}
+        <p>
+            La pauta no puede ser eliminada pues está siendo usada por el siguiente material mayor:
+        </p>    
+            
+        <ul>
+            {% for material_mayor in material_mayor %}
+                <li><a href="{% url interface.views.editar_material_mayor material_mayor.id %}">{{ material_mayor }}</a></li>
+            {% endfor %}
+        </ul>
+        
+        <br />
+        <p>
+            Por favor cambie la pauta de mantención asociada a estos vehículos e intente eliminar nuevamente esta pauta.
+        </p>
+    {% else %}
+        <p>
+            Antes de eliminar esta pauta, considere que el proceso es irreversible.
+        </p>
+        <p> 
+            Los procesos de mantención generados a partir de esta pauta se guardan permanentemente en la hoja de vida de cada vehículo y no serán eliminados.
+        </p>
+        
+        <br />
+        
+        <form method="post" action=".">
+            {% csrf_token %}
+            <input type="submit" value="Confirmo que deseo eliminar esta pauta de mantención" />
+        </form>
+    {% endif %}
+
+{% endblock %}

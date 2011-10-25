@@ -36,6 +36,7 @@ from .rol import Rol
 from .cargo import Cargo
 from .user_profile import UserProfile
 from .asignacion_patente_material_mayor import AsignacionPatenteMaterialMayor
+from .cambio_pauta_mantencion_carrosado_material_mayor import CambioPautaMantencionCarrosadoMaterialMayor
 
 __all__ = [
     'TipoVehiculoMaterialMayor',
@@ -75,5 +76,6 @@ __all__ = [
     'PautaMantencion',
     'PautaMantencionChasis',
     'PautaMantencionCarrosado',
-    'OperacionMantencion'
+    'OperacionMantencion',
+    'CambioPautaMantencionCarrosadoMaterialMayor'
 ]

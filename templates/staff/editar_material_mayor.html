@@ -86,6 +86,22 @@
                     {% endif %}
                 </td>
             </tr>
+            <tr>
+                <th>Pauta de mantenimiento de carrosado</th>
+                <td>
+                    {% if form.instance.pauta_mantencion_carrosado %}
+                        <a href="{% url interface.views.pauta_mantencion_carrosado_editar form.instance.pauta_mantencion_carrosado.id %}">{{ form.instance.pauta_mantencion_carrosado }}</a>
+                        {% if user.get_profile.puede_asignar_pauta_de_mantenimiento_de_carrosado %}
+                            (<a href="{% url interface.views.cambiar_pauta_mantencion_carrosado form.instance.id %}">Cambiar pauta</a>)
+                        {% endif %}
+                    {% else %}
+                        <i>Sin pauta</i>
+                        {% if user.get_profile.puede_asignar_pauta_de_mantenimiento_de_carrosado %}
+                            (<a href="{% url interface.views.cambiar_pauta_mantencion_carrosado form.instance.id %}">Asignar pauta</a>)
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
             <tr><th>Ingresado por</th><td>{{ form.instance.adquisicion.usuario.get_full_name }}</td></tr>
             <tr><th>Forma de adquisición</th><td>{{ form.instance.adquisicion.modo }} (<a href="{% url interface.views.editar_adquisicion_material_mayor form.instance.id %}">Editar detalles</a>)</td></tr>
             <tr><th>Hoja de vida</th><td><a href="{% url interface.views.detalles_hoja_de_vida_material_mayor form.instance.id %}">Ver hoja de vida</a></td></tr>

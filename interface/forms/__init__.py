@@ -10,6 +10,10 @@ from .formulario_hoja_vida_asignacion_cuerpo_material_mayor import FormularioHoj
 from .formulario_hoja_vida_asignacion_compania_material_mayor import FormularioHojaVidaAsignacionCompaniaMaterialMayor
 from .formulario_asignacion_patente_material_mayor import FormularioAsignacionPatenteMaterialMayor
 from .formulario_hoja_vida_asignacion_patente_material_mayor import FormularioHojaVidaAsignacionPatenteMaterialMayor
+from .formulario_agregar_pauta_mantencion_carrosado import FormularioAgregarPautaMantencionCarrosado
+from .formulario_agregar_pauta_mantencion_chasis import FormularioAgregarPautaMantencionChasis
+from .formulario_cambio_pauta_mantencion_carrosado_material_mayor import FormularioCambioPautaMantencionCarrosadoMaterialMayor
+from .formulario_hoja_vida_cambio_pauta_mantencion_carrosado_material_mayor import FormularioHojaVidaCambioPautaMantencionCarrosadoMaterialMayor
 
 __all__ = [ 'BaseModelForm',
 			'FormularioDarDeAltaMaterialMayor',
@@ -22,4 +26,8 @@ __all__ = [ 'BaseModelForm',
 			'FormularioAsignacionCompaniaMaterialMayor',
 			'FormularioHojaVidaAsignacionCompaniaMaterialMayor',
 			'FormularioAsignacionPatenteMaterialMayor',
-			'FormularioHojaVidaAsignacionPatenteMaterialMayor',]
+			'FormularioHojaVidaAsignacionPatenteMaterialMayor',
+			'FormularioAgregarPautaMantencionCarrosado',
+			'FormularioAgregarPautaMantencionChasis',
+			'FormularioCambioPautaMantencionCarrosadoMaterialMayor',
+			'FormularioHojaVidaCambioPautaMantencionCarrosadoMaterialMayor']

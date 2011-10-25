@@ -1,0 +1,18 @@
+{% extends 'staff/base.html' %}
+
+{% block staff_content %}
+    <p class="breadcrumbs">
+        <strong>Pautas de mantención de carrosado</strong>
+    </p>
+    
+    <h2>Pautas de mantención de carrosado</h2>
+    
+    <hr />
+    
+    <p><a href="{% url interface.views.agregar_pauta_mantencion_carrosado %}">Agregar nueva pauta</a></p>
+    
+    {% for pauta in pautas %}
+        <li><a href="{% url interface.views.pauta_mantencion_carrosado_editar pauta.id %}">{{ pauta }}</a></li>
+    {% endfor %}
+    
+{% endblock %}
