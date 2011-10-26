@@ -1,0 +1,33 @@
+{% extends 'staff/base.html' %}
+
+{% block main_content %}
+    <p class="breadcrumbs">
+        <strong>Material mayor</strong>
+        &raquo; <a href="{% url interface.views.editar_material_mayor material_mayor.id %}">{{ material_mayor.breadcrumbs_string }}</a>
+        &raquo; Validar
+    </p>
+
+	<h2>Validar material mayor</h2>
+	<hr />
+	
+	{% if validation_errors %}
+	    <p>
+	        El material no puede ser validado aún por los siguientes motivos:
+	        
+	        <ul>
+	            {% for validation_error in validation_errors %}
+	                <li>{{ validation_error.0 }} (<a href="{{ validation_error.1 }}">Corregir</a>)</li>
+	            {% endfor %}
+	        </ul>
+	    </p>
+	{% else %}
+    	<p>
+    	    Al validar un material mayor subido por un cuerpo este entra a ser parte del sistema de mantenciones y todos sus beneficios. Por favor verifique que sus especificaciones técnicas están correctas antes de continuar este proceso.
+    	</p>
+        
+        <form method="post" action=".">
+            {% csrf_token %}
+            <input type="submit" value="Validar" />
+        </form>
+	{% endif %}
+{% endblock %}

@@ -37,6 +37,8 @@ from .cargo import Cargo
 from .user_profile import UserProfile
 from .asignacion_patente_material_mayor import AsignacionPatenteMaterialMayor
 from .cambio_pauta_mantencion_carrosado_material_mayor import CambioPautaMantencionCarrosadoMaterialMayor
+from .cambio_numero_chasis_material_mayor import CambioNumeroChasisMaterialMayor
+from .cambio_numero_motor_material_mayor import CambioNumeroMotorMaterialMayor
 
 __all__ = [
     'TipoVehiculoMaterialMayor',
@@ -77,5 +79,7 @@ __all__ = [
     'PautaMantencionChasis',
     'PautaMantencionCarrosado',
     'OperacionMantencion',
-    'CambioPautaMantencionCarrosadoMaterialMayor'
+    'CambioPautaMantencionCarrosadoMaterialMayor',
+    'CambioNumeroChasisMaterialMayor',
+    'CambioNumeroMotorMaterialMayor'
 ]

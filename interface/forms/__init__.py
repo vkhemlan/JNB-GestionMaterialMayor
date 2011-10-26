@@ -1,5 +1,6 @@
 from .base_model_form import BaseModelForm
-from .formulario_dar_de_alta_material_mayor import FormularioDarDeAltaMaterialMayor
+from .formulario_agregar_material_mayor import FormularioAgregarMaterialMayor
+from .formulario_editar_material_mayor import FormularioEditarMaterialMayor
 from .formulario_adquisicion_material_mayor import FormularioAdquisicionMaterialMayor
 from .formulario_adquisicion_compra_material_mayor import FormularioAdquisicionCompraMaterialMayor
 from .formulario_adquisicion_donacion_material_mayor import FormularioAdquisicionDonacionMaterialMayor
@@ -14,9 +15,14 @@ from .formulario_agregar_pauta_mantencion_carrosado import FormularioAgregarPaut
 from .formulario_agregar_pauta_mantencion_chasis import FormularioAgregarPautaMantencionChasis
 from .formulario_cambio_pauta_mantencion_carrosado_material_mayor import FormularioCambioPautaMantencionCarrosadoMaterialMayor
 from .formulario_hoja_vida_cambio_pauta_mantencion_carrosado_material_mayor import FormularioHojaVidaCambioPautaMantencionCarrosadoMaterialMayor
+from .formulario_cambio_numero_chasis_material_mayor import FormularioCambioNumeroChasisMaterialMayor
+from .formulario_hoja_vida_cambio_numero_chasis_material_mayor import FormularioHojaVidaCambioNumeroChasisMaterialMayor
+from .formulario_cambio_numero_motor_material_mayor import FormularioCambioNumeroMotorMaterialMayor
+from .formulario_hoja_vida_cambio_numero_motor_material_mayor import FormularioHojaVidaCambioNumeroMotorMaterialMayor
 
 __all__ = [ 'BaseModelForm',
-			'FormularioDarDeAltaMaterialMayor',
+			'FormularioAgregarMaterialMayor',
+			'FormularioEditarMaterialMayor',
 			'FormularioAdquisicionMaterialMayor',
 			'FormularioAdquisicionCompraMaterialMayor',
 			'FormularioAdquisicionDonacionMaterialMayor',
@@ -30,4 +36,8 @@ __all__ = [ 'BaseModelForm',
 			'FormularioAgregarPautaMantencionCarrosado',
 			'FormularioAgregarPautaMantencionChasis',
 			'FormularioCambioPautaMantencionCarrosadoMaterialMayor',
-			'FormularioHojaVidaCambioPautaMantencionCarrosadoMaterialMayor']
+			'FormularioHojaVidaCambioPautaMantencionCarrosadoMaterialMayor',
+			'FormularioCambioNumeroChasisMaterialMayor',
+			'FormularioHojaVidaCambioNumeroChasisMaterialMayor',
+			'FormularioCambioNumeroMotorMaterialMayor',
+			'FormularioHojaVidaCambioNumeroMotorMaterialMayor']

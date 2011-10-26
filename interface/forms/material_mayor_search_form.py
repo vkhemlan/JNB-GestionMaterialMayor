@@ -12,7 +12,7 @@ class MaterialMayorSearchForm(forms.Form):
     def get_filtered_material_mayor(self):
         self.full_clean()
         
-        material_mayor = MaterialMayor.objects.all()
+        material_mayor = MaterialMayor.objects.filter(validado_por_operaciones=True)
         
         d = self.data
         

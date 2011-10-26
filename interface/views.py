@@ -12,7 +12,7 @@ from datetime import date
 from xlwt import Workbook, easyxf, Formula, XFStyle, Font
 
 from interface.models import Cuerpo, MaterialMayor, AdquisicionCompraMaterialMayor, AdquisicionDonacionMaterialMayor, TipoEventoHojaVidaMaterialMayor, EventoHojaVidaMaterialMayor, Rol, AsignacionPatenteMaterialMayor, UsoMaterialMayor, PautaMantencionCarrosado, OperacionMantencion, PautaMantencionChasis, ModeloChasisMaterialMayor
-from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioDarDeAltaMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioHojaVidaAsignacionCuerpoMaterialMayor, FormularioAsignacionCompaniaMaterialMayor, FormularioHojaVidaAsignacionCompaniaMaterialMayor, FormularioAsignacionPatenteMaterialMayor, FormularioHojaVidaAsignacionPatenteMaterialMayor, FormularioAgregarPautaMantencionCarrosado, FormularioAgregarPautaMantencionChasis, FormularioCambioPautaMantencionCarrosadoMaterialMayor, FormularioHojaVidaCambioPautaMantencionCarrosadoMaterialMayor
+from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioAgregarMaterialMayor, FormularioEditarMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioHojaVidaAsignacionCuerpoMaterialMayor, FormularioAsignacionCompaniaMaterialMayor, FormularioHojaVidaAsignacionCompaniaMaterialMayor, FormularioAsignacionPatenteMaterialMayor, FormularioHojaVidaAsignacionPatenteMaterialMayor, FormularioAgregarPautaMantencionCarrosado, FormularioAgregarPautaMantencionChasis, FormularioCambioPautaMantencionCarrosadoMaterialMayor, FormularioHojaVidaCambioPautaMantencionCarrosadoMaterialMayor, FormularioCambioNumeroChasisMaterialMayor, FormularioHojaVidaCambioNumeroChasisMaterialMayor, FormularioCambioNumeroMotorMaterialMayor, FormularioHojaVidaCambioNumeroMotorMaterialMayor
 from django.http import HttpResponseRedirect
 from interface.utils import convert_camelcase_to_lowercase, log, remove_deleted_fields_from_data
 from django.contrib.auth.decorators import login_required
@@ -44,15 +44,15 @@ def _adquisicion_material_mayor(request, FormularioAdquisicion, template):
         # Los formularios deben recibir el usuario en su constructor porque al desplegarse pueden
         # mostrar íconos para agregar opciones a sus combobox, pero esa posibilidad sólo está disponible
         # para el staff de la JNBC, no para los usuarios de cuerpos bomberiles.
-        form = FormularioDarDeAltaMaterialMayor(request.POST, request.FILES, user=request.user)
+        form = FormularioAgregarMaterialMayor(request.POST, request.FILES, user=request.user)
         form_adquisicion = FormularioAdquisicion(request.POST, request.FILES, user=request.user)
         if form.is_valid() and form_adquisicion.is_valid():
-            data_form = FormularioDarDeAltaMaterialMayor(request.POST, user=request.user)
+            data_form = FormularioAgregarMaterialMayor(request.POST, user=request.user)
             data_form.is_valid()
             material_mayor_data = data_form.instance
             material_mayor_data.save()
             
-            form = FormularioDarDeAltaMaterialMayor(request.POST, request.FILES, user=request.user, instance=material_mayor_data)
+            form = FormularioAgregarMaterialMayor(request.POST, request.FILES, user=request.user, instance=material_mayor_data)
             form.is_valid()
             
             material_mayor = form.get_instance()
@@ -66,22 +66,25 @@ def _adquisicion_material_mayor(request, FormularioAdquisicion, template):
             material_mayor.adquisicion = adquisicion
             material_mayor.save()
             
-            request.flash['success'] = 'Material mayor dado de alta exitosamente'
-            url = reverse('interface.views.material_mayor')
-            
             if request.user.get_profile().is_staff_cuerpo():
                 material_mayor.cuerpo = request.user.get_profile().cuerpo
                 material_mayor.save()
                 material_mayor.validado_por_operaciones = False
                 material_mayor.notify_operaciones_of_dada_de_alta()
             
+            request.flash['success'] = 'Material mayor dado de alta exitosamente'
+            
+            if material_mayor.validado_por_operaciones:
+                url = reverse('interface.views.material_mayor')
+            else:
+                url = reverse('interface.views.material_mayor_sin_validar')
             return HttpResponseRedirect(url)
     else:
         # Utilizamos dos formularios pues uno se encarga estrictamente de la parte técnica del
         # vehículo (motor, chasis, etc) y el otro de sus detalles de adquisicion (orden de compra, 
         # factura comercial, etc). Además el formulario técnico es único, pero el de adquisicion
         # es instanciado dependiendo del origen de la adquisición (compra o donacion)
-        form = FormularioDarDeAltaMaterialMayor(user=request.user)
+        form = FormularioAgregarMaterialMayor(user=request.user)
         form_adquisicion = FormularioAdquisicion(user=request.user)
         
     others_uses_ids = [uso.id for uso in UsoMaterialMayor.objects.filter(is_others_option=True)]
@@ -105,9 +108,7 @@ def adquisicion_donacion_material_mayor(request):
     # Vista para dar de alta material mayor adquirido por donación
     return _adquisicion_material_mayor(request, FormularioAdquisicionDonacionMaterialMayor, 'staff/adquisicion_donacion_material_mayor.html')
     
-def _material_mayor_sin_asignar(request):
-    materiales_mayores_sin_asignar = MaterialMayor.objects.filter(cuerpo__isnull=True)
-    
+def _material_mayor_sin_validar(request):
     fields = [
             ['modelo_chasis.marca', u'Marca chasis'],
             ['modelo_chasis', u'Modelo chasis'],
@@ -116,61 +117,37 @@ def _material_mayor_sin_asignar(request):
             ['numero_motor', u'N° motor'],
             ['adquisicion.cuerpo_destinatario', u'Cuerpo de destino']
         ]
-        
-    # may_assign_material_mayor es un flag para ver si mostramos el link al proceso de "Asignar"
-    # para cada material mayor en la tabla resumen. Es necesario pues sólo Operaciones Bomberiles puede 
-    # asignar material mayor.
-        
-    may_assign_material_mayor = request.user.get_profile().rol == Rol.OPERACIONES()
     
-    # materiales_mayores_por_fuente es la estructura de datos que almacenará temporalmemte los
-    # resultados de la consulta. Es una lista en la que cada elemento representa una "sección"
-    # de la página mostrada. Por ejemplo, operaciones bomberiles ve dos secciones, correspondientes
-    # al material subido desde la JNBC y aquel subido directamente por los cuerpos
-    # Cada sección tiene dos atributos:
-    #  predicate: Nombre de una función en UserProfile que será aplicada al usuario que subió el material mayor
-    #             Si el filtro retorna True entonces ese material mayor será agregado a esta sección.
-    
-    materiales_mayores_por_fuente = [
-        {
-            'predicate': 'is_staff_jnbc',
-            'title': 'Dados de alta por la JNBC'
-        }
-    ]
+    if request.user.get_profile().is_staff_jnbc():
+        materiales_mayores_sin_validar = MaterialMayor.objects.filter(validado_por_operaciones=False)
+    else:
+        materiales_mayores_sin_validar = MaterialMayor.objects.filter(validado_por_operaciones=False, adquisicion__cuerpo_destinatario=request.user.get_profile().cuerpo)
         
     field_keys = [field[0] for field in fields]
     field_values = [field[1] for field in fields]
-        
-    # Para cada sección...
-    for material_mayor_por_fuente in materiales_mayores_por_fuente:
-        material_mayor_por_fuente['material_mayor'] = []
-        # Para cada posible vehículo...
-        for material_mayor in materiales_mayores_sin_asignar:            
-            # Si el usuario que subió dicho vehiculo cumple con el predicado de la sección, agregarlo a ella
-            if getattr(material_mayor.adquisicion.usuario.get_profile(), material_mayor_por_fuente['predicate'])():
-                material_mayor_por_fuente['material_mayor'].append(material_mayor.extract_data(field_keys))
-                
-    return materiales_mayores_por_fuente, field_values, may_assign_material_mayor
     
-@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES()))
-def material_mayor_sin_asignar(request):
+    materiales_mayores_sin_validar_formateados = [material_mayor.extract_data(field_keys) for material_mayor in materiales_mayores_sin_validar]
+                
+    return materiales_mayores_sin_validar_formateados, field_values
+    
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
+def material_mayor_sin_validar(request):
     # Vista que muestra el listado de material mayor que aun no ha sido asignado a un cuerpo
     
-    materiales_mayores_por_fuente, fields, may_assign_material_mayor = _material_mayor_sin_asignar(request)
+    materiales_mayores_formateados, fields = _material_mayor_sin_validar(request)
     
-    return render_to_response('staff/material_mayor_sin_asignar.html', {
-            'material_mayor': materiales_mayores_por_fuente,
+    return render_to_response('staff/material_mayor_sin_validar.html', {
+            'material_mayor': materiales_mayores_formateados,
             'fields': fields,
-            'may_assign_material_mayor': may_assign_material_mayor,
         }, 
         context_instance=RequestContext(request))
         
-@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES()))
-def material_mayor_sin_asignar_excel(request):
-    material_mayor, fields, may_assign_material_mayor = _material_mayor_sin_asignar(request)
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
+def material_mayor_sin_validar_excel(request):
+    material_mayor, fields = _material_mayor_sin_validar(request)
 
     response = HttpResponse(mimetype="application/ms-excel")
-    response['Content-Disposition'] = 'attachment; filename=material_mayor_sin_asignar_%s.xls' % str(date.today())
+    response['Content-Disposition'] = 'attachment; filename=material_mayor_sin_validar_%s.xls' % str(date.today())
     
     title_style = XFStyle()
     title_font = Font()
@@ -203,26 +180,36 @@ def material_mayor_sin_asignar_excel(request):
     bold_style.font = bold_font
 
     
-    for value in material_mayor:
-        for idx, field in enumerate(fields):
-            ws.write(current_row, idx, field, bold_style)
-            
-        current_row += 1
+    for idx, field in enumerate(fields):
+        ws.write(current_row, idx, field, bold_style)
         
-        for vehiculo in value['material_mayor']:
-            for idx, field in enumerate(vehiculo['data']):
-                ws.write(current_row, idx, field)
-                 
-            editar_link = settings.SITE_URL + reverse('interface.views.editar_material_mayor', args=[vehiculo['id']])
-            ws.write(current_row, idx+1, Formula('HYPERLINK("%s";"Editar")' % editar_link), link_style)
-            
-            if may_assign_material_mayor:
-                asignar_link = settings.SITE_URL + reverse('interface.views.asignar_material_mayor_a_cuerpo', args=[vehiculo['id']])
-                ws.write(current_row, idx+2, Formula('HYPERLINK("%s";"Asignar")' % asignar_link), link_style)
-            current_row += 1
+    current_row += 1
+    
+    for vehiculo in material_mayor:
+        for idx, field in enumerate(vehiculo['data']):
+            ws.write(current_row, idx, field)
+             
+        editar_link = settings.SITE_URL + reverse('interface.views.editar_material_mayor', args=[vehiculo['id']])
+        ws.write(current_row, idx+1, Formula('HYPERLINK("%s";"Editar")' % editar_link), link_style)
+        
+        current_row += 1
 
     wb.save(response)
     return response
+
+@authorize(roles=(Rol.OPERACIONES(),),)
+@authorize_material_mayor_access(requiere_validacion_operaciones=False)    
+def eliminar_material_mayor(request, material_mayor):
+    if request.method == 'POST':
+        material_mayor.delete()
+        request.flash['success'] = u'Material mayor eliminado exitosamente'
+        url = reverse('interface.views.material_mayor')
+        return HttpResponseRedirect(url)
+    else:
+        return render_to_response('staff/eliminar_material_mayor.html', {
+            'material_mayor': material_mayor,
+        }, 
+        context_instance=RequestContext(request))
     
 @authorize(roles=(Rol.OPERACIONES(),),)
 @authorize_material_mayor_access(requiere_validacion_operaciones=False)
@@ -249,6 +236,61 @@ def cambiar_pauta_mantencion_carrosado(request, material_mayor):
         'form': form,
     }, 
     context_instance=RequestContext(request))
+    
+@authorize(roles=(Rol.OPERACIONES(),),)
+@authorize_material_mayor_access(requiere_validacion_operaciones=False)
+def cambiar_numero_chasis_material_mayor(request, material_mayor):
+    if request.method == 'POST':
+        form = FormularioCambioNumeroChasisMaterialMayor(request.POST)
+        if form.is_valid():
+            instance = form.instance
+            
+            instance.material_mayor = material_mayor
+            instance.usuario = request.user
+            instance.tipo = TipoEventoHojaVidaMaterialMayor.objects.get(classname='CambioNumeroChasisMaterialMayor')
+            instance.save()
+            
+            material_mayor.numero_chasis = instance.nuevo_numero_chasis
+            material_mayor.save()
+            
+            request.flash['success'] = u'Cambio de número de chasis realizado exitosamente'
+            url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
+            return HttpResponseRedirect(url)
+    else:
+        form = FormularioCambioNumeroChasisMaterialMayor() 
+    return render_to_response('staff/cambiar_numero_chasis_material_mayor.html', {
+        'form': form,
+        'material_mayor': material_mayor
+    }, 
+    context_instance=RequestContext(request))
+    
+@authorize(roles=(Rol.OPERACIONES(),),)
+@authorize_material_mayor_access(requiere_validacion_operaciones=False)
+def cambiar_numero_motor_material_mayor(request, material_mayor):
+    if request.method == 'POST':
+        form = FormularioCambioNumeroMotorMaterialMayor(request.POST)
+        if form.is_valid():
+            instance = form.instance
+            
+            instance.material_mayor = material_mayor
+            instance.usuario = request.user
+            instance.tipo = TipoEventoHojaVidaMaterialMayor.objects.get(classname='CambioNumeroMotorMaterialMayor')
+            instance.save()
+            
+            material_mayor.numero_motor = instance.nuevo_numero_motor
+            material_mayor.save()
+            
+            request.flash['success'] = u'Cambio de número de motor realizado exitosamente'
+            url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
+            return HttpResponseRedirect(url)
+    else:
+        form = FormularioCambioNumeroMotorMaterialMayor() 
+    return render_to_response('staff/cambiar_numero_motor_material_mayor.html', {
+        'form': form,
+        'material_mayor': material_mayor
+    }, 
+    context_instance=RequestContext(request))
+
 
 @authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
 @authorize_material_mayor_access(requiere_validacion_operaciones=False)
@@ -263,7 +305,7 @@ def editar_material_mayor(request, material_mayor):
             asignacion_link = reverse('interface.views.asignar_material_mayor_a_compania', args=[material_mayor.id])
     
     if request.method == 'POST':
-        form = FormularioDarDeAltaMaterialMayor(request.POST, request.FILES, instance=material_mayor, user=request.user)
+        form = FormularioEditarMaterialMayor(request.POST, request.FILES, instance=material_mayor, user=request.user)
         if form.is_valid():
             material_mayor = form.instance
             material_mayor.save()
@@ -275,7 +317,7 @@ def editar_material_mayor(request, material_mayor):
                 url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
             return HttpResponseRedirect(url)
     else:
-        form = FormularioDarDeAltaMaterialMayor.get_from_instance(material_mayor, request.user)
+        form = FormularioEditarMaterialMayor.get_from_instance(material_mayor, request.user)
         if 'next' in request.GET:
             next = request.GET['next']
         else:
@@ -285,6 +327,7 @@ def editar_material_mayor(request, material_mayor):
             'form': form,
             'next': next,
             'asignacion_link': asignacion_link,
+            'others_uses_ids': [uso.id for uso in UsoMaterialMayor.objects.filter(is_others_option=True)]
         }, 
         context_instance=RequestContext(request))
 
@@ -577,12 +620,31 @@ def detalles_patente_material_mayor(request, material_mayor):
 @authorize(roles=(Rol.OPERACIONES(),),)
 @authorize_material_mayor_access(requiere_validacion_operaciones=False)
 def validar_material_mayor(request, material_mayor):
-    if request.method == 'POST':
-        material_mayor.validado_por_operaciones = True
-        material_mayor.save()
-        request.flash['success'] = 'Material mayor validado exitosamente'
+    if material_mayor.validado_por_operaciones:
+        request.flash['error'] = 'El material mayor ya está validado'
         url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
         return HttpResponseRedirect(url)
+        
+    validation_errors = []
+    if not material_mayor.pauta_mantencion_carrosado:
+        url = reverse('interface.views.cambiar_pauta_mantencion_carrosado', args=[material_mayor.id])
+        validation_errors.append(['El material aún no tiene asignada una pauta de mantención de carrosado', url])
+        
+    if request.method == 'POST':
+        if validation_errors:
+            request.flash['error'] = 'Error en el proceso de validación'
+        else:
+            material_mayor.validado_por_operaciones = True
+            material_mayor.save()
+            request.flash['success'] = 'Material mayor validado exitosamente'
+        url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
+        return HttpResponseRedirect(url)
+    else:
+        return render_to_response('staff/validar_material_mayor.html', {
+            'material_mayor': material_mayor,
+            'validation_errors': validation_errors
+        }, 
+        context_instance=RequestContext(request))
         
 # Métodos comunes de manejo de pautas de mantencion
 

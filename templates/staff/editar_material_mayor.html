@@ -4,10 +4,10 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/formulario_editar_material_mayor_script.js"></script>
 
 <script type="text/javascript">
-    var modelos_chasis = [
-    {% for modelo_chasis in form.fields.modelo_chasis.queryset %}
-        new Array({{ modelo_chasis.id }}, "{{ modelo_chasis }}", {{ modelo_chasis.marca.id }}),
-    {% endfor %}
+    var otros_usos_material_mayor_ids = [
+        {% for id in others_uses_ids %}
+            {{ id }},
+        {% endfor %}
     ]
     
     var modelos_caja_cambio = [
@@ -42,10 +42,9 @@
 	{% if not form.instance.validado_por_operaciones %}
         <p class="error_message">Este material aún no ha sido validado por la JNBC por lo que no podrá acceder a la mayoría de sus opciones.</p>
         {% if user.get_profile.puede_validar_material_mayor %}
-            <form method="post" action="{% url interface.views.validar_material_mayor form.instance.id %}">
-                {% csrf_token %}
-                <input type="submit" value="Validar Material Mayor" />
-            </form>
+            <a href="{% url interface.views.validar_material_mayor form.instance.id %}">
+                Validar este material mayor
+            </a>
         {% endif %}
     {% endif %}
         
@@ -67,7 +66,7 @@
                 <td>{{ form.instance.get_location }} 
                 
                 {% if asignacion_link %}
-                    (<a href="{{ asignacion_link }}">Asignar</a>)
+                    (<a href="{{ asignacion_link }}">Asignar</a>)   
                 {% endif %}
                 
                 </td>
@@ -105,8 +104,32 @@
             <tr><th>Ingresado por</th><td>{{ form.instance.adquisicion.usuario.get_full_name }}</td></tr>
             <tr><th>Forma de adquisición</th><td>{{ form.instance.adquisicion.modo }} (<a href="{% url interface.views.editar_adquisicion_material_mayor form.instance.id %}">Editar detalles</a>)</td></tr>
             <tr><th>Hoja de vida</th><td><a href="{% url interface.views.detalles_hoja_de_vida_material_mayor form.instance.id %}">Ver hoja de vida</a></td></tr>
+            {% if user.get_profile.puede_eliminar_material_mayor %}
+                <tr><td colspan="2"><br /><a href="{% url interface.views.eliminar_material_mayor form.instance.id %}">Eliminar material mayor</a></td></tr>
+            {% endif %}
 
             <tr><td colspan="2"><br /><h3>Datos del vehículo</h3><br /></tr></td>
+            
+            <tr>
+                <td>Marca chasis</td>
+                <td>{{ form.instance.modelo_chasis.marca }}</td>
+            </tr>
+            <tr>
+                <td>Modelo chasis</td>
+                <td>{{ form.instance.modelo_chasis }}</td>
+            </tr>
+            <tr>
+                <td>Marca carrosado</td>
+                <td>{{ form.instance.marca_carrosado }}</td>
+            </tr>
+            <tr>
+                <td>N° chasis</td>
+                <td>{{ form.instance.numero_chasis }} {% if user.get_profile.puede_cambiar_numero_chasis_material_mayor %}(<a href="{% url interface.views.cambiar_numero_chasis_material_mayor form.instance.id %}">Cambiar</a>){% endif %}</td>
+            </tr>
+            <tr>
+                <td>N° motor</td>
+                <td>{{ form.instance.numero_motor }} {% if user.get_profile.puede_cambiar_numero_motor_material_mayor %}(<a href="{% url interface.views.cambiar_numero_motor_material_mayor form.instance.id %}">Cambiar</a>){% endif %}</td>
+            </tr>
             
             {{ form.render_datos_vehiculo }}
             

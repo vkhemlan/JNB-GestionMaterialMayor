@@ -407,5 +407,73 @@
       "familia": 6,
       "is_others_option": true
     }
+  },
+  {
+    "model": "interface.rol",
+    "pk": 1,
+    "fields": {
+      "nombre": "Operaciones"
+    }
+  },
+  {
+    "model": "interface.rol",
+    "pk": 2,
+    "fields": {
+      "nombre": "Adquisiciones"
+    }
+  },
+  {
+    "model": "interface.rol",
+    "pk": 3,
+    "fields": {
+      "nombre": "Juridica"
+    }
+  },
+  {
+    "pk": 1, "model": "interface.tipoeventohojavidamaterialmayor", 
+    "fields": {
+        "classname": "AsignacionCuerpoMaterialMayor", 
+        "name": "Asignación de material mayor"
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "interface.tipoeventohojavidamaterialmayor", 
+    "fields": {
+        "classname": "AsignacionCompaniaMaterialMayor", 
+        "name": "Asignación de material mayor a compañía"
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "interface.tipoeventohojavidamaterialmayor", 
+    "fields": {
+        "classname": "AsignacionPatenteMaterialMayor", 
+        "name": "Asignación de patente a material mayor"
+    }
+  }, 
+    {
+    "pk": 4, 
+    "model": "interface.tipoeventohojavidamaterialmayor", 
+    "fields": {
+        "classname": "CambioPautaMantencionCarrosadoMaterialMayor", 
+        "name": "Cambio de pauta de mantención de carrosado de material mayor"
+    }
+  },
+  {
+    "pk": 5, 
+    "model": "interface.tipoeventohojavidamaterialmayor", 
+    "fields": {
+        "classname": "CambioNumeroChasisMaterialMayor", 
+        "name": "Cambio de número de chasis de material mayor"
+    }
+  }, 
+  {
+    "pk": 6, 
+    "model": "interface.tipoeventohojavidamaterialmayor", 
+    "fields": {
+        "classname": "CambioNumeroMotorMaterialMayor", 
+        "name": "Cambio de número de motor de material mayor"
+    }
   }
 ]

@@ -1,0 +1,22 @@
+{% extends 'staff/base.html' %}
+
+{% block staff_content %}
+    <p class="breadcrumbs">
+        <strong>Material mayor</strong>
+        &raquo; {{ material_mayor.breadcrumbs_string }}
+        &raquo; Cambiar número de chasis
+    </p>
+
+	<h2>Cambiar número de chasis</h2>
+	
+	<p>
+    	Por favor indique el nuevo número de chasis del vehículo.
+	</p>
+	
+	<form method="post" action=".">
+	    {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Guardar" />
+    </form>
+
+{% endblock %}

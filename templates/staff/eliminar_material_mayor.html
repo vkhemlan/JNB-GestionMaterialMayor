@@ -1,0 +1,21 @@
+{% extends 'staff/base.html' %}
+
+{% block staff_content %}
+    <p class="breadcrumbs">
+        <strong>Material mayor</strong>
+        &raquo; {{ material_mayor.breadcrumbs_string }}
+        &raquo; Eliminar
+    </p>
+
+	<h2>Eliminar material mayor</h2>
+	
+	<p>
+    	Eliminar un material mayor es un proceso irreversible. Al ejecutarlo toda la información referente al vehículo incluyendo su hoja de vida será destruida.
+	</p>
+	
+	<form method="post" action=".">
+	    {% csrf_token %}
+        <input type="submit" value="Eliminar" />
+    </form>
+
+{% endblock %}

@@ -18,7 +18,7 @@ class EventoHojaVidaMaterialMayor(models.Model):
         return unicode(self.tipo)
         
     def get_polymorphic_instance(self):
-        from . import AsignacionCuerpoMaterialMayor, AsignacionCompaniaMaterialMayor, AsignacionPatenteMaterialMayor, CambioPautaMantencionCarrosadoMaterialMayor
+        from . import AsignacionCuerpoMaterialMayor, AsignacionCompaniaMaterialMayor, AsignacionPatenteMaterialMayor, CambioPautaMantencionCarrosadoMaterialMayor, CambioNumeroChasisMaterialMayor, CambioNumeroMotorMaterialMayor
         if self.__class__.__name__ != 'EventoHojaVidaMaterialMayor':
             return self
         else:

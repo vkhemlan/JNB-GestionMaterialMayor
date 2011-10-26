@@ -1,0 +1,36 @@
+{% extends 'staff/base.html' %}
+
+{% block staff_content %}
+    <p class="breadcrumbs">
+        <strong>Asignaciones de material</strong>
+        &raquo; Material mayor sin validar
+    </p>
+
+    <h2>Material mayor sin validar</h2>
+    
+    <p><a href="{% url interface.views.material_mayor_sin_validar_excel %}">Descargar este informe como Excel</a></p>
+    <hr />
+
+    <table>    
+        <tr>
+            {% for field in fields %}
+                <th>{{ field }}</th>
+            {% endfor %}
+        </tr>
+        
+        {% for vehiculo in material_mayor %}
+            <tr>
+                {% for field in vehiculo.data %}
+                    <td>{{ field }}</td>
+                {% endfor %}
+                <td><a href="{% url interface.views.editar_material_mayor vehiculo.id %}?next={% url interface.views.material_mayor_sin_validar %}">Editar</a></td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6">
+                    <i>No hay material mayor sin validar</i>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
