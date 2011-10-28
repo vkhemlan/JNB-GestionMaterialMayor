@@ -4,7 +4,7 @@ from django.db import models
 
 class OperacionMantencion(models.Model):
     pauta = models.ForeignKey('PautaMantencion')
-    descripcion = models.CharField(max_length=255)
+    descripcion = models.TextField()
     frecuencia = models.ForeignKey('FrecuenciaOperacion')
     
     def __unicode__(self):

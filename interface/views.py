@@ -8,11 +8,13 @@ from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, Http404
 from django.forms.models import inlineformset_factory
 
+import re
 from datetime import date
+import xlrd
 from xlwt import Workbook, easyxf, Formula, XFStyle, Font
 
-from interface.models import Cuerpo, MaterialMayor, AdquisicionCompraMaterialMayor, AdquisicionDonacionMaterialMayor, TipoEventoHojaVidaMaterialMayor, EventoHojaVidaMaterialMayor, Rol, AsignacionPatenteMaterialMayor, UsoMaterialMayor, PautaMantencionCarrosado, OperacionMantencion, PautaMantencionChasis, ModeloChasisMaterialMayor
-from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioAgregarMaterialMayor, FormularioEditarMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioHojaVidaAsignacionCuerpoMaterialMayor, FormularioAsignacionCompaniaMaterialMayor, FormularioHojaVidaAsignacionCompaniaMaterialMayor, FormularioAsignacionPatenteMaterialMayor, FormularioHojaVidaAsignacionPatenteMaterialMayor, FormularioAgregarPautaMantencionCarrosado, FormularioAgregarPautaMantencionChasis, FormularioCambioPautaMantencionCarrosadoMaterialMayor, FormularioHojaVidaCambioPautaMantencionCarrosadoMaterialMayor, FormularioCambioNumeroChasisMaterialMayor, FormularioHojaVidaCambioNumeroChasisMaterialMayor, FormularioCambioNumeroMotorMaterialMayor, FormularioHojaVidaCambioNumeroMotorMaterialMayor
+from interface.models import Cuerpo, MaterialMayor, AdquisicionCompraMaterialMayor, AdquisicionDonacionMaterialMayor, TipoEventoHojaVidaMaterialMayor, EventoHojaVidaMaterialMayor, Rol, AsignacionPatenteMaterialMayor, UsoMaterialMayor, PautaMantencionCarrosado, OperacionMantencion, PautaMantencionChasis, ModeloChasisMaterialMayor, FrecuenciaOperacion, OperacionMantencion
+from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioAgregarMaterialMayor, FormularioEditarMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioHojaVidaAsignacionCuerpoMaterialMayor, FormularioAsignacionCompaniaMaterialMayor, FormularioHojaVidaAsignacionCompaniaMaterialMayor, FormularioAsignacionPatenteMaterialMayor, FormularioHojaVidaAsignacionPatenteMaterialMayor, FormularioAgregarPautaMantencionCarrosado, FormularioAgregarPautaMantencionChasis, FormularioCambioPautaMantencionCarrosadoMaterialMayor, FormularioHojaVidaCambioPautaMantencionCarrosadoMaterialMayor, FormularioCambioNumeroChasisMaterialMayor, FormularioHojaVidaCambioNumeroChasisMaterialMayor, FormularioCambioNumeroMotorMaterialMayor, FormularioHojaVidaCambioNumeroMotorMaterialMayor, FormularioPautaMantencionCarrosadoAgregar, FormularioPautaMantencionChasisAgregar
 from django.http import HttpResponseRedirect
 from interface.utils import convert_camelcase_to_lowercase, log, remove_deleted_fields_from_data
 from django.contrib.auth.decorators import login_required
@@ -648,7 +650,7 @@ def validar_material_mayor(request, material_mayor):
         
 # Métodos comunes de manejo de pautas de mantencion
 
-def _agregar_o_editar_pauta_mantencion(request, tipo, ClasePautaMantencion, FormularioAgregarPautaMantencion, instance):
+def _editar_pauta_mantencion(request, tipo, ClasePautaMantencion, FormularioAgregarPautaMantencion, instance):
     PautaMantencionInlineFormSet = inlineformset_factory(ClasePautaMantencion, OperacionMantencion, can_delete=True)
     prevent_validation_errors = False
     
@@ -662,6 +664,8 @@ def _agregar_o_editar_pauta_mantencion(request, tipo, ClasePautaMantencion, Form
             formset = PautaMantencionInlineFormSet(formset_data, instance=instance)
             prevent_validation_errors = True
         elif 'delete' in request.POST:
+            import ipdb
+            ipdb.set_trace()
             new_data = remove_deleted_fields_from_data(request.POST, 'operacionmantencion_set')
             formset = PautaMantencionInlineFormSet(new_data, instance=instance)
             prevent_validation_errors = True
@@ -688,7 +692,7 @@ def _agregar_o_editar_pauta_mantencion(request, tipo, ClasePautaMantencion, Form
         formset = PautaMantencionInlineFormSet(instance=instance)
         form = FormularioAgregarPautaMantencion(instance=instance)
         
-    return render_to_response('staff/pauta_mantencion_%s_agregar.html' % tipo, {
+    return render_to_response('staff/pauta_mantencion_%s_editar.html' % tipo, {
         'form': form,
         'formset': formset,
         'prevent_validation_errors': prevent_validation_errors,
@@ -697,13 +701,59 @@ def _agregar_o_editar_pauta_mantencion(request, tipo, ClasePautaMantencion, Form
         context_instance=RequestContext(request))
         
 # Sistema de mantención de pautas de mantención de carrosados
+    
+def _parse_pauta_mantencion_contents(input_file, ModelClass):
+    try:
+        wb = xlrd.open_workbook(file_contents=input_file.read())
+        sh = wb.sheet_by_index(0)
 
-def _agregar_o_editar_pauta_mantencion_carrosado(request, instance=None):
-    return _agregar_o_editar_pauta_mantencion(request, 'carrosado', PautaMantencionCarrosado, FormularioAgregarPautaMantencionCarrosado, instance)
+        number_metadata_rows = 4
+        number_operations = sh.nrows - number_metadata_rows
+    
+        nombre_pauta = sh.cell(1, 0).value
+    
+        m = ModelClass(name=nombre_pauta)
+    except Exception, e:
+        return None
+        
+    m.save()
+
+    try:
+        for operation_index in range(number_operations):
+            row_operation = operation_index + number_metadata_rows
+            operation_name = sh.cell(row_operation, 0).value
+            if operation_name:
+                operation_frequency = sh.cell(row_operation, 1).value
+                r = re.match(r'(\d+) meses$', operation_frequency)
+                operation_frequency_value = int(r.groups()[0])
+                frecuencia = FrecuenciaOperacion.objects.get(numero_meses=operation_frequency_value)
+                op = OperacionMantencion(pauta=m, descripcion=operation_name, frecuencia=frecuencia)
+                op.save()
+    except:
+        m.delete()
+        return None
+        
+    return m
         
 @authorize(roles=(Rol.OPERACIONES(),),)
 def agregar_pauta_mantencion_carrosado(request):
-    return _agregar_o_editar_pauta_mantencion_carrosado(request)
+    if request.method == 'POST':
+        form = FormularioPautaMantencionCarrosadoAgregar(request.POST, request.FILES)
+        if form.is_valid():
+            input_excel = request.FILES['pauta_mantencion']
+            pauta_mantencion = _parse_pauta_mantencion_contents(input_excel, PautaMantencionCarrosado)
+            if pauta_mantencion:
+                request.flash['success'] = u'Pauta de mantención subida exitosamente'
+                url = reverse('interface.views.pauta_mantencion_carrosado')
+                return HttpResponseRedirect(url)
+            else:
+                form._errors['pauta_mantencion'] = self.error_class([u'Existe un error en el archivo XLS subido'])
+    else:
+        form = FormularioPautaMantencionCarrosadoAgregar()
+    return render_to_response('staff/pauta_mantencion_carrosado_agregar.html', {
+            'form': form
+        }, 
+        context_instance=RequestContext(request))
 
     
 @authorize(roles=(Rol.OPERACIONES(),),)
@@ -717,7 +767,7 @@ def pauta_mantencion_carrosado(request):
 @authorize(roles=(Rol.OPERACIONES(),),)
 def pauta_mantencion_carrosado_editar(request, pauta_mantencion_carrosado_id):
     pauta_mantencion_carrosado = PautaMantencionCarrosado.objects.get(pk=pauta_mantencion_carrosado_id)
-    return _agregar_o_editar_pauta_mantencion_carrosado(request, pauta_mantencion_carrosado)
+    return _editar_pauta_mantencion(request, 'carrosado', PautaMantencionCarrosado, FormularioAgregarPautaMantencionCarrosado, pauta_mantencion_carrosado)
     
 @authorize(roles=(Rol.OPERACIONES(),),)
 def pauta_mantencion_carrosado_eliminar(request, pauta_mantencion_carrosado_id):
@@ -741,13 +791,26 @@ def pauta_mantencion_carrosado_eliminar(request, pauta_mantencion_carrosado_id):
         context_instance=RequestContext(request))
         
 # Sistema de mantención de pautas de mantención de chasis
-
-def _agregar_o_editar_pauta_mantencion_chasis(request, instance=None):
-    return _agregar_o_editar_pauta_mantencion(request, 'chasis', PautaMantencionChasis, FormularioAgregarPautaMantencionChasis, instance)
         
 @authorize(roles=(Rol.OPERACIONES(),),)
 def agregar_pauta_mantencion_chasis(request):
-    return _agregar_o_editar_pauta_mantencion_chasis(request)
+    if request.method == 'POST':
+        form = FormularioPautaMantencionChasisAgregar(request.POST, request.FILES)
+        if form.is_valid():
+            input_excel = request.FILES['pauta_mantencion']
+            pauta_mantencion = _parse_pauta_mantencion_contents(input_excel, PautaMantencionChasis)
+            if pauta_mantencion:
+                request.flash['success'] = u'Pauta de mantención subida exitosamente'
+                url = reverse('interface.views.pauta_mantencion_chasis')
+                return HttpResponseRedirect(url)
+            else:
+                form._errors['pauta_mantencion'] = form.error_class([u'Existe un error en el archivo XLS subido'])
+    else:
+        form = FormularioPautaMantencionChasisAgregar()
+    return render_to_response('staff/pauta_mantencion_chasis_agregar.html', {
+            'form': form
+        }, 
+        context_instance=RequestContext(request))
 
     
 @authorize(roles=(Rol.OPERACIONES(),),)
@@ -761,7 +824,7 @@ def pauta_mantencion_chasis(request):
 @authorize(roles=(Rol.OPERACIONES(),),)
 def pauta_mantencion_chasis_editar(request, pauta_mantencion_chasis_id):
     pauta_mantencion_chasis = PautaMantencionChasis.objects.get(pk=pauta_mantencion_chasis_id)
-    return _agregar_o_editar_pauta_mantencion_chasis(request, pauta_mantencion_chasis)
+    return _editar_pauta_mantencion(request, 'chasis', PautaMantencionChasis, FormularioAgregarPautaMantencionChasis, pauta_mantencion_chasis)
     
 @authorize(roles=(Rol.OPERACIONES(),),)
 def pauta_mantencion_chasis_eliminar(request, pauta_mantencion_chasis_id):

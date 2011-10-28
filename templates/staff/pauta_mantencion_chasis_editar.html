@@ -1,0 +1,67 @@
+{% extends 'staff/base.html' %}
+
+{% block main_content %}
+    <p class="breadcrumbs">
+        <strong>Pautas de mantención de chasis</strong>
+        &raquo; 
+        {% if instance %}
+            {{ instance }}
+        {% else %}
+            Agregar pauta
+        {% endif %}
+    </p>
+    
+    <h2>Agregar pauta de mantención de chasis</h2>
+    
+    <hr />
+    
+    <form class="pauta_mantencion_form" method="post" action=".">
+        {% csrf_token %}
+        
+        {% if not prevent_validation_errors %}
+            {{ form.name.errors }}
+        {% endif %}
+        <strong>{{ form.name.label }}:</strong> {{ form.name }}
+        <br />
+        <br />
+    
+        <h3>Operaciones de la pauta</h3>
+        <table>
+            {{ formset.management_form }}
+            <tr>
+                <th>Nombre</th>
+                <th>Frecuencia</th>
+                <th>¿Eliminar?</th>
+            </tr>
+            {% for form in formset %}   
+                {{ form.id }}
+                {% if form.errors and not prevent_validation_errors %}
+                    <tr>
+                        <td>{{ form.descripcion.errors }}</td>
+                        <td>{{ form.frecuencia.errors }}</td>
+                        <td></td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td>{{ form.descripcion }}</td>
+                    <td>{{ form.frecuencia }}</td>
+                    <td>{{ form.DELETE }}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>
+                    <input type="submit" name="add" value="Agregar campo" />
+                </td>
+                <td></td>
+                <td>
+                    <input type="submit" name="delete" value="Eliminar seleccionados" />
+                </td>
+            </tr>
+        </table>
+        <input type="submit" name="save" value="Guardar" />
+    </form>    
+    <br />
+    {% if instance %}
+    <p><a href="{% url interface.views.pauta_mantencion_chasis_eliminar instance.id %}" class="error_message">Eliminar esta pauta de mantención</a></p>
+    {% endif %}
+{% endblock %}

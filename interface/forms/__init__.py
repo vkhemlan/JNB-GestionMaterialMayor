@@ -19,6 +19,9 @@ from .formulario_cambio_numero_chasis_material_mayor import FormularioCambioNume
 from .formulario_hoja_vida_cambio_numero_chasis_material_mayor import FormularioHojaVidaCambioNumeroChasisMaterialMayor
 from .formulario_cambio_numero_motor_material_mayor import FormularioCambioNumeroMotorMaterialMayor
 from .formulario_hoja_vida_cambio_numero_motor_material_mayor import FormularioHojaVidaCambioNumeroMotorMaterialMayor
+from .formulario_hoja_vida_asignacion_compania_material_mayor import FormularioHojaVidaAsignacionCompaniaMaterialMayor
+from formulario_pauta_mantencion_carrosado_agregar import FormularioPautaMantencionCarrosadoAgregar
+from formulario_pauta_mantencion_chasis_agregar import FormularioPautaMantencionChasisAgregar
 
 __all__ = [ 'BaseModelForm',
 			'FormularioAgregarMaterialMayor',
@@ -40,4 +43,7 @@ __all__ = [ 'BaseModelForm',
 			'FormularioCambioNumeroChasisMaterialMayor',
 			'FormularioHojaVidaCambioNumeroChasisMaterialMayor',
 			'FormularioCambioNumeroMotorMaterialMayor',
-			'FormularioHojaVidaCambioNumeroMotorMaterialMayor']
+			'FormularioHojaVidaCambioNumeroMotorMaterialMayor',
+			'FormularioHojaVidaAsignacionCompaniaMaterialMayor',
+			'FormularioPautaMantencionCarrosadoAgregar',
+			'FormularioPautaMantencionChasisAgregar']
