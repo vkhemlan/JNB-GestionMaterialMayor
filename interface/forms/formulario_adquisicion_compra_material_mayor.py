@@ -7,6 +7,7 @@ from django.conf import settings
 from django.template import loader, Context
 
 class FormularioAdquisicionCompraMaterialMayor(FormularioAdquisicionMaterialMayor):
+
     fecha_orden_de_compra = forms.DateField(widget=forms.DateInput(attrs={'class': 'datepicker'}), required=False)
     fecha_declaracion_de_ingreso = forms.DateField(widget=forms.DateInput(attrs={'class': 'datepicker'}), required=False)
     

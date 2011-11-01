@@ -3,8 +3,8 @@
    <tr class="errorrow"><td colspan="2">{{field.errors}}</td> </tr>
    {% endif %}
     <tr>
-        <td>
-            {{ field.label_tag }} {% if field.field.required %}(*){% endif %}
+        <td {% if field.field.required %}class="required"{% endif %}>
+            {{ field.label_tag }} 
         </td>
         <td>
             {{ field }}

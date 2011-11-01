@@ -26,7 +26,7 @@
         <br />
     
         <h3>Operaciones de la pauta</h3>
-        <table>
+        <table id="form-table">
             {{ formset.management_form }}
             <tr>
                 <th>Nombre</th>
@@ -50,18 +50,18 @@
             {% endfor %}
             <tr>
                 <td>
-                    <input type="submit" name="add" value="Agregar campo" />
+                    <input type="submit" name="add" value="Agregar campo" class="btn" />
                 </td>
                 <td></td>
                 <td>
-                    <input type="submit" name="delete" value="Eliminar seleccionados" />
+                    <input type="submit" name="delete" value="Eliminar seleccionados" class="btn"/>
                 </td>
             </tr>
         </table>
-        <input type="submit" name="save" value="Guardar" />
+        <input type="submit" name="save" value="Guardar" class="btn primary" />
     </form>    
     <br />
     {% if instance %}
-    <p><a href="{% url interface.views.pauta_mantencion_carrosado_eliminar instance.id %}" class="error_message">Eliminar esta pauta de mantención</a></p>
+    <p><a href="{% url interface.views.pauta_mantencion_carrosado_eliminar instance.id %}" class="btn danger">Eliminar esta pauta de mantención</a></p>
     {% endif %}
 {% endblock %}

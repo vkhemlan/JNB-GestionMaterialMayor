@@ -11,6 +11,7 @@ ul#topnav li {
 	float: left;
 	margin: 0; padding: 0;
 	border-right: 1px solid #555;
+	line-height: inherit;
 }
 ul#topnav li a {
 	padding: 10px 15px;

@@ -3,10 +3,10 @@
 {% block main_content %}
     <p class="breadcrumbs">
         <strong>Dar de alta</strong>
-        &raquo; Alta de vehículo (donación)
+        &raquo; Alta de vehículo (donación o comodato)
     </p>
 
-    <h2>Alta de material mayor (Donación)</h2>
+    <h2>Alta de material mayor (Donación o comodato)</h2>
     <hr />
     
     <p class="mandatory-field-notice">Los campos marcados con * son obligatorios</p>
@@ -34,7 +34,7 @@
                                 {% endfor %}
                             </ul>
                         {% endif %}
-                        {{ pair.0.label }}
+                        <label>{{ pair.0.label }}</label>
                     </td>
 
                     <td>
@@ -42,13 +42,17 @@
                     </td>
             {% endfor %}
 
-            <tr><td colspan="2"><br /><h3>Información de la donación</h3><br /></tr></td>
+            <tr><td colspan="2"><br /><h3>Información de la donación o comodato</h3><br /></tr></td>
             
             {{ form_adquisicion.render_detalles }}
                 
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" class="btn primary" value="Dar de alta" />
+                </td>
+            </tr>
         </table>
-
-        <input type="submit" value="Dar de alta" />
 
     </form>
 {% endblock %}

@@ -2,20 +2,22 @@
 
 {% block staff_content %}
     <p class="breadcrumbs">
-        <strong>Asignaciones de material</strong>
+        <strong>Dar de alta</strong>
         &raquo; Material mayor sin validar
     </p>
 
     <h2>Material mayor sin validar</h2>
     
-    <p><a href="{% url interface.views.material_mayor_sin_validar_excel %}">Descargar este informe como Excel</a></p>
     <hr />
+    <p><a href="{% url interface.views.material_mayor_sin_validar_excel %}">Descargar este informe como Excel</a></p>
+    <br />
 
     <table>    
         <tr>
             {% for field in fields %}
                 <th>{{ field }}</th>
             {% endfor %}
+            <th>Editar</th>
         </tr>
         
         {% for vehiculo in material_mayor %}
@@ -23,7 +25,13 @@
                 {% for field in vehiculo.data %}
                     <td>{{ field }}</td>
                 {% endfor %}
-                <td><a href="{% url interface.views.editar_material_mayor vehiculo.id %}?next={% url interface.views.material_mayor_sin_validar %}">Editar</a></td>
+                <td><a href="{% url interface.views.editar_material_mayor vehiculo.id %}?next={% url interface.views.material_mayor_sin_validar %}">
+                    {% if user.get_profile.puede_validar_material_mayor %}
+                        Revisar y validar
+                    {% else %}
+                        Editar
+                    {% endif %}
+                </a></td>
             </tr>
         {% empty %}
             <tr>

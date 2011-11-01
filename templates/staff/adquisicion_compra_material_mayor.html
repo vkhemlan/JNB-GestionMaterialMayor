@@ -15,15 +15,15 @@
         {% csrf_token %}
         <table id="form-table">
 
-            <tr><td colspan="3"><br /><h3>Datos del vehículo</h3><br /></tr></td>
+            <tr><td colspan="3"><br /><h3>Datos del vehículo</h3><br /></td></tr>
             
             {{ form.render_datos_vehiculo }}
             
-            <tr><td colspan="3"><br /><h3>Información Adicional</h3><br /></tr></td>
+            <tr><td colspan="3"><br /><h3>Información Adicional</h3><br /></td></tr>
             
             {{ form.render_informacion_adicional }}
 
-            <tr><td colspan="3"><br /><h3>Fotografías</h3><br /></tr></td>
+            <tr><td colspan="3"><br /><h3>Fotografías</h3><br /></td></tr>
             {% for pair in form.picture_fields %}
                 <tr>
                     <td>
@@ -34,7 +34,7 @@
                                 {% endfor %}
                             </ul>
                         {% endif %}
-                        {{ pair.0.label }}
+                        <label>{{ pair.0.label }}</label>
                     </td>
 
                     <td>
@@ -42,13 +42,17 @@
                     </td>
             {% endfor %}
 
-            <tr><td colspan="3"><br /><h3>Documentos</h3><br /></tr></td>
+            <tr><td colspan="3"><br /><h3>Documentos</h3><br /></td></tr>
             
             {{ form_adquisicion.render_detalles }}
                 
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" class="btn primary" value="Dar de alta" />
+                </td>
+            </tr>
         </table>
-
-        <input type="submit" value="Dar de alta" />
 
     </form>
 {% endblock %}

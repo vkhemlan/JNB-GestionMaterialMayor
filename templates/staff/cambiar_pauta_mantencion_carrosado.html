@@ -3,11 +3,13 @@
 {% block staff_content %}
     <p class="breadcrumbs">
         <strong>Material mayor</strong>
-        &raquo; {{ form.instance.breadcrumbs_string }}
+        &raquo; {{ material_mayor.breadcrumbs_string }}
         &raquo; Cambiar pauta de mantención de carrosado
     </p>
 
 	<h2>Cambiar pauta de mantención de carrosado</h2>
+	
+	<hr />
 	
 	<p>
     	Por favor seleccione la nueva pauta de mantención de carrosado para este vehículo.
@@ -15,8 +17,13 @@
 	
 	<form method="post" action=".">
 	    {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Guardar" />
+	    <table id="form-table">
+            {{ form.as_table }}
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Guardar" class="btn primary" /></td>
+            </tr>
+        </table>
     </form>
 
 {% endblock %}

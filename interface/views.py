@@ -23,7 +23,9 @@ from authentication import authorize, authorize_material_mayor_access
 
 @login_required
 def logout(request):
-    # Vista de cierre de sesión, todo boilerplate
+    """
+    Vista de cierre de sesión, boilerplate
+    """
     request.flash['success'] = 'Ha salido exitosamente del sistema'
     log('User %s logged out' % request.user.username)
     auth.logout(request)
@@ -31,8 +33,11 @@ def logout(request):
 
 @login_required
 def index(request):
-    # Vista de la página de inicio para cualquier usuario logueado
-    return render_to_response('staff/index.html', {}, 
+    """
+    Vista de la página de inicio para cualquier usuario logueado
+    """
+    
+    return render_to_response('staff/index.html', {},
                                 context_instance=RequestContext(request))
                                 
 def _adquisicion_material_mayor(request, FormularioAdquisicion, template):
@@ -192,7 +197,13 @@ def material_mayor_sin_validar_excel(request):
             ws.write(current_row, idx, field)
              
         editar_link = settings.SITE_URL + reverse('interface.views.editar_material_mayor', args=[vehiculo['id']])
-        ws.write(current_row, idx+1, Formula('HYPERLINK("%s";"Editar")' % editar_link), link_style)
+        
+        if request.user.get_profile().puede_validar_material_mayor():
+            edit_text = 'Revisar y validar'
+        else:
+            edit_text = 'Editar'
+        
+        ws.write(current_row, idx+1, Formula('HYPERLINK("%s";"%s")' % (editar_link, edit_text, )), link_style)
         
         current_row += 1
 
@@ -236,6 +247,7 @@ def cambiar_pauta_mantencion_carrosado(request, material_mayor):
         form = FormularioCambioPautaMantencionCarrosadoMaterialMayor(instance=material_mayor.pauta_mantencion_carrosado) 
     return render_to_response('staff/cambiar_pauta_mantencion_carrosado.html', {
         'form': form,
+        'material_mayor': material_mayor
     }, 
     context_instance=RequestContext(request))
     

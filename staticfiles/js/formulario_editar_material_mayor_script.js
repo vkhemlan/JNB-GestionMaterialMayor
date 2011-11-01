@@ -18,6 +18,10 @@ $(function() {
     })
     
     refresh_otros_usos()
+    
+    $('.required').each(function() {
+        $(this).children().append(' (*)')
+    })
 })
 
 function refresh_otros_usos() {

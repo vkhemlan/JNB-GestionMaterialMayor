@@ -40,9 +40,10 @@
 	<h2>Editar material mayor</h2>
 	
 	{% if not form.instance.validado_por_operaciones %}
+	    <br />
         <p class="error_message">Este material aún no ha sido validado por la JNBC por lo que no podrá acceder a la mayoría de sus opciones.</p>
         {% if user.get_profile.puede_validar_material_mayor %}
-            <a href="{% url interface.views.validar_material_mayor form.instance.id %}">
+            <a href="{% url interface.views.validar_material_mayor form.instance.id %}" class="btn primary">
                 Validar este material mayor
             </a>
         {% endif %}
@@ -111,23 +112,23 @@
             <tr><td colspan="2"><br /><h3>Datos del vehículo</h3><br /></tr></td>
             
             <tr>
-                <td>Marca chasis</td>
+                <td><label>Marca chasis</label></td>
                 <td>{{ form.instance.modelo_chasis.marca }}</td>
             </tr>
             <tr>
-                <td>Modelo chasis</td>
+                <td><label>Modelo chasis</label></td>
                 <td>{{ form.instance.modelo_chasis }}</td>
             </tr>
             <tr>
-                <td>Marca carrosado</td>
+                <td><label>Marca carrosado</label></td>
                 <td>{{ form.instance.marca_carrosado }}</td>
             </tr>
             <tr>
-                <td>N° chasis</td>
+                <td><label>N° chasis</label></td>
                 <td>{{ form.instance.numero_chasis }} {% if user.get_profile.puede_cambiar_numero_chasis_material_mayor %}(<a href="{% url interface.views.cambiar_numero_chasis_material_mayor form.instance.id %}">Cambiar</a>){% endif %}</td>
             </tr>
             <tr>
-                <td>N° motor</td>
+                <td><label>N° motor</label></td>
                 <td>{{ form.instance.numero_motor }} {% if user.get_profile.puede_cambiar_numero_motor_material_mayor %}(<a href="{% url interface.views.cambiar_numero_motor_material_mayor form.instance.id %}">Cambiar</a>){% endif %}</td>
             </tr>
             
@@ -148,7 +149,7 @@
                                 {% endfor %}
                             </ul>
                         {% endif %}
-                        {{ pair.0.label }}
+                        <label>{{ pair.0.label }}</label>
                     </td>
 
                     <td>
@@ -156,14 +157,17 @@
                     </td>   
                 </tr>
             {% endfor %}
-                
-        </table>
         
-        {% if next %}
-            <input type="hidden" name="next" value="{{ next }}" />
-        {% endif %}
-
-        <input type="submit" value="Guardar cambios" />
+            {% if next %}
+                <input type="hidden" name="next" value="{{ next }}" />
+            {% endif %}
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" class="btn primary" value="Guardar cambios" />
+                </td>
+            </tr>
+        </table>
 
     </form>
 

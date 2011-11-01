@@ -31,7 +31,7 @@
             <strong>Región</strong> {{ form.region }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <strong>Cuerpo</strong> {{ form.cuerpo }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             
-            <input type="submit" value="Buscar" />
+            <input type="submit" class="btn" value="Buscar" />
         </form>
         <br />
 	</div>
@@ -39,14 +39,10 @@
 	<hr />
 	
 	<p><a href="{% url interface.views.material_mayor_excel %}?{{ form.get_path }}">Descargar esta búsqueda como Excel</a></p>
+	<br />
     
     <div class="span-21">
         <table>
-            <tr>
-                <td colspan="5">
-                    <h3>{{ search_result.title }}</h3>
-                </td>
-            </tr>
             
             <tr>
                 <th>Marca chasis</th>
@@ -56,7 +52,7 @@
                 <th>N° motor</th>
                 <th>Cuerpo</th>
                 <th>Compañía</th>
-                <th></th>
+                <th>Editar</th>
             </tr>
             
             {% for material_mayor in material_mayor %}
