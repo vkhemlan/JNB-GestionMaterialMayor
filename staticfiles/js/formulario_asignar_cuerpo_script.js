@@ -20,12 +20,17 @@ function refresh_transferencia_escritura_publica() {
     if (checkbox.is(':checked')) {
         $('#id_fecha_de_escritura').parents('tr').show()
         $('#id_escritura_publica').parents('tr').show()
+        $('#id_notaria').parents('tr').show()
+        $('#id_numero_de_repertorio').parents('tr').show()
     } else {
         $('#id_fecha_de_escritura').parents('tr').hide()
         $('#id_fecha_de_escritura').val('')
         $('#id_escritura_publica').parents('tr').hide()
         $("#id_escritura_publica").replaceWith("<input type='file' id='id_escritura_publica' />");
-
+        $('#id_notaria').parents('tr').hide()
+        $('#id_notaria').val('')
+        $('#id_numero_de_repertorio').parents('tr').hide()
+        $('#id_numero_de_repertorio').val('')
     }
 }
 

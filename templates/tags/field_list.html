@@ -4,7 +4,10 @@
    {% endif %}
     <tr>
         <td {% if field.field.required %}class="required"{% endif %}>
-            {{ field.label_tag }} 
+            {{ field.label_tag }}
+            {% if field.help_text %}
+                <div class="help_text">{{ field.help_text }}</div>
+            {% endif %}
         </td>
         <td>
             {{ field }}

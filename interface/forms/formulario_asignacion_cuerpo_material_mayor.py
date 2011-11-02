@@ -30,12 +30,18 @@ class FormularioAsignacionCuerpoMaterialMayor(forms.ModelForm):
             if 'escritura_publica' in d and not d['escritura_publica']:
                 self._errors['escritura_publica'] = self.error_class([u'El archivo de escritura es obligatorio'])
                 del d['escritura_publica']
+            if 'notaria' in d and not d['notaria']:
+                self._errors['notaria'] = self.error_class([u'La notaria es obligatoria'])
+                del d['notaria']
+            if 'numero_de_repertorio' in d and not d['numero_de_repertorio']:
+                self._errors['numero_de_repertorio'] = self.error_class([u'El número de repertorio es obligatorio'])
+                del d['numero_de_repertorio']
                 
         return d
     
     class Meta:
         model = AsignacionCuerpoMaterialMayor
-        fields = ('region', 'cuerpo', 'compania', 'fecha_de_asignacion', 'notaria', 'numero_de_repertorio', 'acta_de_entrega_de_asignacion', 'listado_de_material_menor', 'transferencia_por_escritura_publica', 'fecha_de_escritura', 'escritura_publica', 'observaciones')
+        fields = ('region', 'cuerpo', 'compania', 'fecha_de_asignacion', 'acta_de_entrega_de_asignacion', 'listado_de_material_menor', 'transferencia_por_escritura_publica', 'fecha_de_escritura', 'escritura_publica', 'notaria', 'numero_de_repertorio', 'observaciones')
         widgets = {
             'fecha_de_asignacion': forms.DateInput(attrs={'class': 'datepicker'}),
             'fecha_de_escritura': forms.DateInput(attrs={'class': 'datepicker'})

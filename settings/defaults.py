@@ -18,7 +18,7 @@ ADMINS = (
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
                             'interface.authentication.JnbAuthenticationBackend',)
 
-JNB_WEBSERVICES_URL = 'http://localhost:8080/JnbWebServices'
+JNB_WEBSERVICES_URL = 'http://127.0.0.1:8080/JnbWebServices'
 
 MANAGERS = ADMINS
 

@@ -5,7 +5,7 @@ from django.contrib import auth
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, redirect
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.forms.models import inlineformset_factory
 
 import re
@@ -13,7 +13,7 @@ from datetime import date
 import xlrd
 from xlwt import Workbook, easyxf, Formula, XFStyle, Font
 
-from interface.models import Cuerpo, MaterialMayor, AdquisicionCompraMaterialMayor, AdquisicionDonacionMaterialMayor, TipoEventoHojaVidaMaterialMayor, EventoHojaVidaMaterialMayor, Rol, AsignacionPatenteMaterialMayor, UsoMaterialMayor, PautaMantencionCarrosado, OperacionMantencion, PautaMantencionChasis, ModeloChasisMaterialMayor, FrecuenciaOperacion, OperacionMantencion
+from interface.models import Cuerpo, MaterialMayor, EventoHojaVidaMaterialMayor, Rol, AsignacionPatenteMaterialMayor, UsoMaterialMayor, PautaMantencionCarrosado, PautaMantencionChasis, ModeloChasisMaterialMayor, FrecuenciaOperacion, OperacionMantencion
 from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioAgregarMaterialMayor, FormularioEditarMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioHojaVidaAsignacionCuerpoMaterialMayor, FormularioAsignacionCompaniaMaterialMayor, FormularioHojaVidaAsignacionCompaniaMaterialMayor, FormularioAsignacionPatenteMaterialMayor, FormularioHojaVidaAsignacionPatenteMaterialMayor, FormularioAgregarPautaMantencionCarrosado, FormularioAgregarPautaMantencionChasis, FormularioCambioPautaMantencionCarrosadoMaterialMayor, FormularioHojaVidaCambioPautaMantencionCarrosadoMaterialMayor, FormularioCambioNumeroChasisMaterialMayor, FormularioHojaVidaCambioNumeroChasisMaterialMayor, FormularioCambioNumeroMotorMaterialMayor, FormularioHojaVidaCambioNumeroMotorMaterialMayor, FormularioPautaMantencionCarrosadoAgregar, FormularioPautaMantencionChasisAgregar
 from django.http import HttpResponseRedirect
 from interface.utils import convert_camelcase_to_lowercase, log, remove_deleted_fields_from_data
@@ -75,8 +75,8 @@ def _adquisicion_material_mayor(request, FormularioAdquisicion, template):
             
             if request.user.get_profile().is_staff_cuerpo():
                 material_mayor.cuerpo = request.user.get_profile().cuerpo
-                material_mayor.save()
                 material_mayor.validado_por_operaciones = False
+                material_mayor.save()
                 material_mayor.notify_operaciones_of_dada_de_alta()
             
             request.flash['success'] = 'Material mayor dado de alta exitosamente'
@@ -193,6 +193,7 @@ def material_mayor_sin_validar_excel(request):
     current_row += 1
     
     for vehiculo in material_mayor:
+        idx = 0
         for idx, field in enumerate(vehiculo['data']):
             ws.write(current_row, idx, field)
              
@@ -231,10 +232,8 @@ def cambiar_pauta_mantencion_carrosado(request, material_mayor):
         form = FormularioCambioPautaMantencionCarrosadoMaterialMayor(request.POST)
         if form.is_valid():
             instance = form.instance
-            
-            instance.material_mayor = material_mayor
-            instance.usuario = request.user
-            instance.tipo = TipoEventoHojaVidaMaterialMayor.objects.get(classname='CambioPautaMantencionCarrosadoMaterialMayor')
+
+            instance.cargar_informacion_hoja_de_vida(material_mayor, request.user, 'CambioPautaMantencionCarrosadoMaterialMayor')
             instance.save()
             
             material_mayor.pauta_mantencion_carrosado = instance.nueva_pauta_mantencion_carrosado
@@ -258,10 +257,7 @@ def cambiar_numero_chasis_material_mayor(request, material_mayor):
         form = FormularioCambioNumeroChasisMaterialMayor(request.POST)
         if form.is_valid():
             instance = form.instance
-            
-            instance.material_mayor = material_mayor
-            instance.usuario = request.user
-            instance.tipo = TipoEventoHojaVidaMaterialMayor.objects.get(classname='CambioNumeroChasisMaterialMayor')
+            instance.cargar_informacion_hoja_de_vida(material_mayor, request.user, 'CambioNumeroChasisMaterialMayor')
             instance.save()
             
             material_mayor.numero_chasis = instance.nuevo_numero_chasis
@@ -285,12 +281,10 @@ def cambiar_numero_motor_material_mayor(request, material_mayor):
         form = FormularioCambioNumeroMotorMaterialMayor(request.POST)
         if form.is_valid():
             instance = form.instance
-            
-            instance.material_mayor = material_mayor
-            instance.usuario = request.user
-            instance.tipo = TipoEventoHojaVidaMaterialMayor.objects.get(classname='CambioNumeroMotorMaterialMayor')
+
+            instance.cargar_informacion_hoja_de_vida(material_mayor, request.user, 'CambioNumeroMotorMaterialMayor')
             instance.save()
-            
+
             material_mayor.numero_motor = instance.nuevo_numero_motor
             material_mayor.save()
             
@@ -310,6 +304,7 @@ def cambiar_numero_motor_material_mayor(request, material_mayor):
 @authorize_material_mayor_access(requiere_validacion_operaciones=False)
 def editar_material_mayor(request, material_mayor):
     # Vista de edición de los datos técnicos de un material mayor
+    next = None
     
     asignacion_link = None
     if material_mayor.validado_por_operaciones:
@@ -332,10 +327,9 @@ def editar_material_mayor(request, material_mayor):
             return HttpResponseRedirect(url)
     else:
         form = FormularioEditarMaterialMayor.get_from_instance(material_mayor, request.user)
+
         if 'next' in request.GET:
             next = request.GET['next']
-        else:
-            next = None
     
     return render_to_response('staff/editar_material_mayor.html', {
             'form': form,
@@ -353,7 +347,7 @@ def editar_adquisicion_material_mayor(request, material_mayor):
     # el sistema carga la correcta a través de un polimorfismo simulado
     
     adquisicion = material_mayor.adquisicion.get_polymorphic_instance()
-    Form = eval('Formulario%s' % (adquisicion.__class__.__name__))
+    Form = eval('Formulario%s' % adquisicion.__class__.__name__)
     if request.method == 'POST':
         form = Form(request.POST, request.FILES, instance=adquisicion, user=request.user)
         if form.is_valid():
@@ -378,15 +372,13 @@ def asignar_material_mayor_a_cuerpo(request, material_mayor):
     if request.method == 'POST':
         form = FormularioAsignacionCuerpoMaterialMayor(request.POST, request.FILES)
         if form.is_valid():
-            asignacion_material_mayor = form.instance
-            
-            asignacion_material_mayor.material_mayor = material_mayor
-            asignacion_material_mayor.usuario = request.user
-            asignacion_material_mayor.tipo = TipoEventoHojaVidaMaterialMayor.objects.get(classname='AsignacionCuerpoMaterialMayor')
-            asignacion_material_mayor.save()
+            instance = form.instance
 
-            material_mayor.cuerpo = asignacion_material_mayor.cuerpo
-            material_mayor.compania = asignacion_material_mayor.compania
+            instance.cargar_informacion_hoja_de_vida(material_mayor, request.user, 'AsignacionCuerpoMaterialMayor')
+            instance.save()
+
+            material_mayor.cuerpo = instance.cuerpo
+            material_mayor.compania = instance.compania
             material_mayor.save()
 
             request.flash['success'] = u'Material mayor asignado correctamente'
@@ -420,14 +412,12 @@ def asignar_material_mayor_a_compania(request, material_mayor):
     if request.method == 'POST':
         form = FormularioAsignacionCompaniaMaterialMayor(material_mayor, request.POST, request.FILES)
         if form.is_valid():
-            asignacion_material_mayor = form.instance
-            
-            asignacion_material_mayor.material_mayor = material_mayor
-            asignacion_material_mayor.usuario = request.user
-            asignacion_material_mayor.tipo = TipoEventoHojaVidaMaterialMayor.objects.get(classname='AsignacionCompaniaMaterialMayor')
-            asignacion_material_mayor.save()
+            instance = form.instance
 
-            material_mayor.compania = asignacion_material_mayor.compania
+            instance.cargar_informacion_hoja_de_vida(material_mayor, request.user, 'AsignacionCompaniaMaterialMayor')
+            instance.save()
+
+            material_mayor.compania = instance.compania
             material_mayor.save()
 
             request.flash['success'] = u'Material mayor asignado correctamente'
@@ -604,10 +594,8 @@ def asignar_patente_a_material_mayor(request, material_mayor):
         form = FormularioAsignacionPatenteMaterialMayor(request.POST)
         if form.is_valid():
             instance = form.instance
-            
-            instance.material_mayor = material_mayor
-            instance.usuario = request.user
-            instance.tipo = TipoEventoHojaVidaMaterialMayor.objects.get(classname='AsignacionPatenteMaterialMayor')
+
+            instance.cargar_informacion_hoja_de_vida(material_mayor, request.user, 'AsignacionPatenteMaterialMayor')
             instance.save()
             
             material_mayor.asignacion_de_patente = instance
@@ -629,7 +617,7 @@ def asignar_patente_a_material_mayor(request, material_mayor):
 @authorize_material_mayor_access(requiere_validacion_operaciones=True)
 def detalles_patente_material_mayor(request, material_mayor):
     asignacion_patente = AsignacionPatenteMaterialMayor.objects.get(material_mayor=material_mayor)
-    return detalle_evento_hoja_de_vida_material_mayor(request, material_mayor_id=material_mayor.id, evento_id=asignacion_patente.id)
+    return detalle_evento_hoja_de_vida_material_mayor(request, material_mayor=material_mayor, evento_id=asignacion_patente.id)
     
 @authorize(roles=(Rol.OPERACIONES(),),)
 @authorize_material_mayor_access(requiere_validacion_operaciones=False)
@@ -663,8 +651,9 @@ def validar_material_mayor(request, material_mayor):
 # Métodos comunes de manejo de pautas de mantencion
 
 def _editar_pauta_mantencion(request, tipo, ClasePautaMantencion, FormularioAgregarPautaMantencion, instance):
-    PautaMantencionInlineFormSet = inlineformset_factory(ClasePautaMantencion, OperacionMantencion, can_delete=True)
+    PautaMantencionInlineFormSet = inlineformset_factory(ClasePautaMantencion, OperacionMantencion)
     prevent_validation_errors = False
+    formset = PautaMantencionInlineFormSet()
     
     if request.method == 'POST':
         form = FormularioAgregarPautaMantencion(request.POST, instance=instance)
@@ -725,7 +714,7 @@ def _parse_pauta_mantencion_contents(input_file, ModelClass):
         nombre_pauta = sh.cell(1, 0).value
     
         m = ModelClass(name=nombre_pauta)
-    except Exception, e:
+    except Exception:
         return None
         
     m.save()
@@ -741,7 +730,7 @@ def _parse_pauta_mantencion_contents(input_file, ModelClass):
                 frecuencia = FrecuenciaOperacion.objects.get(numero_meses=operation_frequency_value)
                 op = OperacionMantencion(pauta=m, descripcion=operation_name, frecuencia=frecuencia)
                 op.save()
-    except:
+    except Exception:
         m.delete()
         return None
         
@@ -759,7 +748,7 @@ def agregar_pauta_mantencion_carrosado(request):
                 url = reverse('interface.views.pauta_mantencion_carrosado')
                 return HttpResponseRedirect(url)
             else:
-                form._errors['pauta_mantencion'] = self.error_class([u'Existe un error en el archivo XLS subido'])
+                form._errors['pauta_mantencion'] = form.error_class([u'Existe un error en el archivo XLS subido'])
     else:
         form = FormularioPautaMantencionCarrosadoAgregar()
     return render_to_response('staff/pauta_mantencion_carrosado_agregar.html', {

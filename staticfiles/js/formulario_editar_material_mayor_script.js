@@ -1,60 +1,92 @@
-var dynamic_part_names = ['chasis', 'caja_cambio', 'bomba']
+var dynamic_part_names = ['chasis', 'caja_cambio', 'bomba'];
 
 $(function() {
     $.each(dynamic_part_names, function(index, value) {
         $('#id_marca_' + value).change(function() {
-            generic_refresh(value)
-        })
+            generic_refresh(value);
+        });
         
-        generic_refresh(value)
+        generic_refresh(value);
         
         if (typeof window['default_modelo_' + value] == 'number') {
-            $('#id_modelo_' + value).val(window['default_modelo_' + value])
+            $('#id_modelo_' + value).val(window['default_modelo_' + value]);
         }
-    })
+    });
     
     $('#id_uso').change(function() {
-        refresh_otros_usos()
-    })
+        refresh_otros_usos();
+    });
     
-    refresh_otros_usos()
+    refresh_otros_usos();
     
     $('.required').each(function() {
-        $(this).children().append(' (*)')
-    })
-})
+        $(this).children().append(' (*)');
+    });
+
+    $('#id_forma_adquisicion').change(function() {
+        refresh_forma_adquisicion();
+    });
+
+    refresh_forma_adquisicion();
+});
+
+function refresh_forma_adquisicion() {
+    selected_forma_adquisicion = $('#id_forma_adquisicion').val();
+
+    var dueno_comodato = $('#id_dueno_comodato');
+    var fecha_limitacion_dominio = $('#id_fecha_limitacion_dominio');
+
+    if (selected_forma_adquisicion == 'Donacion') {
+        hide_html_element(dueno_comodato);
+        show_html_element(fecha_limitacion_dominio);
+    } else if (selected_forma_adquisicion == 'Comodato') {
+        show_html_element(dueno_comodato);
+        hide_html_element(fecha_limitacion_dominio);
+    } else {
+        hide_html_element(dueno_comodato);
+        hide_html_element(fecha_limitacion_dominio);
+    }
+}
+
+function hide_html_element(elem) {
+    elem.parents('tr').hide();
+    elem.val('');
+
+    var tr_otros_usos = $(elem.parents()[1]);
+    if (tr_otros_usos.prev().attr('class') === 'errorrow') {
+        tr_otros_usos.prev().hide();
+    }
+}
+
+function show_html_element(elem) {
+    elem.parents('tr').show();
+}
 
 function refresh_otros_usos() {
-    var selected_uso = parseInt($('#id_uso').val())
-    var select_otros_usos = $('#id_otro_uso')
-    
-    if ($.inArray(selected_uso, otros_usos_material_mayor_ids) != -1) {
-        select_otros_usos.parents('tr').slideDown()
+    var selected_uso = parseInt($('#id_uso').val());
+    var select_otros_usos = $('#id_otro_uso');
+
+    if ($.inArray(selected_uso, otros_usos_material_mayor_ids) == -1) {
+        hide_html_element(select_otros_usos);
     } else {
-        select_otros_usos.parents('tr').slideUp()
-        select_otros_usos.val('')
-        
-        var tr_otros_usos = $(select_otros_usos.parents()[1])
-        if (tr_otros_usos.prev().attr('class') === 'errorrow') {
-            tr_otros_usos.prev().hide()
-        }
+        show_html_element(select_otros_usos);
     }
 }
 
 function generic_refresh(part_name) {
-    var selected_marca = parseInt($('#id_marca_' + part_name).val())
+    var selected_marca = parseInt($('#id_marca_' + part_name).val());
     var select_modelo = $('#id_modelo_' + part_name);
-    select_modelo.empty()
+    select_modelo.empty();
     
     if (selected_marca) {
         select_modelo.removeAttr('disabled');
-        var element_added = false
+        var element_added = false;
         $.each(window['modelos_' + part_name], function(index, value) {
             if (value[2] == selected_marca) {
                 select_modelo.append($("<option />").val(value[0]).text(value[1]));
-                element_added = true
+                element_added = true;
             }
-        })
+        });
         if (!element_added) {
             select_modelo.append($("<option />").val(0).text('No hay modelos para esta marca'));
             select_modelo.attr('disabled', true);
@@ -66,9 +98,9 @@ function generic_refresh(part_name) {
 }
 
 function reload_part_model_list(part_name, new_element_id) {
-    add_another_link = $('#add_id_modelo_' + part_name)
+    add_another_link = $('#add_id_modelo_' + part_name);
     
-    add_another_link.hide()
+    add_another_link.hide();
     
     $.getJSON('/services/part_model_list/', {
         part_name: part_name
@@ -77,16 +109,16 @@ function reload_part_model_list(part_name, new_element_id) {
             window['modelos_' + part_name] = eval(data)
             $.each(window['modelos_' + part_name], function(index, value) {
                 if (value[0] == new_element_id) {
-                    $('#id_marca_' + part_name).val(value[2])
-                    generic_refresh(part_name)
-                    return false
+                    $('#id_marca_' + part_name).val(value[2]);
+                    generic_refresh(part_name);
+                    return false;
                 }
             })
             
             $('#id_modelo_' + part_name).val(new_element_id)
             add_another_link.show()
         }
-    )
+    );
 
 }
 

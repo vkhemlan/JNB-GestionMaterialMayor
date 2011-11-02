@@ -84,3 +84,10 @@ input.disabled-input {
     padding: 6px;
 }
 
+.help_text {
+    color: gray;
+    font-size: 10px;
+    text-align: right;
+    width: 250px;
+}
+

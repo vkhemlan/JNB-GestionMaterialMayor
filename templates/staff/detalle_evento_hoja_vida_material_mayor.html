@@ -15,6 +15,12 @@
     <h2>{{ form.instance.title_details }}</h2>
     <strong>Fecha y hora:</strong> {{ form.instance.fecha }} <br/>
     <strong>Usuario:</strong> {{ form.instance.usuario.get_full_name }} <br/>
+    <strong>Cuerpo del usuario:</strong> {{ form.instance.cuerpo_usuario|default_if_none:"No registrado" }} <br/>
+    {% if form.instance.rol_usuario %}
+        <strong>Rol:</strong> {{ form.instance.rol_usuario }} <br/>
+    {%  else %}
+        <strong>Cargos:</strong> {% for cargo in form.instance.cargos_usuario.all %}{{ cargo }} {% endfor %} <br/>
+    {% endif %}
     <br />
     
     <h3>Detalles</h3>
