@@ -28,9 +28,27 @@ class UserProfile(models.Model):
         # Para que el usuario sea considerado staff de cuerpo alguno de sus cargos
         # tiene que estar en el listado de cargos con permisos en el sistema.
         return intersect(cargo_ids, settings.CARGOS_CUERPO.values())
+
+    def puede_asignar_solicitud_de_primera_inscripcion(self):
+        if self.user.is_superuser:
+            return True
+        if self.rol == Rol.OPERACIONES():
+            return True
+        return False
         
     def puede_validar_material_mayor(self):
-        return self.rol == Rol.OPERACIONES()
+        if self.user.is_superuser:
+            return True
+        if self.rol == Rol.OPERACIONES():
+            return True
+        return False
+
+    def puede_asignar_certificado_de_anotaciones_vigentes(self):
+        if self.user.is_superuser:
+            return True
+        if self.rol == Rol.OPERACIONES():
+            return True
+        return False
         
     def is_staff_jnbc(self):
         return bool(self.rol)

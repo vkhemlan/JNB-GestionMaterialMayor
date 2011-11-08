@@ -4,14 +4,5 @@
     
 <strong>Cuerpo de destino:</strong> {{ form.instance.cuerpo }} ({{ form.instance.cuerpo.comuna.provincia.region }}) <br/>
 <strong>Compañía de destino:</strong> {% if form.instance.compania %} {{ form.instance.compania }} {% else %} Nivel central del cuerpo {% endif %} <br/>
-
-<form method="post" action="." enctype="multipart/form-data">
-    {% csrf_token %}
-    <table>
-        {{ form.as_table }}
-    </table>
-
-    <input type="submit" value="Guardar" />
-</form>
     
 {% endblock %}

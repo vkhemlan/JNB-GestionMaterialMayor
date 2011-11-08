@@ -3,19 +3,21 @@
 {% block staff_content %}
     <p class="breadcrumbs">
         <strong>Material mayor</strong>
-        &raquo; {{ material_mayor.breadcrumbs_string }}
+        &raquo; <a href="{% url interface.views.editar_material_mayor material_mayor.id %}">{{ material_mayor.breadcrumbs_string }}</a>
         &raquo; Eliminar
     </p>
 
 	<h2>Eliminar material mayor</h2>
+    <hr />
 	
 	<p>
     	Eliminar un material mayor es un proceso irreversible. Al ejecutarlo toda la información referente al vehículo incluyendo su hoja de vida será destruida.
 	</p>
+    <br />
 	
 	<form method="post" action=".">
 	    {% csrf_token %}
-        <input type="submit" value="Eliminar" />
+        <input type="submit" value="Eliminar" class="btn primary" />
     </form>
 
 {% endblock %}

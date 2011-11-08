@@ -13,9 +13,10 @@ from datetime import date
 import xlrd
 from xlwt import Workbook, easyxf, Formula, XFStyle, Font
 
-from interface.models import Cuerpo, MaterialMayor, EventoHojaVidaMaterialMayor, Rol, AsignacionPatenteMaterialMayor, UsoMaterialMayor, PautaMantencionCarrosado, PautaMantencionChasis, ModeloChasisMaterialMayor, FrecuenciaOperacion, OperacionMantencion
-from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioAgregarMaterialMayor, FormularioEditarMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioHojaVidaAsignacionCuerpoMaterialMayor, FormularioAsignacionCompaniaMaterialMayor, FormularioHojaVidaAsignacionCompaniaMaterialMayor, FormularioAsignacionPatenteMaterialMayor, FormularioHojaVidaAsignacionPatenteMaterialMayor, FormularioAgregarPautaMantencionCarrosado, FormularioAgregarPautaMantencionChasis, FormularioCambioPautaMantencionCarrosadoMaterialMayor, FormularioHojaVidaCambioPautaMantencionCarrosadoMaterialMayor, FormularioCambioNumeroChasisMaterialMayor, FormularioHojaVidaCambioNumeroChasisMaterialMayor, FormularioCambioNumeroMotorMaterialMayor, FormularioHojaVidaCambioNumeroMotorMaterialMayor, FormularioPautaMantencionCarrosadoAgregar, FormularioPautaMantencionChasisAgregar
+from interface.models import MaterialMayor, EventoHojaVidaMaterialMayor, Rol, AsignacionPatenteMaterialMayor, UsoMaterialMayor, PautaMantencionCarrosado, PautaMantencionChasis, ModeloChasisMaterialMayor, FrecuenciaOperacion, OperacionMantencion
+from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioAgregarMaterialMayor, FormularioEditarMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioAsignacionCompaniaMaterialMayor, FormularioAsignacionPatenteMaterialMayor, FormularioAgregarPautaMantencionCarrosado, FormularioAgregarPautaMantencionChasis, FormularioCambioPautaMantencionCarrosadoMaterialMayor, FormularioCambioNumeroChasisMaterialMayor, FormularioCambioNumeroMotorMaterialMayor, FormularioPautaMantencionCarrosadoAgregar, FormularioPautaMantencionChasisAgregar, FormularioCambioCertificadoAnotacionesVigentes, FormularioAsignacionSolicitudPrimeraInscripcion
 from django.http import HttpResponseRedirect
+from interface.models.cambio_pauta_mantencion_carrosado_material_mayor import CambioPautaMantencionCarrosadoMaterialMayor
 from interface.utils import convert_camelcase_to_lowercase, log, remove_deleted_fields_from_data
 from django.contrib.auth.decorators import login_required
 
@@ -231,19 +232,20 @@ def cambiar_pauta_mantencion_carrosado(request, material_mayor):
     if request.method == 'POST':
         form = FormularioCambioPautaMantencionCarrosadoMaterialMayor(request.POST)
         if form.is_valid():
-            instance = form.instance
+            instance = CambioPautaMantencionCarrosadoMaterialMayor()
+            instance.nueva_pauta_mantencion_carrosado = form.cleaned_data['pauta_mantencion_carrosado'].name
 
             instance.cargar_informacion_hoja_de_vida(material_mayor, request.user, 'CambioPautaMantencionCarrosadoMaterialMayor')
             instance.save()
             
-            material_mayor.pauta_mantencion_carrosado = instance.nueva_pauta_mantencion_carrosado
+            material_mayor.pauta_mantencion_carrosado = form.cleaned_data['pauta_mantencion_carrosado']
             material_mayor.save()
             
             request.flash['success'] = u'Cambio de pauta de mantención realizado exitosamente'
             url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
             return HttpResponseRedirect(url)
     else:
-        form = FormularioCambioPautaMantencionCarrosadoMaterialMayor(instance=material_mayor.pauta_mantencion_carrosado) 
+        form = FormularioCambioPautaMantencionCarrosadoMaterialMayor()
     return render_to_response('staff/cambiar_pauta_mantencion_carrosado.html', {
         'form': form,
         'material_mayor': material_mayor
@@ -455,8 +457,9 @@ def detalle_evento_hoja_de_vida_material_mayor(request, material_mayor, evento_i
     
     if evento.material_mayor != material_mayor:
         raise ValueError
-        
-    Form = eval('FormularioHojaVida' + evento.__class__.__name__)
+
+    my_forms = __import__('interface.forms', fromlist=['interface'])
+    Form = getattr(my_forms, 'FormularioHojaVida' + evento.__class__.__name__)
     
     if request.method == 'POST':
         form = Form(request.POST, request.FILES, instance=evento)
@@ -468,7 +471,7 @@ def detalle_evento_hoja_de_vida_material_mayor(request, material_mayor, evento_i
             return HttpResponseRedirect(url)
     else:
         form = Form(instance=evento)
-        
+
     template = convert_camelcase_to_lowercase(evento.__class__.__name__)
         
     return render_to_response('staff/detalle_evento_%s.html' % template, {
@@ -847,3 +850,56 @@ def pauta_mantencion_chasis_eliminar(request, pauta_mantencion_chasis_id):
         'modelos_chasis': modelos_chasis
         }, 
         context_instance=RequestContext(request))
+
+@authorize(roles=(Rol.OPERACIONES(),),)
+@authorize_material_mayor_access(requiere_validacion_operaciones=False)
+def cambiar_certificado_anotaciones_vigentes(request, material_mayor):
+    if request.method == 'POST':
+        form = FormularioCambioCertificadoAnotacionesVigentes(request.POST, request.FILES)
+        if form.is_valid():
+            instance = form.instance
+            instance.cargar_informacion_hoja_de_vida(material_mayor, request.user, 'CambioCertificadoAnotacionesVigentes')
+            instance.save()
+
+            material_mayor.certificado_de_anotaciones_vigentes = instance
+            material_mayor.save()
+
+            request.flash['success'] = u'Cambio de certificado realizado exitosamente'
+            url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
+            return HttpResponseRedirect(url)
+    else:
+        form = FormularioCambioCertificadoAnotacionesVigentes()
+    return render_to_response('staff/cambio_certificado_anotaciones_vigentes.html', {
+        'form': form,
+        'material_mayor': material_mayor
+    },
+    context_instance=RequestContext(request))
+
+@authorize(roles=(Rol.OPERACIONES(),),)
+@authorize_material_mayor_access(requiere_validacion_operaciones=False)
+def asignar_solicitud_primera_inscripcion(request, material_mayor):
+    if material_mayor.asignacion_solicitud_primera_inscripcion:
+        request.flash['error'] = u'La solicitud de primera inscripción sólo se puede realizar una vez'
+        url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
+        return HttpResponseRedirect(url)
+
+    if request.method == 'POST':
+        form = FormularioAsignacionSolicitudPrimeraInscripcion(request.POST, request.FILES)
+        if form.is_valid():
+            instance = form.instance
+            instance.cargar_informacion_hoja_de_vida(material_mayor, request.user, 'AsignacionSolicitudPrimeraInscripcion')
+            instance.save()
+
+            material_mayor.asignacion_solicitud_primera_inscripcion = instance
+            material_mayor.save()
+
+            request.flash['success'] = u'Asignación de solicitud de primera inscripción realizada exitosamente'
+            url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
+            return HttpResponseRedirect(url)
+    else:
+        form = FormularioAsignacionSolicitudPrimeraInscripcion()
+    return render_to_response('staff/asignacion_solicitud_primera_inscripcion.html', {
+        'form': form,
+        'material_mayor': material_mayor
+    },
+    context_instance=RequestContext(request))

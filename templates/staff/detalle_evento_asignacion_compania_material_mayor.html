@@ -3,14 +3,5 @@
 {% block event_details %}
     
 <strong>Compañía de destino:</strong> {{ form.instance.compania }} (Cuerpo de {{ form.instance.compania.cuerpo }}) <br/>
-
-<form method="post" action="." enctype="multipart/form-data">
-    {% csrf_token %}
-    <table>
-        {{ form.as_table }}
-    </table>
-
-    <input type="submit" value="Guardar" />
-</form>
     
 {% endblock %}

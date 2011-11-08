@@ -39,6 +39,8 @@ from .asignacion_patente_material_mayor import AsignacionPatenteMaterialMayor
 from .cambio_pauta_mantencion_carrosado_material_mayor import CambioPautaMantencionCarrosadoMaterialMayor
 from .cambio_numero_chasis_material_mayor import CambioNumeroChasisMaterialMayor
 from .cambio_numero_motor_material_mayor import CambioNumeroMotorMaterialMayor
+from .cambio_certificado_anotaciones_vigentes import CambioCertificadoAnotacionesVigentes
+from .asignacion_solicitud_primera_inscripcion import AsignacionSolicitudPrimeraInscripcion
 
 __all__ = [
     'TipoVehiculoMaterialMayor',
@@ -81,5 +83,7 @@ __all__ = [
     'OperacionMantencion',
     'CambioPautaMantencionCarrosadoMaterialMayor',
     'CambioNumeroChasisMaterialMayor',
-    'CambioNumeroMotorMaterialMayor'
+    'CambioNumeroMotorMaterialMayor',
+    'CambioCertificadoAnotacionesVigentes',
+    'AsignacionSolicitudPrimeraInscripcion'
 ]

@@ -22,6 +22,10 @@ from .formulario_hoja_vida_cambio_numero_motor_material_mayor import FormularioH
 from .formulario_hoja_vida_asignacion_compania_material_mayor import FormularioHojaVidaAsignacionCompaniaMaterialMayor
 from formulario_pauta_mantencion_carrosado_agregar import FormularioPautaMantencionCarrosadoAgregar
 from formulario_pauta_mantencion_chasis_agregar import FormularioPautaMantencionChasisAgregar
+from .formulario_cambio_certificado_anotaciones_vigentes import FormularioCambioCertificadoAnotacionesVigentes
+from .formulario_hoja_vida_cambio_certificado_anotaciones_vigentes import FormularioHojaVidaCambioCertificadoAnotacionesVigentes
+from .formulario_asignacion_solicitud_primera_inscripcion import FormularioAsignacionSolicitudPrimeraInscripcion
+from .formulario_hoja_vida_asignacion_solicitud_primera_inscripcion import FormularioHojaVidaAsignacionSolicitudPrimeraInscripcion
 
 __all__ = [ 'BaseModelForm',
 			'FormularioAgregarMaterialMayor',
@@ -46,4 +50,8 @@ __all__ = [ 'BaseModelForm',
 			'FormularioHojaVidaCambioNumeroMotorMaterialMayor',
 			'FormularioHojaVidaAsignacionCompaniaMaterialMayor',
 			'FormularioPautaMantencionCarrosadoAgregar',
-			'FormularioPautaMantencionChasisAgregar']
+			'FormularioPautaMantencionChasisAgregar',
+            'FormularioCambioCertificadoAnotacionesVigentes',
+            'FormularioHojaVidaCambioCertificadoAnotacionesVigentes',
+            'FormularioAsignacionSolicitudPrimeraInscripcion',
+            'FormularioHojaVidaAsignacionSolicitudPrimeraInscripcion']

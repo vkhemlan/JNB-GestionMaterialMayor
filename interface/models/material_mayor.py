@@ -3,7 +3,6 @@
 from django.db import models
 from sorl.thumbnail import ImageField
 from datetime import date
-from django.conf import settings
 
 def generate_uploaded_material_mayor_file_name(field_name, instance, filename):
     left_path, extension = filename.rsplit('.',1)
@@ -36,13 +35,16 @@ class MaterialMayor(models.Model):
     modelo_bomba = models.ForeignKey('ModeloBombaMaterialMayor', verbose_name=u'Modelo de bomba', blank=True, null=True)
     pais_origen = models.ForeignKey('Pais', verbose_name=u'País de origen', blank=True, null=True)
     planos = models.FileField(upload_to=lambda i, fn: generate_uploaded_material_mayor_file_name('planos', i, fn), verbose_name=u'Planos del vehículo', blank=True, null=True)
+    certificado_de_anotaciones_vigentes = models.ForeignKey('CambioCertificadoAnotacionesVigentes', blank=True, null=True)
+    asignacion_solicitud_primera_inscripcion = models.ForeignKey('AsignacionSolicitudPrimeraInscripcion', blank=True, null=True)
     # Fotografías
     fotografia_frontal = ImageField(upload_to=lambda i, fn: uploaded_image_rename('fotografia_frontal', i, fn), verbose_name=u'Vista Frontal', blank=True, null=True)
     fotografia_lateral = ImageField(upload_to=lambda i, fn: uploaded_image_rename('fotografia_lateral', i, fn), verbose_name=u'Vista Lateral', blank=True, null=True)
     fotografia_trasera = ImageField(upload_to=lambda i, fn: uploaded_image_rename('fotografia_trasera', i, fn), verbose_name=u'Vista Trasera', blank=True, null=True)
-    # Metadata
+    # Información de procesos asociados
     adquisicion = models.OneToOneField('AdquisicionMaterialMayor')
     asignacion_de_patente = models.OneToOneField('AsignacionPatenteMaterialMayor', blank=True, null=True)
+    # Metadata
     validado_por_operaciones = models.BooleanField(default=True)
     # Asociacion
     cuerpo = models.ForeignKey('Cuerpo', blank=True, null=True)

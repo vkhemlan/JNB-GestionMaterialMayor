@@ -38,6 +38,8 @@
     </p>
 
 	<h2>Editar material mayor</h2>
+
+    <hr />
 	
 	{% if not form.instance.validado_por_operaciones %}
 	    <br />
@@ -87,6 +89,32 @@
                 </td>
             </tr>
             <tr>
+                <th>Certificado de anotaciones vigentes</th>
+                <td>
+                    {% if form.instance.certificado_de_anotaciones_vigentes %}
+                        <a href="{{ MEDIA_URL }}{{ form.instance.certificado_de_anotaciones_vigentes.certificado_anotaciones_vigentes }}">Descargar certificado</a>
+                    {% else %}
+                        <i>No posee certificado</i>
+                    {% endif %}
+                    {% if user.get_profile.puede_asignar_certificado_de_anotaciones_vigentes %}
+                        (<a href="{% url interface.views.cambiar_certificado_anotaciones_vigentes form.instance.id %}">Actualizar certificado</a>)
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Solicitud de primera inscripción</th>
+                <td>
+                    {% if form.instance.asignacion_solicitud_primera_inscripcion %}
+                        <a href="{{ MEDIA_URL }}{{ form.instance.asignacion_solicitud_primera_inscripcion.solicitud_primera_inscripcion }}">Descargar solicitud</a>
+                    {% else %}
+                        <i>No posee solicitud</i>
+                        {% if user.get_profile.puede_asignar_solicitud_de_primera_inscripcion %}
+                        (<a href="{% url interface.views.asignar_solicitud_primera_inscripcion form.instance.id %}">Asignar</a>)
+                    {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
                 <th>Pauta de mantenimiento de carrosado</th>
                 <td>
                     {% if form.instance.pauta_mantencion_carrosado %}
@@ -106,7 +134,7 @@
             <tr><th>Forma de adquisición</th><td>{{ form.instance.adquisicion.modo }} (<a href="{% url interface.views.editar_adquisicion_material_mayor form.instance.id %}">Editar detalles</a>)</td></tr>
             <tr><th>Hoja de vida</th><td><a href="{% url interface.views.detalles_hoja_de_vida_material_mayor form.instance.id %}">Ver hoja de vida</a></td></tr>
             {% if user.get_profile.puede_eliminar_material_mayor %}
-                <tr><td colspan="2"><br /><a href="{% url interface.views.eliminar_material_mayor form.instance.id %}">Eliminar material mayor</a></td></tr>
+                <tr><td colspan="2"><br /><a href="{% url interface.views.eliminar_material_mayor form.instance.id %}" class="btn danger">Eliminar material mayor</a></td></tr>
             {% endif %}
 
             <tr><td colspan="2"><br /><h3>Datos del vehículo</h3><br /></tr></td>

@@ -22,12 +22,11 @@ class EventoHojaVidaMaterialMayor(models.Model):
         return unicode(self.tipo)
         
     def get_polymorphic_instance(self):
-        from . import AsignacionCuerpoMaterialMayor, AsignacionCompaniaMaterialMayor, AsignacionPatenteMaterialMayor, CambioPautaMantencionCarrosadoMaterialMayor, CambioNumeroChasisMaterialMayor, CambioNumeroMotorMaterialMayor
-        
         if self.__class__.__name__ != 'EventoHojaVidaMaterialMayor':
             return self
         else:
-            BaseClass = eval(self.tipo.classname)
+            my_models = __import__('interface.models', fromlist=['interface'])
+            BaseClass = getattr(my_models, self.tipo.classname)
             return BaseClass.objects.get(pk=self.id)
 
     def cargar_informacion_hoja_de_vida(self, material_mayor, user, classname):

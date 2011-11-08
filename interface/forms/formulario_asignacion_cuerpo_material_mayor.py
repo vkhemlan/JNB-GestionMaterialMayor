@@ -2,7 +2,6 @@
 
 from django import forms
 from interface.models import AsignacionCuerpoMaterialMayor, Region
-from datetime import date
 
 class FormularioAsignacionCuerpoMaterialMayor(forms.ModelForm):
     region = forms.ModelChoiceField(queryset=Region.objects.all(), label='Región')

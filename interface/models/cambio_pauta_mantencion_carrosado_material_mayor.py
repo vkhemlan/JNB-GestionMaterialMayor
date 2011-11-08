@@ -4,7 +4,7 @@ from django.db import models
 from . import EventoHojaVidaMaterialMayor
 
 class CambioPautaMantencionCarrosadoMaterialMayor(EventoHojaVidaMaterialMayor):
-    nueva_pauta_mantencion_carrosado = models.ForeignKey('PautaMantencionCarrosado')
+    nueva_pauta_mantencion_carrosado = models.CharField(max_length=255)
     
     def quick_details(self):
         return u'Cambio de pauta de mantención de carrosado a %s' % unicode(self.nueva_pauta_mantencion_carrosado)

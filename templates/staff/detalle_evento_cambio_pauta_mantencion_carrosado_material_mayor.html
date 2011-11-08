@@ -2,6 +2,6 @@
         
 {% block event_details %}
     
-<strong>Pauta de mantención de carrosado asignada:</strong> <a href="{% url interface.views.pauta_mantencion_carrosado_editar form.instance.nueva_pauta_mantencion_carrosado.id %}">{{ form.instance.nueva_pauta_mantencion_carrosado }}</a><br/>
+<strong>Pauta de mantención de carrosado asignada:</strong> {{ form.instance.nueva_pauta_mantencion_carrosado }}<br/>
     
 {% endblock %}

@@ -13,6 +13,7 @@
     </p>
     
     <h2>{{ form.instance.title_details }}</h2>
+    <hr />
     <strong>Fecha y hora:</strong> {{ form.instance.fecha }} <br/>
     <strong>Usuario:</strong> {{ form.instance.usuario.get_full_name }} <br/>
     <strong>Cuerpo del usuario:</strong> {{ form.instance.cuerpo_usuario|default_if_none:"No registrado" }} <br/>

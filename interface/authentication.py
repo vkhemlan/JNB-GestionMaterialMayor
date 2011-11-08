@@ -1,13 +1,10 @@
 # coding: utf-8
 
-import urllib2
 from functools import wraps
 from django.core.urlresolvers import reverse
-from utils import log
-from django.conf import settings
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 
 from interface.models import UserProfile, MaterialMayor
 from interface.utils import log, request_webservice, get_xml_node_contents, intersect
@@ -20,6 +17,8 @@ class authorize_material_mayor_access(object):
         @wraps(func)
         def wrap(request, *args, **kwargs):
             material_mayor = MaterialMayor.objects.get(pk=kwargs['material_mayor'])
+            if not request.user.is_authenticated():
+                return redirect('login')
             if not request.user.get_profile().may_access_material_mayor(material_mayor):
                 request.flash['error'] = u'Error de acceso'
                 return redirect('index')
@@ -81,10 +80,10 @@ class JnbAuthenticationBackend:
         if not user_id:
             log("Username / password of the user do not match")
             return None
-        '''
-        Maximum username length in django is 30
-        We assume these are enough characters to identify a user
-        '''
+
+        # Maximum username length in django is 30
+        # We assume these are enough characters to identify a user
+
         if len(username) > 30:
             log("Username haas more than 30 characters, triming \
                 for Django auth system support")
@@ -95,15 +94,15 @@ class JnbAuthenticationBackend:
             user = UserProfile.objects.get(webservice_id=user_id).user
             log("The user has logged in before, using existing entry")
         except UserProfile.DoesNotExist:
-            '''
-            The username is an email
-            password as None means that the default auth system will never
-            authenticate this user and will rely on ours (which is what we want)
-            '''
+
+            # The username is an email
+            # password as None means that the default auth system will never
+            # authenticate this user and will rely on ours (which is what we want)
+            
             log("The user has never logged in before, creating \
                 proxy user inside the system")
             user = User.objects.create_user(django_username, 
-                email=username, password=None)
+                email=username)
         
         user.get_profile().update(django_username, xml_data)
         
