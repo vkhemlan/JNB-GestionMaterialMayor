@@ -35,6 +35,7 @@
             </tr>
             {% for form in formset %}   
                 {{ form.id }}
+                {{ form.operacionmantencion_ptr }}
                 {% if form.errors and not prevent_validation_errors %}
                     <tr>
                         <td>{{ form.descripcion.errors }}</td>
@@ -62,6 +63,6 @@
     </form>    
     <br />
     {% if instance %}
-    <p><a href="{% url interface.views.pauta_mantencion_chasis_eliminar instance.id %}" class="error_message">Eliminar esta pauta de mantención</a></p>
+    <p><a href="{% url interface.views.pauta_mantencion_chasis_eliminar instance.id %}" class="btn danger">Eliminar esta pauta de mantención</a></p>
     {% endif %}
 {% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'staff/base.html' %}
+
+{% block staff_content %}
+    
+    <p class="breadcrumbs">
+        <strong>Material mayor</strong>
+        &raquo; <a href="{% url interface.views.editar_material_mayor material_mayor.id %}">{{ material_mayor }}</a>
+        &raquo; <a href="{% url interface.views.mantenciones_programadas material_mayor.id %}">Mantenciones programadas</a>
+        &raquo; {{ mantencion_programada.gestor_string }}
+    </p>
+
+	<h2>{{ mantencion_programada.gestor_string }}</h2>
+    <hr />
+        
+    <table>
+        <tr>
+            <th>Operación</th>
+            <th>Estado</th>
+        </tr>
+        {% for operacion_mantencion in operaciones_mantencion %}
+            <tr>
+                <td>{{ operacion_mantencion }}</td>
+                <td>
+                    {% if operacion_mantencion.ejecucion %}
+                        Ejecutada (<a href="{% url interface.views.detalle_evento_hoja_de_vida_material_mayor material_mayor.id operacion_mantencion.ejecucion.id %}">Ver detalles</a>)
+                    {% else %}
+                        <form
+                            action="{% url interface.views.marcar_operacion_mantencion_programada_como_ejecutada material_mayor.id mantencion_programada.id operacion_mantencion.id %}"
+                            method="POST"
+                            class="no_margin">
+                            {% csrf_token %}
+                            <input type="submit" class="btn default" value="Marcar como ejecutada" />
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

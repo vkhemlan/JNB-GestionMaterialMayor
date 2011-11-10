@@ -3,7 +3,6 @@
 from django.db import models
 
 class OperacionMantencion(models.Model):
-    pauta = models.ForeignKey('PautaMantencion')
     descripcion = models.TextField()
     frecuencia = models.ForeignKey('FrecuenciaOperacion')
     
@@ -13,5 +12,5 @@ class OperacionMantencion(models.Model):
     class Meta:
         ordering = ['id']
         app_label = 'interface'
-        verbose_name = u'Operación'
-        verbose_name_plural = u'Operaciones'
+        verbose_name = u'Operación mantención'
+        verbose_name_plural = u'Operaciones mantención'

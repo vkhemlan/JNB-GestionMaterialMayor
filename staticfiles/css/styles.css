@@ -91,3 +91,6 @@ input.disabled-input {
     width: 250px;
 }
 
+form.no_margin {
+    margin: 0;
+}

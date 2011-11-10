@@ -1,0 +1,26 @@
+{% extends 'staff/base.html' %}
+
+{% block staff_content %}
+    
+    <p class="breadcrumbs">
+        <strong>Material mayor</strong>
+        &raquo; <a href="{% url interface.views.editar_material_mayor material_mayor.id %}">{{ material_mayor }}</a>
+        &raquo; Mantenciones programadas
+    </p>
+
+	<h2>Mantenciones programadas</h2>
+    <hr />
+        
+    <ul>
+        {% for mantencion_programada in mantenciones_programadas %}
+            <li>
+                {% if mantencion_programada.importante %}
+                    <span class="label important">Importante</span>
+                {% endif %}
+                <a href="{% url interface.views.detalle_mantencion_programada material_mayor.id mantencion_programada.id %}">{{ mantencion_programada.gestor_string }}</a>
+            </li>
+        {% empty %}
+            <li><i>No hay mantenciones programadas para este vehículo</i></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

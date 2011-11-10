@@ -1,6 +1,7 @@
 # coding: utf-8
 
 from django.db import models
+from django.db.models import Q
 from sorl.thumbnail import ImageField
 from datetime import date
 
@@ -78,6 +79,41 @@ class MaterialMayor(models.Model):
         operaciones_bomberiles_user_profiles = UserProfile.objects.filter(rol=Rol.OPERACIONES())
         for user_profile in operaciones_bomberiles_user_profiles:
             user_profile.send_new_dada_de_alta_email(self)
+
+    def corresponde_mantenimiento_programado(self, frecuencia_operacion):
+        hoy = date.today()
+        fecha_crecion_vehiculo = self.adquisicion.fecha.date()
+
+        if hoy == fecha_crecion_vehiculo:
+            return False
+
+        if hoy.day != fecha_crecion_vehiculo.day:
+            return False
+
+        month_difference = (hoy.year * 12 + hoy.month) - (fecha_crecion_vehiculo.year * 12 + fecha_crecion_vehiculo.month)
+
+        return month_difference % frecuencia_operacion.numero_meses == 0
+
+    def revisar_nuevas_mantenciones_programadas(self, frecuencias_operacion):
+        from . import OperacionMantencionPauta, MantencionProgramada, OperacionMantencionProgramada
+
+        if not self.validado_por_operaciones:
+            return
+
+        ids_pautas_mantencion = [self.pauta_mantencion_carrosado.id, self.modelo_chasis.pauta_mantencion.id]
+        ids_frecuencias_operacion_compatibles = [f.id for f in frecuencias_operacion if self.corresponde_mantenimiento_programado(f)]
+        ids_operaciones_mantencion_pendientes = [op.operacionmantencion_ptr.id for op in OperacionMantencionProgramada.objects.filter(ejecucion__isnull=True, mantencion__material_mayor=self)]
+
+        operaciones_mantencion_compatibles = OperacionMantencionPauta.objects.filter(pauta__id__in=ids_pautas_mantencion, frecuencia__id__in=ids_frecuencias_operacion_compatibles).filter(~Q(operacionmantencion_ptr__id__in=ids_operaciones_mantencion_pendientes))
+
+        if operaciones_mantencion_compatibles:
+            mantencion_programada = MantencionProgramada(fecha=date.today(), material_mayor=self)
+            mantencion_programada.save()
+            for operacion in operaciones_mantencion_compatibles:
+                operacion_mantencion_programada = OperacionMantencionProgramada(operacionmantencion_ptr_id=operacion.operacionmantencion_ptr.id)
+                operacion_mantencion_programada.__dict__.update(operacion.operacionmantencion_ptr.__dict__)
+                operacion_mantencion_programada.mantencion = mantencion_programada
+                operacion_mantencion_programada.save()
 
     class Meta:
         app_label = 'interface'

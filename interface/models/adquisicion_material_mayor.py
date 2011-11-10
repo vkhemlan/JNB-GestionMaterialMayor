@@ -18,7 +18,8 @@ class AdquisicionMaterialMayor(models.Model):
     
     def save(self, *args, **kwargs):
         from . import ModoAdquisicionMaterialMayor
-        self.modo = ModoAdquisicionMaterialMayor.objects.get(classname=self.__class__.__name__)
+        if not self.id:
+            self.modo = ModoAdquisicionMaterialMayor.objects.get(classname=self.__class__.__name__)
         super(AdquisicionMaterialMayor, self).save(*args, **kwargs)
         
     def get_polymorphic_instance(self):

@@ -41,6 +41,10 @@ from .cambio_numero_chasis_material_mayor import CambioNumeroChasisMaterialMayor
 from .cambio_numero_motor_material_mayor import CambioNumeroMotorMaterialMayor
 from .cambio_certificado_anotaciones_vigentes import CambioCertificadoAnotacionesVigentes
 from .asignacion_solicitud_primera_inscripcion import AsignacionSolicitudPrimeraInscripcion
+from .operacion_mantencion_pauta import OperacionMantencionPauta
+from .mantencion_programada import MantencionProgramada
+from .operacion_mantencion_programada import OperacionMantencionProgramada
+from .ejecucion_operacion_mantencion_programada import EjecucionOperacionMantencionProgramada
 
 __all__ = [
     'TipoVehiculoMaterialMayor',
@@ -85,5 +89,9 @@ __all__ = [
     'CambioNumeroChasisMaterialMayor',
     'CambioNumeroMotorMaterialMayor',
     'CambioCertificadoAnotacionesVigentes',
-    'AsignacionSolicitudPrimeraInscripcion'
+    'AsignacionSolicitudPrimeraInscripcion',
+    'OperacionMantencionPauta',
+    'MantencionProgramada',
+    'OperacionMantencionProgramada',
+    'EjecucionOperacionMantencionProgramada'
 ]

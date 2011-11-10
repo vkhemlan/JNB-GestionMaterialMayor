@@ -1,0 +1,5 @@
+{% extends 'staff/detalle_evento_hoja_vida_material_mayor.html' %}
+        
+{% block event_details %}
+    <strong>Mantención asociada:</strong> <a href="{% url interface.views.detalle_mantencion_programada material_mayor.id form.instance.operacionmantencionprogramada.mantencion.id %}">Ver ficha</a>
+{% endblock %}

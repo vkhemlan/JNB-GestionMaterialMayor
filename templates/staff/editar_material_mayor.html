@@ -133,6 +133,7 @@
             <tr><th>Ingresado por</th><td>{{ form.instance.adquisicion.usuario.get_full_name }}</td></tr>
             <tr><th>Forma de adquisición</th><td>{{ form.instance.adquisicion.modo }} (<a href="{% url interface.views.editar_adquisicion_material_mayor form.instance.id %}">Editar detalles</a>)</td></tr>
             <tr><th>Hoja de vida</th><td><a href="{% url interface.views.detalles_hoja_de_vida_material_mayor form.instance.id %}">Ver hoja de vida</a></td></tr>
+            <tr><th>Mantenciones programadas</th><td><a href="{% url interface.views.mantenciones_programadas form.instance.id %}">Ver mantenciones programadas</a></td></tr>
             {% if user.get_profile.puede_eliminar_material_mayor %}
                 <tr><td colspan="2"><br /><a href="{% url interface.views.eliminar_material_mayor form.instance.id %}" class="btn danger">Eliminar material mayor</a></td></tr>
             {% endif %}

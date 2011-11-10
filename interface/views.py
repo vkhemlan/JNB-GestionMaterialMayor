@@ -5,7 +5,7 @@ from django.contrib import auth
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.forms.models import inlineformset_factory
 
 import re
@@ -13,10 +13,11 @@ from datetime import date
 import xlrd
 from xlwt import Workbook, easyxf, Formula, XFStyle, Font
 
-from interface.models import MaterialMayor, EventoHojaVidaMaterialMayor, Rol, AsignacionPatenteMaterialMayor, UsoMaterialMayor, PautaMantencionCarrosado, PautaMantencionChasis, ModeloChasisMaterialMayor, FrecuenciaOperacion, OperacionMantencion
+from interface.models import MaterialMayor, EventoHojaVidaMaterialMayor, Rol, AsignacionPatenteMaterialMayor, UsoMaterialMayor, PautaMantencionCarrosado, PautaMantencionChasis, ModeloChasisMaterialMayor, FrecuenciaOperacion, MantencionProgramada, OperacionMantencionProgramada, EjecucionOperacionMantencionProgramada
 from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioAgregarMaterialMayor, FormularioEditarMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioAsignacionCompaniaMaterialMayor, FormularioAsignacionPatenteMaterialMayor, FormularioAgregarPautaMantencionCarrosado, FormularioAgregarPautaMantencionChasis, FormularioCambioPautaMantencionCarrosadoMaterialMayor, FormularioCambioNumeroChasisMaterialMayor, FormularioCambioNumeroMotorMaterialMayor, FormularioPautaMantencionCarrosadoAgregar, FormularioPautaMantencionChasisAgregar, FormularioCambioCertificadoAnotacionesVigentes, FormularioAsignacionSolicitudPrimeraInscripcion
 from django.http import HttpResponseRedirect
 from interface.models.cambio_pauta_mantencion_carrosado_material_mayor import CambioPautaMantencionCarrosadoMaterialMayor
+from interface.models.operacion_mantencion_pauta import OperacionMantencionPauta
 from interface.utils import convert_camelcase_to_lowercase, log, remove_deleted_fields_from_data
 from django.contrib.auth.decorators import login_required
 
@@ -654,7 +655,7 @@ def validar_material_mayor(request, material_mayor):
 # Métodos comunes de manejo de pautas de mantencion
 
 def _editar_pauta_mantencion(request, tipo, ClasePautaMantencion, FormularioAgregarPautaMantencion, instance):
-    PautaMantencionInlineFormSet = inlineformset_factory(ClasePautaMantencion, OperacionMantencion)
+    PautaMantencionInlineFormSet = inlineformset_factory(ClasePautaMantencion, OperacionMantencionPauta)
     prevent_validation_errors = False
     formset = PautaMantencionInlineFormSet()
     
@@ -662,15 +663,13 @@ def _editar_pauta_mantencion(request, tipo, ClasePautaMantencion, FormularioAgre
         form = FormularioAgregarPautaMantencion(request.POST, instance=instance)
         if 'add' in request.POST:
             formset_data = request.POST.copy()
-            total_forms_field_name = 'operacionmantencion_set-TOTAL_FORMS'
+            total_forms_field_name = 'operacionmantencionpauta_set-TOTAL_FORMS'
             total_forms_quantity = int(formset_data[total_forms_field_name])
             formset_data[total_forms_field_name] = str(total_forms_quantity + 1)
             formset = PautaMantencionInlineFormSet(formset_data, instance=instance)
             prevent_validation_errors = True
         elif 'delete' in request.POST:
-            import ipdb
-            ipdb.set_trace()
-            new_data = remove_deleted_fields_from_data(request.POST, 'operacionmantencion_set')
+            new_data = remove_deleted_fields_from_data(request.POST, 'operacionmantencionpauta_set')
             formset = PautaMantencionInlineFormSet(new_data, instance=instance)
             prevent_validation_errors = True
         elif 'save' in request.POST:
@@ -731,7 +730,7 @@ def _parse_pauta_mantencion_contents(input_file, ModelClass):
                 r = re.match(r'(\d+) meses$', operation_frequency)
                 operation_frequency_value = int(r.groups()[0])
                 frecuencia = FrecuenciaOperacion.objects.get(numero_meses=operation_frequency_value)
-                op = OperacionMantencion(pauta=m, descripcion=operation_name, frecuencia=frecuencia)
+                op = OperacionMantencionPauta(pauta=m, descripcion=operation_name, frecuencia=frecuencia)
                 op.save()
     except Exception:
         m.delete()
@@ -903,3 +902,54 @@ def asignar_solicitud_primera_inscripcion(request, material_mayor):
         'material_mayor': material_mayor
     },
     context_instance=RequestContext(request))
+
+@authorize(roles=(Rol.OPERACIONES(),),)
+@authorize_material_mayor_access(requiere_validacion_operaciones=True)
+def mantenciones_programadas(request, material_mayor):
+    mantenciones_programadas = MantencionProgramada.objects.filter(material_mayor=material_mayor).order_by('-fecha')
+    for mantencion_programada in mantenciones_programadas:
+        if mantencion_programada.operacionmantencionprogramada_set.filter(ejecucion__isnull=True):
+            mantencion_programada.importante = True
+    return render_to_response('staff/mantenciones_programadas.html', {
+        'mantenciones_programadas': mantenciones_programadas,
+        'material_mayor': material_mayor
+    },
+    context_instance=RequestContext(request))
+
+@authorize(roles=(Rol.OPERACIONES(),),)
+@authorize_material_mayor_access(requiere_validacion_operaciones=True)
+def detalle_mantencion_programada(request, material_mayor, mantencion_programada_id):
+    mantencion_programada = MantencionProgramada.objects.get(pk=mantencion_programada_id)
+    if mantencion_programada.material_mayor != material_mayor:
+        raise Http404
+
+    operaciones_mantencion = mantencion_programada.operacionmantencionprogramada_set.all()
+
+    return render_to_response('staff/detalle_mantencion_programada.html', {
+        'mantencion_programada': mantencion_programada,
+        'operaciones_mantencion': operaciones_mantencion,
+        'material_mayor': material_mayor
+    },
+    context_instance=RequestContext(request))
+
+@authorize(roles=(Rol.OPERACIONES(),),)
+@authorize_material_mayor_access(requiere_validacion_operaciones=True)
+def marcar_operacion_mantencion_programada_como_ejecutada(request, material_mayor, mantencion_programada_id, operacion_mantencion_id):
+    mantencion_programada = MantencionProgramada.objects.get(pk=mantencion_programada_id)
+    operacion_mantencion = OperacionMantencionProgramada.objects.get(pk=operacion_mantencion_id)
+
+    if mantencion_programada.material_mayor != material_mayor or operacion_mantencion.mantencion != mantencion_programada:
+        raise Http404
+
+    if request.method != 'POST' or operacion_mantencion.ejecucion:
+        raise Http404
+
+    instance = EjecucionOperacionMantencionProgramada()
+    instance.cargar_informacion_hoja_de_vida(material_mayor, request.user, 'EjecucionOperacionMantencionProgramada')
+    instance.save()
+
+    operacion_mantencion.ejecucion = instance
+    operacion_mantencion.save()
+
+    url = reverse('interface.views.detalle_mantencion_programada', args=[material_mayor.id, mantencion_programada.id])
+    return HttpResponseRedirect(url)
