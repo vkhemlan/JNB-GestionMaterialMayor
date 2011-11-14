@@ -27,6 +27,7 @@ from .formulario_hoja_vida_cambio_certificado_anotaciones_vigentes import Formul
 from .formulario_asignacion_solicitud_primera_inscripcion import FormularioAsignacionSolicitudPrimeraInscripcion
 from .formulario_hoja_vida_asignacion_solicitud_primera_inscripcion import FormularioHojaVidaAsignacionSolicitudPrimeraInscripcion
 from .formulario_hoja_vida_ejecucion_operacion_mantencion_programada import FormularioHojaVidaEjecucionOperacionMantencionProgramada
+from .formulario_agregar_archivo_mantencion_programada import FormularioAgregarArchivoMantencionProgramada
 
 __all__ = [ 'BaseModelForm',
 			'FormularioAgregarMaterialMayor',
@@ -56,4 +57,5 @@ __all__ = [ 'BaseModelForm',
             'FormularioHojaVidaCambioCertificadoAnotacionesVigentes',
             'FormularioAsignacionSolicitudPrimeraInscripcion',
             'FormularioHojaVidaAsignacionSolicitudPrimeraInscripcion',
-            'FormularioHojaVidaEjecucionOperacionMantencionProgramada']
+            'FormularioHojaVidaEjecucionOperacionMantencionProgramada',
+            'FormularioAgregarArchivoMantencionProgramada']

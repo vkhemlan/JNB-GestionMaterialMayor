@@ -1,0 +1,28 @@
+{% extends 'staff/base.html' %}
+
+{% block staff_content %}
+    
+    <p class="breadcrumbs">
+        <strong>Material mayor</strong>
+        &raquo; <a href="{% url interface.views.editar_material_mayor material_mayor.id %}">{{ material_mayor }}</a>
+        &raquo; <a href="{% url interface.views.mantenciones_programadas material_mayor.id %}">Mantenciones programadas</a>
+        &raquo; <a href="{% url interface.views.detalle_mantencion_programada material_mayor.id mantencion_programada.id %}">{{ mantencion_programada.gestor_string }}</a>
+        &raquo; Agregar archivo
+    </p>
+
+	<h2>Agregar archivo de mantención</h2>
+    <hr />
+
+    <form method="post" action="." enctype="multipart/form-data">
+        {% csrf_token %}
+        <table id="form-table">
+            {{ form.as_table }}
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" class="btn primary" value="Guardar" />
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

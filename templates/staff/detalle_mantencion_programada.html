@@ -1,5 +1,9 @@
 {% extends 'staff/base.html' %}
 
+{% block header_block %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/ventanas_modales_mantencion.js"></script>
+{% endblock %}
+
 {% block staff_content %}
     
     <p class="breadcrumbs">
@@ -16,24 +20,94 @@
         <tr>
             <th>Operación</th>
             <th>Estado</th>
+            <th>Acciones</th>
         </tr>
         {% for operacion_mantencion in operaciones_mantencion %}
             <tr>
-                <td>{{ operacion_mantencion }}</td>
                 <td>
-                    {% if operacion_mantencion.ejecucion %}
-                        Ejecutada (<a href="{% url interface.views.detalle_evento_hoja_de_vida_material_mayor material_mayor.id operacion_mantencion.ejecucion.id %}">Ver detalles</a>)
-                    {% else %}
-                        <form
-                            action="{% url interface.views.marcar_operacion_mantencion_programada_como_ejecutada material_mayor.id mantencion_programada.id operacion_mantencion.id %}"
-                            method="POST"
-                            class="no_margin">
-                            {% csrf_token %}
-                            <input type="submit" class="btn default" value="Marcar como ejecutada" />
-                        </form>
+                    {{ operacion_mantencion }}
+                    {% if operacion_mantencion.observaciones %}
+                        <br />
+                        <strong>Observaciones: </strong> {{ operacion_mantencion.observaciones }}
                     {% endif %}
                 </td>
+                {% if operacion_mantencion.esta_ejecutada %}
+                    <td>
+                        Ejecutada
+                    </td>
+                    <td>
+                        <a class="btn info" href="{% url interface.views.detalle_evento_hoja_de_vida_material_mayor material_mayor.id operacion_mantencion.ejecucion.id %}">Ver detalles</a>
+                    </td>
+                {% else %}
+                    {% if operacion_mantencion.esta_pospuesta %}
+                        <td>
+                            Pospuesta
+                        </td>
+                        <td>
+                            <button data-controls-modal="modal-form-ejecutar" data-backdrop="true" data-keyboard="true" class="btn primary boton_ejecutar" action="{% url interface.views.marcar_operacion_mantencion_programada_como_ejecutada material_mayor.id mantencion_programada.id operacion_mantencion.id %}">Ejecutar</button>
+                        </td>
+                    {% else %}
+                        <td>
+                            Pendiente
+                        </td>
+                        <td class="fixed_width">
+                            {% csrf_token %}
+                            <button data-controls-modal="modal-form-ejecutar" data-backdrop="true" data-keyboard="true" class="btn primary boton_ejecutar" action="{% url interface.views.marcar_operacion_mantencion_programada_como_ejecutada material_mayor.id mantencion_programada.id operacion_mantencion.id %}">Ejecutar</button>
+                            <button data-controls-modal="modal-form-posponer" data-backdrop="true" data-keyboard="true" class="btn danger boton_posponer" action="{% url interface.views.marcar_operacion_mantencion_programada_como_pospuesta material_mayor.id mantencion_programada.id operacion_mantencion.id %}">Posponer</button>
+                        </td>
+                    {% endif %}
+                {% endif %}
             </tr>
         {% endfor %}
     </table>
+
+    <h3>Archivos asociados a la mantención</h3>
+
+    <ul>
+        {% for archivo in mantencion_programada.archivomantencionprogramada_set.all %}
+            <li><a href="{{ MEDIA_URL }}{{ archivo.archivo }}">{{ archivo }}</a></li>
+        {% empty %}
+            <li>No hay archivos asociados a esta mantención</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url interface.views.agregar_archivo_mantencion_programada mantencion_programada.material_mayor.id mantencion_programada.id %}" class="btn primary">Agregar archivo</a>
+
+    <div id="modal-form-ejecutar" class="modal hide fade">
+        <div class="modal-header">
+            <a href="#" class="close">&times;</a>
+            <h3>Ejecutar mantención</h3>
+        </div>
+
+        <form id="formulario_observaciones_ejecucion_mantencion" method="post" action=".">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>Acá puede indicar (opcionalmente) cualquier observación de la mantención realizada</p>
+
+                <textarea class="observaciones_mantencion" rows="6" cols="16" name="observaciones"></textarea>
+            </div>
+            <div class="modal-footer">
+                <input type="submit" value="Guardar" class="btn primary" />
+            </div>
+        </form>
+    </div>
+
+    <div id="modal-form-posponer" class="modal hide fade">
+        <div class="modal-header">
+            <a href="#" class="close">&times;</a>
+            <h3>Posponer mantención</h3>
+        </div>
+
+        <form id="formulario_observaciones_posponer_mantencion" method="post" action=".">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>Por favor indique por qué se pospuso la mantención</p>
+
+                <textarea class="observaciones_mantencion" rows="6" cols="16" name="observaciones"></textarea>
+            </div>
+            <div class="modal-footer">
+                <input type="submit" value="Guardar" class="btn primary" />
+            </div>
+        </form>
+    </div>
 {% endblock %}

@@ -17,6 +17,9 @@ class UserProfile(models.Model):
     
     def is_comandante(self):
         return settings.CARGOS_CUERPO['Comandante'] in [cargo.webservice_id for cargo in self.cargos.all()]
+
+    def is_inspector_de_material_mayor(self):
+        return settings.CARGOS_CUERPO['Inspector de Material Mayor'] in [cargo.webservice_id for cargo in self.cargos.all()]
         
     def is_staff_cuerpo(self):
         # Si el usuario tiene un rol significa que trabaja en la JNB
@@ -97,6 +100,8 @@ class UserProfile(models.Model):
             t = loader.get_template('menus/%s.html' % (self.rol.nombre.lower()))
         elif self.is_comandante():
             t = loader.get_template('menus/comandante.html')
+        elif self.is_inspector_de_material_mayor():
+            t = loader.get_template('menus/inspector_de_material_mayor.html')
         else:
             t = loader.get_template('menus/default.html')
         return t.render(c)
@@ -169,7 +174,8 @@ class UserProfile(models.Model):
     class Meta:
         app_label = 'interface'
 
-def create_user_profile(sender, instance, created, **kwargs):  
+
+def create_user_profile(sender, instance, created, **kwargs):
     if created:  
        profile, created = UserProfile.objects.get_or_create(user = instance)  
 

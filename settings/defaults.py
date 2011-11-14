@@ -81,6 +81,7 @@ AUTH_PROFILE_MODULE = 'interface.UserProfile'
 
 CARGOS_CUERPO = {
     'Comandante': 4,
+    'Inspector de Material Mayor': 111
 }
 
 TEMPLATE_CONTEXT_PROCESSORS = (

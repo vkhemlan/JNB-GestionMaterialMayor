@@ -14,11 +14,11 @@ import xlrd
 from xlwt import Workbook, easyxf, Formula, XFStyle, Font
 
 from interface.models import MaterialMayor, EventoHojaVidaMaterialMayor, Rol, AsignacionPatenteMaterialMayor, UsoMaterialMayor, PautaMantencionCarrosado, PautaMantencionChasis, ModeloChasisMaterialMayor, FrecuenciaOperacion, MantencionProgramada, OperacionMantencionProgramada, EjecucionOperacionMantencionProgramada
-from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioAgregarMaterialMayor, FormularioEditarMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioAsignacionCompaniaMaterialMayor, FormularioAsignacionPatenteMaterialMayor, FormularioAgregarPautaMantencionCarrosado, FormularioAgregarPautaMantencionChasis, FormularioCambioPautaMantencionCarrosadoMaterialMayor, FormularioCambioNumeroChasisMaterialMayor, FormularioCambioNumeroMotorMaterialMayor, FormularioPautaMantencionCarrosadoAgregar, FormularioPautaMantencionChasisAgregar, FormularioCambioCertificadoAnotacionesVigentes, FormularioAsignacionSolicitudPrimeraInscripcion
+from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioAgregarMaterialMayor, FormularioEditarMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioAsignacionCompaniaMaterialMayor, FormularioAsignacionPatenteMaterialMayor, FormularioAgregarPautaMantencionCarrosado, FormularioAgregarPautaMantencionChasis, FormularioCambioPautaMantencionCarrosadoMaterialMayor, FormularioCambioNumeroChasisMaterialMayor, FormularioCambioNumeroMotorMaterialMayor, FormularioPautaMantencionCarrosadoAgregar, FormularioPautaMantencionChasisAgregar, FormularioCambioCertificadoAnotacionesVigentes, FormularioAsignacionSolicitudPrimeraInscripcion, FormularioAgregarArchivoMantencionProgramada
 from django.http import HttpResponseRedirect
 from interface.models.cambio_pauta_mantencion_carrosado_material_mayor import CambioPautaMantencionCarrosadoMaterialMayor
 from interface.models.operacion_mantencion_pauta import OperacionMantencionPauta
-from interface.utils import convert_camelcase_to_lowercase, log, remove_deleted_fields_from_data
+from interface.utils import convert_camelcase_to_lowercase, log
 from django.contrib.auth.decorators import login_required
 
 from authentication import authorize, authorize_material_mayor_access
@@ -303,7 +303,7 @@ def cambiar_numero_motor_material_mayor(request, material_mayor):
     context_instance=RequestContext(request))
 
 
-@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],))
 @authorize_material_mayor_access(requiere_validacion_operaciones=False)
 def editar_material_mayor(request, material_mayor):
     # Vista de edición de los datos técnicos de un material mayor
@@ -436,7 +436,7 @@ def asignar_material_mayor_a_compania(request, material_mayor):
         context_instance=RequestContext(request))      
 
 
-@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],) )
 @authorize_material_mayor_access(requiere_validacion_operaciones=False)
 def detalles_hoja_de_vida_material_mayor(request, material_mayor):
     # Vista que despliega el listado de eventos en la hoja de vida de un material mayor en particular
@@ -450,7 +450,7 @@ def detalles_hoja_de_vida_material_mayor(request, material_mayor):
         context_instance=RequestContext(request))
         
 
-@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],) )
 @authorize_material_mayor_access(requiere_validacion_operaciones=False)
 def detalle_evento_hoja_de_vida_material_mayor(request, material_mayor, evento_id):
     # Vista que despliega el detalle de alguno de los eventos de la hoja de vida de cierto material mayor
@@ -496,7 +496,7 @@ def _material_mayor(request):
     material_mayor = form.get_filtered_material_mayor()
     return form, material_mayor, title
 
-@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
+@authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],))
 def material_mayor(request):
     form, material_mayor, title = _material_mayor(request)
     
@@ -669,9 +669,14 @@ def _editar_pauta_mantencion(request, tipo, ClasePautaMantencion, FormularioAgre
             formset = PautaMantencionInlineFormSet(formset_data, instance=instance)
             prevent_validation_errors = True
         elif 'delete' in request.POST:
-            new_data = remove_deleted_fields_from_data(request.POST, 'operacionmantencionpauta_set')
-            formset = PautaMantencionInlineFormSet(new_data, instance=instance)
-            prevent_validation_errors = True
+            formset = PautaMantencionInlineFormSet(request.POST, instance=instance)
+
+            for f in formset.deleted_forms:
+                if f.instance.id:
+                    f.instance.delete()
+
+            url = reverse('interface.views.pauta_mantencion_%s_editar' % tipo, args=[instance.id])
+            return HttpResponseRedirect(url + '?refresh=True')
         elif 'save' in request.POST:
             formset = PautaMantencionInlineFormSet(request.POST, instance=instance)
             if form.is_valid() and formset.is_valid():
@@ -690,7 +695,7 @@ def _editar_pauta_mantencion(request, tipo, ClasePautaMantencion, FormularioAgre
                 
                 request.flash['success'] = 'Pauta de mantención guardada exitosamente'
                 url = reverse('interface.views.pauta_mantencion_%s' % tipo)
-                return HttpResponseRedirect(url)                
+                return HttpResponseRedirect(url)
     else:
         formset = PautaMantencionInlineFormSet(instance=instance)
         form = FormularioAgregarPautaMantencion(instance=instance)
@@ -877,11 +882,6 @@ def cambiar_certificado_anotaciones_vigentes(request, material_mayor):
 @authorize(roles=(Rol.OPERACIONES(),),)
 @authorize_material_mayor_access(requiere_validacion_operaciones=False)
 def asignar_solicitud_primera_inscripcion(request, material_mayor):
-    if material_mayor.asignacion_solicitud_primera_inscripcion:
-        request.flash['error'] = u'La solicitud de primera inscripción sólo se puede realizar una vez'
-        url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
-        return HttpResponseRedirect(url)
-
     if request.method == 'POST':
         form = FormularioAsignacionSolicitudPrimeraInscripcion(request.POST, request.FILES)
         if form.is_valid():
@@ -903,20 +903,22 @@ def asignar_solicitud_primera_inscripcion(request, material_mayor):
     },
     context_instance=RequestContext(request))
 
-@authorize(roles=(Rol.OPERACIONES(),),)
-@authorize_material_mayor_access(requiere_validacion_operaciones=True)
+@authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],) )
+@authorize_material_mayor_access(requiere_validacion_operaciones=False)
 def mantenciones_programadas(request, material_mayor):
     mantenciones_programadas = MantencionProgramada.objects.filter(material_mayor=material_mayor).order_by('-fecha')
     for mantencion_programada in mantenciones_programadas:
-        if mantencion_programada.operacionmantencionprogramada_set.filter(ejecucion__isnull=True):
+        if mantencion_programada.operacionmantencionprogramada_set.filter(ejecucion__isnull=True, observaciones__isnull=True):
             mantencion_programada.importante = True
+        elif mantencion_programada.operacionmantencionprogramada_set.filter(ejecucion__isnull=True, observaciones__isnull=False):
+            mantencion_programada.warning = True
     return render_to_response('staff/mantenciones_programadas.html', {
         'mantenciones_programadas': mantenciones_programadas,
         'material_mayor': material_mayor
     },
     context_instance=RequestContext(request))
 
-@authorize(roles=(Rol.OPERACIONES(),),)
+@authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],) )
 @authorize_material_mayor_access(requiere_validacion_operaciones=True)
 def detalle_mantencion_programada(request, material_mayor, mantencion_programada_id):
     mantencion_programada = MantencionProgramada.objects.get(pk=mantencion_programada_id)
@@ -932,7 +934,7 @@ def detalle_mantencion_programada(request, material_mayor, mantencion_programada
     },
     context_instance=RequestContext(request))
 
-@authorize(roles=(Rol.OPERACIONES(),),)
+@authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],) )
 @authorize_material_mayor_access(requiere_validacion_operaciones=True)
 def marcar_operacion_mantencion_programada_como_ejecutada(request, material_mayor, mantencion_programada_id, operacion_mantencion_id):
     mantencion_programada = MantencionProgramada.objects.get(pk=mantencion_programada_id)
@@ -944,12 +946,75 @@ def marcar_operacion_mantencion_programada_como_ejecutada(request, material_mayo
     if request.method != 'POST' or operacion_mantencion.ejecucion:
         raise Http404
 
+    observaciones = request.POST['observaciones'].strip()
+    if not observaciones:
+        observaciones = None
+
     instance = EjecucionOperacionMantencionProgramada()
     instance.cargar_informacion_hoja_de_vida(material_mayor, request.user, 'EjecucionOperacionMantencionProgramada')
     instance.save()
 
     operacion_mantencion.ejecucion = instance
+    operacion_mantencion.observaciones = observaciones
     operacion_mantencion.save()
 
     url = reverse('interface.views.detalle_mantencion_programada', args=[material_mayor.id, mantencion_programada.id])
     return HttpResponseRedirect(url)
+
+@authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],) )
+@authorize_material_mayor_access(requiere_validacion_operaciones=True)
+def marcar_operacion_mantencion_programada_como_pospuesta(request, material_mayor, mantencion_programada_id, operacion_mantencion_id):
+    mantencion_programada = MantencionProgramada.objects.get(pk=mantencion_programada_id)
+    operacion_mantencion = OperacionMantencionProgramada.objects.get(pk=operacion_mantencion_id)
+
+    if mantencion_programada.material_mayor != material_mayor or operacion_mantencion.mantencion != mantencion_programada:
+        raise Http404
+
+    if request.method != 'POST' or operacion_mantencion.ejecucion:
+        raise Http404
+
+    observaciones = request.POST['observaciones'].strip()
+    if not observaciones:
+        request.flash['error'] = 'Debe indicar el motivo por el que se pospone la mantención'
+        url = reverse('interface.views.detalle_mantencion_programada', args=[material_mayor.id, mantencion_programada.id])
+        return HttpResponseRedirect(url)
+
+    operacion_mantencion.observaciones = observaciones
+    operacion_mantencion.save()
+
+    url = reverse('interface.views.detalle_mantencion_programada', args=[material_mayor.id, mantencion_programada.id])
+    return HttpResponseRedirect(url)
+
+@authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],) )
+@authorize_material_mayor_access(requiere_validacion_operaciones=True)
+def agregar_archivo_mantencion_programada(request, material_mayor, mantencion_programada_id):
+    mantencion_programada = MantencionProgramada.objects.get(pk=mantencion_programada_id)
+
+    if mantencion_programada.material_mayor != material_mayor:
+        raise Http404
+
+    if request.method == 'POST':
+        form = FormularioAgregarArchivoMantencionProgramada(request.POST, request.FILES)
+        if form.is_valid():
+            temp_form = FormularioAgregarArchivoMantencionProgramada(request.POST)
+            temp_form.is_valid()
+            temp_instance = temp_form.instance
+            temp_instance.mantencion = mantencion_programada
+
+            temp_instance.save()
+
+            form = FormularioAgregarArchivoMantencionProgramada(request.POST, request.FILES, instance=temp_instance)
+            form.save()
+
+            request.flash['success'] = 'Archivo subido exitosamente'
+            url = reverse('interface.views.detalle_mantencion_programada', args=[material_mayor.id, mantencion_programada.id])
+            return HttpResponseRedirect(url)
+    else:
+        form = FormularioAgregarArchivoMantencionProgramada()
+
+    return render_to_response('staff/agregar_archivo_mantencion_programada.html', {
+        'form': form,
+        'mantencion_programada': mantencion_programada,
+        'material_mayor': material_mayor
+    },
+    context_instance=RequestContext(request))

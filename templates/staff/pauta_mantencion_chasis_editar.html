@@ -11,7 +11,7 @@
         {% endif %}
     </p>
     
-    <h2>Agregar pauta de mantención de chasis</h2>
+    <h2>Editar pauta de mantención de chasis</h2>
     
     <hr />
     
@@ -35,7 +35,6 @@
             </tr>
             {% for form in formset %}   
                 {{ form.id }}
-                {{ form.operacionmantencion_ptr }}
                 {% if form.errors and not prevent_validation_errors %}
                     <tr>
                         <td>{{ form.descripcion.errors }}</td>

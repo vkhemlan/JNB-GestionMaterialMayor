@@ -2,6 +2,7 @@ from interface.models import MaterialMayor, EventoHojaVidaMaterialMayor
 from django.http import Http404, HttpResponse
 from authentication import authorize_material_mayor_access
 from django.contrib.auth.decorators import login_required
+from interface.models.archivo_mantencion_programada import ArchivoMantencionProgramada
 
 @authorize_material_mayor_access(requiere_validacion_operaciones=False)
 def descargar_documento_material_mayor(request, material_mayor, field_name, extension):
@@ -31,4 +32,12 @@ def descargar_fotografia_material_mayor(request, material_mayor, field_name, ext
 def descargar_documento_adquisicion_material_mayor(request, material_mayor, field_name, extension):
     document = getattr(material_mayor.adquisicion.get_polymorphic_instance(), field_name).file.read()
     response = HttpResponse(document, mimetype='application/force-download')
+    return response
+
+@authorize_material_mayor_access(requiere_validacion_operaciones=True)
+def descargar_documento_mantencion_programada_material_mayor(request, material_mayor, archivo_id, extension):
+    archivo = ArchivoMantencionProgramada.objects.get(pk=archivo_id)
+    if archivo.mantencion.material_mayor != material_mayor:
+        raise Http404
+    response = HttpResponse(archivo.archivo.read(), mimetype='application/force-download')
     return response

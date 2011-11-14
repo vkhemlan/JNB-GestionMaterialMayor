@@ -17,6 +17,9 @@
                 {% if mantencion_programada.importante %}
                     <span class="label important">Importante</span>
                 {% endif %}
+                {% if mantencion_programada.warning %}
+                    <span class="label warning">Pendiente</span>
+                {% endif %}
                 <a href="{% url interface.views.detalle_mantencion_programada material_mayor.id mantencion_programada.id %}">{{ mantencion_programada.gestor_string }}</a>
             </li>
         {% empty %}

@@ -108,9 +108,9 @@
                         <a href="{{ MEDIA_URL }}{{ form.instance.asignacion_solicitud_primera_inscripcion.solicitud_primera_inscripcion }}">Descargar solicitud</a>
                     {% else %}
                         <i>No posee solicitud</i>
-                        {% if user.get_profile.puede_asignar_solicitud_de_primera_inscripcion %}
-                        (<a href="{% url interface.views.asignar_solicitud_primera_inscripcion form.instance.id %}">Asignar</a>)
                     {% endif %}
+                    {% if user.get_profile.puede_asignar_solicitud_de_primera_inscripcion %}
+                        (<a href="{% url interface.views.asignar_solicitud_primera_inscripcion form.instance.id %}">Asignar</a>)
                     {% endif %}
                 </td>
             </tr>

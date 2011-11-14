@@ -6,17 +6,17 @@ class Rol(models.Model):
     nombre = models.CharField(max_length = 255)
     
     @classmethod
-    def OPERACIONES(self):
-        return self.objects.get(nombre='Operaciones')
+    def OPERACIONES(cls):
+        return cls.objects.get(nombre='Operaciones')
         
     @classmethod
-    def ADQUISICIONES(self):
-        return self.objects.get(nombre='Adquisiciones')
+    def ADQUISICIONES(cls):
+        return cls.objects.get(nombre='Adquisiciones')
     
     @classmethod
-    def JURIDICA(self):
-        return self.objects.get(nombre='Juridica')
-    
+    def JURIDICA(cls):
+        return cls.objects.get(nombre='Juridica')
+
     def __unicode__(self):
         return self.nombre
 

@@ -26,5 +26,5 @@ class FormularioAdquisicionDonacionMaterialMayor(FormularioAdquisicionMaterialMa
         model = AdquisicionDonacionMaterialMayor
         exclude = ('modo_adquisicion', 'usuario', 'fecha', 'modo', 'cuerpo_destinatario')
         widgets = {
-            'fecha_limitacion_dominio': forms.DateInput(attrs={'class': 'datepicker'}),
+            'fecha_vencimiento_limitacion_dominio': forms.DateInput(attrs={'class': 'datepicker'}),
         }

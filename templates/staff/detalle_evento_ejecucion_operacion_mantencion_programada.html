@@ -2,4 +2,6 @@
         
 {% block event_details %}
     <strong>Mantención asociada:</strong> <a href="{% url interface.views.detalle_mantencion_programada material_mayor.id form.instance.operacionmantencionprogramada.mantencion.id %}">Ver ficha</a>
+    <br />
+    <strong>Observaciones:</strong> {{ form.instance.operacionmantencionprogramada.observaciones }}
 {% endblock %}

@@ -94,3 +94,11 @@ input.disabled-input {
 form.no_margin {
     margin: 0;
 }
+
+td.fixed_width {
+    width: 170px;
+}
+
+textarea.observaciones_mantencion {
+    width: 500px;
+}

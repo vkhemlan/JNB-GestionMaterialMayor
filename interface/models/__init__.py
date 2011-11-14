@@ -2,7 +2,6 @@ from .frecuencia_operacion import FrecuenciaOperacion
 from .pauta_mantencion import PautaMantencion
 from .pauta_mantencion_chasis import PautaMantencionChasis
 from .pauta_mantencion_carrosado import PautaMantencionCarrosado
-from .operacion_mantencion import OperacionMantencion
 from .familia_uso_material_mayor import FamiliaUsoMaterialMayor
 from .uso_material_mayor import UsoMaterialMayor
 from .tipo_vehiculo_material_mayor import TipoVehiculoMaterialMayor
@@ -45,6 +44,7 @@ from .operacion_mantencion_pauta import OperacionMantencionPauta
 from .mantencion_programada import MantencionProgramada
 from .operacion_mantencion_programada import OperacionMantencionProgramada
 from .ejecucion_operacion_mantencion_programada import EjecucionOperacionMantencionProgramada
+from .archivo_mantencion_programada import ArchivoMantencionProgramada
 
 __all__ = [
     'TipoVehiculoMaterialMayor',
@@ -84,7 +84,6 @@ __all__ = [
     'PautaMantencion',
     'PautaMantencionChasis',
     'PautaMantencionCarrosado',
-    'OperacionMantencion',
     'CambioPautaMantencionCarrosadoMaterialMayor',
     'CambioNumeroChasisMaterialMayor',
     'CambioNumeroMotorMaterialMayor',
@@ -93,5 +92,6 @@ __all__ = [
     'OperacionMantencionPauta',
     'MantencionProgramada',
     'OperacionMantencionProgramada',
-    'EjecucionOperacionMantencionProgramada'
+    'EjecucionOperacionMantencionProgramada',
+    'ArchivoMantencionProgramada'
 ]
