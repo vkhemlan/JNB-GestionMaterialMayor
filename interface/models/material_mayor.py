@@ -53,6 +53,10 @@ class MaterialMayor(models.Model):
     
     def __unicode__(self):
         return self.breadcrumbs_string()
+
+    @classmethod
+    def vehiculos_en_alta(cls):
+        return cls.objects.filter(validado_por_operaciones=True)
         
     def extract_data(self, keys):
         return_data = []
@@ -80,34 +84,45 @@ class MaterialMayor(models.Model):
         for user_profile in operaciones_bomberiles_user_profiles:
             user_profile.send_new_dada_de_alta_email(self)
 
-    def corresponde_mantenimiento_programado(self, frecuencia_operacion):
-        hoy = date.today()
+    def corresponde_mantenimiento_programado(self, frecuencia_operacion, fecha):
         fecha_crecion_vehiculo = self.adquisicion.fecha.date()
 
-        if hoy == fecha_crecion_vehiculo:
+        if fecha == fecha_crecion_vehiculo:
             return False
 
-        if hoy.day != fecha_crecion_vehiculo.day:
+        if fecha.day != fecha_crecion_vehiculo.day:
             return False
 
-        month_difference = (hoy.year * 12 + hoy.month) - (fecha_crecion_vehiculo.year * 12 + fecha_crecion_vehiculo.month)
+        month_difference = (fecha.year * 12 + fecha.month) - (fecha_crecion_vehiculo.year * 12 + fecha_crecion_vehiculo.month)
 
         return month_difference % frecuencia_operacion.numero_meses == 0
 
-    def revisar_nuevas_mantenciones_programadas(self, frecuencias_operacion):
+    def gatillar_operaciones_mantencion_manualmente(self, numero_meses):
+        from . import FrecuenciaOperacion
+        fecha_crecion_vehiculo = self.adquisicion.fecha.date()
+
+        nuevo_numero_meses = fecha_crecion_vehiculo.month + numero_meses
+        numero_annos_agregar = nuevo_numero_meses / 12
+        nuevo_numero_meses %= 12
+
+        fecha_gatillo = date(fecha_crecion_vehiculo.year + numero_annos_agregar, nuevo_numero_meses, fecha_crecion_vehiculo.day)
+
+        self.revisar_nuevas_mantenciones_programadas(FrecuenciaOperacion.objects.all(), fecha_gatillo)
+
+    def revisar_nuevas_mantenciones_programadas(self, frecuencias_operacion, fecha=date.today()):
         from . import OperacionMantencionPauta, MantencionProgramada, OperacionMantencionProgramada
 
         if not self.validado_por_operaciones:
             return
 
         ids_pautas_mantencion = [self.pauta_mantencion_carrosado.id, self.modelo_chasis.pauta_mantencion.id]
-        ids_frecuencias_operacion_compatibles = [f.id for f in frecuencias_operacion if self.corresponde_mantenimiento_programado(f)]
+        ids_frecuencias_operacion_compatibles = [f.id for f in frecuencias_operacion if self.corresponde_mantenimiento_programado(f, fecha)]
         ids_operaciones_mantencion_pendientes = [op.id_operacion_mantencion_pauta for op in OperacionMantencionProgramada.objects.filter(ejecucion__isnull=True, mantencion__material_mayor=self)]
 
         operaciones_mantencion_compatibles = OperacionMantencionPauta.objects.filter(pauta__id__in=ids_pautas_mantencion, frecuencia__id__in=ids_frecuencias_operacion_compatibles).filter(~Q(id__in=ids_operaciones_mantencion_pendientes))
 
         if operaciones_mantencion_compatibles:
-            mantencion_programada = MantencionProgramada(fecha=date.today(), material_mayor=self)
+            mantencion_programada = MantencionProgramada(fecha=fecha, material_mayor=self)
             mantencion_programada.save()
             for operacion in operaciones_mantencion_compatibles:
                 operacion_mantencion_programada = OperacionMantencionProgramada()

@@ -10,6 +10,9 @@ class ModeloChasisMaterialMayor(models.Model):
     def __unicode__(self):
         return self.name
 
+    def full_name(self):
+        return '%s %s' % (unicode(self.marca), self.name)
+
     class Meta:
         ordering = ['marca', 'name']
         app_label = 'interface'

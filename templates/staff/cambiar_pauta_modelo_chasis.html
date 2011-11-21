@@ -1,0 +1,28 @@
+{% extends 'staff/base.html' %}
+
+{% block staff_content %}
+    
+    <p class="breadcrumbs">
+        <strong>Modelos de chasis</strong>
+        &raquo; {{ modelo_chasis.full_name }}
+        &raquo; Cambiar pauta de mantención
+    </p>
+
+	<h2>Cambiar pauta de mantención de "{{ modelo_chasis.full_name }}"</h2>
+    <hr />
+
+    <form method="post" action=".">
+        <table id="form-table">
+            {{ form.as_table }}
+            {% csrf_token %}
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" class="btn primary" value="Guardar cambios" />
+                </td>
+            </tr>
+        </table>
+    </form>
+        
+
+{% endblock %}

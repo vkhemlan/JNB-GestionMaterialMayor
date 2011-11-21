@@ -2,6 +2,7 @@
         
 {% block event_details %}
     
-<strong>Patente:</strong> {{ form.instance.patente }}
+<strong>Patente:</strong> {{ form.instance.patente }} <br />
+<strong>Dígito verificador:</strong> {{ form.instance.digito_verificador|default_if_none:"No especificado" }}
     
 {% endblock %}

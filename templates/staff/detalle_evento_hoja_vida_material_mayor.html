@@ -20,7 +20,7 @@
     {% if form.instance.rol_usuario %}
         <strong>Rol:</strong> {{ form.instance.rol_usuario }} <br/>
     {%  else %}
-        <strong>Cargos:</strong> {% for cargo in form.instance.cargos_usuario.all %}{{ cargo }} {% endfor %} <br/>
+        <strong>Cargos:</strong> {% for cargo in form.instance.cargos_usuario.all %}{% if not forloop.first %}, {% endif %}{{ cargo }}{% endfor %}<br/>
     {% endif %}
     <br />
     

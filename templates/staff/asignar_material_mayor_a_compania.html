@@ -14,6 +14,12 @@
         </p>
 
 		<h2>Asignación a compañía de {{ material_mayor.breadcrumbs_string }}</h2>
+
+        <hr />
+
+        <p class="mandatory-field-notice">
+            Los campos marcados con * son obligatorios
+        </p>
             
         <form method="post" action="." enctype="multipart/form-data">
             {% csrf_token %}

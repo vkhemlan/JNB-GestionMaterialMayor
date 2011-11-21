@@ -102,3 +102,8 @@ td.fixed_width {
 textarea.observaciones_mantencion {
     width: 500px;
 }
+
+span.helptext {
+    font-size: 10px;
+    color: gray;
+}

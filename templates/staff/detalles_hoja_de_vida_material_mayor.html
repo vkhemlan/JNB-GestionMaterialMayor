@@ -12,12 +12,22 @@
     </p>
 
 	<h2>Hoja de vida</h2>
+    <hr />
         
-    <ul>
+    <table>
+        <tr>
+            <th>Fecha</th>
+            <th>Descripción</th>
+            <th>Detalles</th>
+        </tr>
         {% for event in events %}
-            <li>{{ event.fecha.date }}: {{ event.quick_details }} (<a href="{% url interface.views.detalle_evento_hoja_de_vida_material_mayor event.material_mayor.id event.id %}">Ver detalles</a>)</li>
+            <tr>
+                <td>{{ event.fecha.date }}</td>
+                <td>{{ event.quick_details }}</td>
+                <td><a href="{% url interface.views.detalle_evento_hoja_de_vida_material_mayor event.material_mayor.id event.id %}">Detalles</a></td>
+            </tr>
         {% empty %}
-            <li><i>No hay eventos en la hoja de vida de este vehículo</i></li>
+            <tr><td colspan="3">No hay eventos en la hoja de vida de este vehículo</td></tr>
         {% endfor %}
-    </ul>
+    </table>
 {% endblock %}

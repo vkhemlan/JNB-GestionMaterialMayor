@@ -28,6 +28,7 @@ from .formulario_asignacion_solicitud_primera_inscripcion import FormularioAsign
 from .formulario_hoja_vida_asignacion_solicitud_primera_inscripcion import FormularioHojaVidaAsignacionSolicitudPrimeraInscripcion
 from .formulario_hoja_vida_ejecucion_operacion_mantencion_programada import FormularioHojaVidaEjecucionOperacionMantencionProgramada
 from .formulario_agregar_archivo_mantencion_programada import FormularioAgregarArchivoMantencionProgramada
+from .formulario_cambio_pauta_mantencion_chasis_material_mayor import FormularioCambioPautaMantencionChasisMaterialMayor
 
 __all__ = [ 'BaseModelForm',
 			'FormularioAgregarMaterialMayor',
@@ -58,4 +59,5 @@ __all__ = [ 'BaseModelForm',
             'FormularioAsignacionSolicitudPrimeraInscripcion',
             'FormularioHojaVidaAsignacionSolicitudPrimeraInscripcion',
             'FormularioHojaVidaEjecucionOperacionMantencionProgramada',
-            'FormularioAgregarArchivoMantencionProgramada']
+            'FormularioAgregarArchivoMantencionProgramada',
+            'FormularioCambioPautaMantencionChasisMaterialMayor']

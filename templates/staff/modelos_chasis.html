@@ -1,0 +1,26 @@
+{% extends 'staff/base.html' %}
+
+{% block staff_content %}
+    
+    <p class="breadcrumbs">
+        <strong>Modelos de chasis</strong>
+    </p>
+
+	<h2>Modelos de chasis</h2>
+    <hr />
+        
+    <table>
+        <tr>
+            <th>Nombre</th>
+            <th>Pauta de mantención actual</th>
+            <th>Acciones</th>
+        </tr>
+        {% for modelo_chasis in modelos_chasis  %}
+            <tr>
+                <td>{{ modelo_chasis.full_name }}</td>
+                <td><a href="{% url interface.views.pauta_mantencion_chasis_editar modelo_chasis.pauta_mantencion.id %}">{{ modelo_chasis.pauta_mantencion }}</a></td>
+                <td><a href="{% url interface.views.cambiar_pauta_modelo_chasis modelo_chasis.id %}" class="btn primary">Cambiar pauta</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

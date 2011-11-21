@@ -3,5 +3,13 @@
 {% block event_details %}
     
 <strong>Compañía de destino:</strong> {{ form.instance.compania }} (Cuerpo de {{ form.instance.compania.cuerpo }}) <br/>
+<strong>Número de orden del día:</strong> {{ form.instance.numero_orden_del_dia }} <br/>
+<strong>Fecha de orden del día:</strong> {{ form.instance.fecha_orden_del_dia }} <br/>
+<strong>Orden del día:</strong>
+    {% if form.instance.orden_del_dia %}
+        <a href="{{ MEDIA_URL }}{{ form.instance.orden_del_dia }}">Descargar orden del día</a>
+    {% else %}
+        <em>No provista</em>
+    {% endif %}
     
 {% endblock %}

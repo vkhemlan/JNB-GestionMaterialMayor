@@ -61,6 +61,8 @@ class UserProfile(models.Model):
             return True
         if self.rol == Rol.OPERACIONES():
             return True
+        if self.is_comandante():
+            return True
         return False
         
     def puede_asignar_pauta_de_mantenimiento_de_carrosado(self):

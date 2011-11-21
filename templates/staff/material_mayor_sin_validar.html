@@ -12,33 +12,37 @@
     <p><a href="{% url interface.views.material_mayor_sin_validar_excel %}">Descargar este informe como Excel</a></p>
     <br />
 
-    <table>    
-        <tr>
-            {% for field in fields %}
-                <th>{{ field }}</th>
-            {% endfor %}
-            <th>Editar</th>
-        </tr>
-        
-        {% for vehiculo in material_mayor %}
+    <table class="tablesorter">
+        <thead>
             <tr>
-                {% for field in vehiculo.data %}
-                    <td>{{ field }}</td>
+                {% for field in fields %}
+                    <th>{{ field }}</th>
                 {% endfor %}
-                <td><a href="{% url interface.views.editar_material_mayor vehiculo.id %}?next={% url interface.views.material_mayor_sin_validar %}">
-                    {% if user.get_profile.puede_validar_material_mayor %}
-                        Revisar y validar
-                    {% else %}
-                        Editar
-                    {% endif %}
-                </a></td>
+                <th>Editar</th>
             </tr>
-        {% empty %}
-            <tr>
-                <td colspan="6">
-                    <i>No hay material mayor sin validar</i>
-                </td>
-            </tr>
-        {% endfor %}
+        </thead>
+
+        <tbody>
+            {% for vehiculo in material_mayor %}
+                <tr>
+                    {% for field in vehiculo.data %}
+                        <td>{{ field }}</td>
+                    {% endfor %}
+                    <td><a href="{% url interface.views.editar_material_mayor vehiculo.id %}?next={% url interface.views.material_mayor_sin_validar %}">
+                        {% if user.get_profile.puede_validar_material_mayor %}
+                            Revisar y validar
+                        {% else %}
+                            Editar
+                        {% endif %}
+                    </a></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">
+                        <i>No hay material mayor sin validar</i>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
 {% endblock %}

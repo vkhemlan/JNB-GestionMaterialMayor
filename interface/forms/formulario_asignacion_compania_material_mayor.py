@@ -11,5 +11,8 @@ class FormularioAsignacionCompaniaMaterialMayor(forms.ModelForm):
     
     class Meta:
         model = AsignacionCompaniaMaterialMayor
-        fields = ('compania',)
+        fields = ('compania', 'numero_orden_del_dia', 'fecha_orden_del_dia', 'orden_del_dia')
+        widgets = {
+            'fecha_orden_del_dia': forms.DateInput(attrs={'class': 'datepicker'}),
+        }
 

@@ -12,10 +12,12 @@ import re
 from datetime import date
 import xlrd
 from xlwt import Workbook, easyxf, Formula, XFStyle, Font
+from interface.forms.formulario_cambio_pauta_mantencion_chasis_material_mayor import FormularioCambioPautaMantencionChasisMaterialMayor
 
 from interface.models import MaterialMayor, EventoHojaVidaMaterialMayor, Rol, AsignacionPatenteMaterialMayor, UsoMaterialMayor, PautaMantencionCarrosado, PautaMantencionChasis, ModeloChasisMaterialMayor, FrecuenciaOperacion, MantencionProgramada, OperacionMantencionProgramada, EjecucionOperacionMantencionProgramada
 from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioAgregarMaterialMayor, FormularioEditarMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioAsignacionCompaniaMaterialMayor, FormularioAsignacionPatenteMaterialMayor, FormularioAgregarPautaMantencionCarrosado, FormularioAgregarPautaMantencionChasis, FormularioCambioPautaMantencionCarrosadoMaterialMayor, FormularioCambioNumeroChasisMaterialMayor, FormularioCambioNumeroMotorMaterialMayor, FormularioPautaMantencionCarrosadoAgregar, FormularioPautaMantencionChasisAgregar, FormularioCambioCertificadoAnotacionesVigentes, FormularioAsignacionSolicitudPrimeraInscripcion, FormularioAgregarArchivoMantencionProgramada
 from django.http import HttpResponseRedirect
+from interface.models.archivo_mantencion_programada import ArchivoMantencionProgramada
 from interface.models.cambio_pauta_mantencion_carrosado_material_mayor import CambioPautaMantencionCarrosadoMaterialMayor
 from interface.models.operacion_mantencion_pauta import OperacionMantencionPauta
 from interface.utils import convert_camelcase_to_lowercase, log
@@ -585,7 +587,7 @@ def material_mayor_excel(request):
     wb.save(response)
     return response
         
-@authorize(roles=(Rol.OPERACIONES(),))
+@authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Comandante'],))
 @authorize_material_mayor_access(requiere_validacion_operaciones=True)
 def asignar_patente_a_material_mayor(request, material_mayor):
     if material_mayor.asignacion_de_patente:
@@ -621,7 +623,7 @@ def asignar_patente_a_material_mayor(request, material_mayor):
 @authorize_material_mayor_access(requiere_validacion_operaciones=True)
 def detalles_patente_material_mayor(request, material_mayor):
     asignacion_patente = AsignacionPatenteMaterialMayor.objects.get(material_mayor=material_mayor)
-    return detalle_evento_hoja_de_vida_material_mayor(request, material_mayor=material_mayor, evento_id=asignacion_patente.id)
+    return detalle_evento_hoja_de_vida_material_mayor(request, material_mayor=material_mayor.id, evento_id=asignacion_patente.id)
     
 @authorize(roles=(Rol.OPERACIONES(),),)
 @authorize_material_mayor_access(requiere_validacion_operaciones=False)
@@ -1018,3 +1020,71 @@ def agregar_archivo_mantencion_programada(request, material_mayor, mantencion_pr
         'material_mayor': material_mayor
     },
     context_instance=RequestContext(request))
+
+@authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],) )
+@authorize_material_mayor_access(requiere_validacion_operaciones=True)
+def eliminar_archivo_mantencion_programada(request, material_mayor, mantencion_programada_id, archivo_id):
+    mantencion_programada = MantencionProgramada.objects.get(pk=mantencion_programada_id)
+    archivo = ArchivoMantencionProgramada.objects.get(pk=archivo_id)
+
+    if archivo.mantencion != mantencion_programada or mantencion_programada.material_mayor != material_mayor:
+        raise Http404
+
+    if request.method == 'POST':
+        archivo.archivo.delete()
+        archivo.delete()
+
+        request.flash['success'] = 'Archivo eliminado exitosamente'
+        url = reverse('interface.views.detalle_mantencion_programada', args=[material_mayor.id, mantencion_programada.id])
+        return HttpResponseRedirect(url)
+    else:
+        return render_to_response('staff/eliminar_archivo_mantencion_programada.html', {
+            'archivo': archivo,
+            'mantencion_programada': mantencion_programada,
+            'material_mayor': material_mayor
+        },
+        context_instance=RequestContext(request))
+
+@authorize(roles=(Rol.OPERACIONES(),),)
+def modelos_chasis(request):
+    modelos_chasis = ModeloChasisMaterialMayor.objects.all()
+    return render_to_response('staff/modelos_chasis.html', {
+        'modelos_chasis': modelos_chasis,
+    },
+    context_instance=RequestContext(request))
+
+@authorize(roles=(Rol.OPERACIONES(),),)
+def cambiar_pauta_modelo_chasis(request, modelo_chasis_id):
+    modelo_chasis = ModeloChasisMaterialMayor.objects.get(pk=modelo_chasis_id)
+    if request.method == 'POST':
+        form = FormularioCambioPautaMantencionChasisMaterialMayor(request.POST, instance=modelo_chasis)
+        if form.is_valid():
+            form.save()
+            request.flash['success'] = 'Pauta cambiada exitosamente'
+            url = reverse('interface.views.modelos_chasis')
+            return HttpResponseRedirect(url)
+    else:
+        form = FormularioCambioPautaMantencionChasisMaterialMayor(instance=modelo_chasis)
+
+    return render_to_response('staff/cambiar_pauta_modelo_chasis.html', {
+        'modelo_chasis': modelo_chasis,
+        'form': form,
+    },
+    context_instance=RequestContext(request))
+
+@authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],) )
+def mantenciones_programadas_pendientes(request):
+    material_mayor = MaterialMayor.vehiculos_en_alta()
+    if request.user.get_profile().is_staff_cuerpo():
+        material_mayor = material_mayor.filter(cuerpo=request.user.get_profile().cuerpo)
+
+    operaciones_mantencion_pendientes = OperacionMantencionProgramada.objects.filter(mantencion__material_mayor__in = material_mayor, ejecucion__isnull=True)
+    mantenciones_programadas_pendientes = set([oper.mantencion for oper in operaciones_mantencion_pendientes])
+
+    return render_to_response('staff/mantenciones_programadas_pendientes.html', {
+        'mantenciones_programadas_pendientes': mantenciones_programadas_pendientes,
+    },
+    context_instance=RequestContext(request))
+
+
+

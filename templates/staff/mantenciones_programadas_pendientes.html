@@ -1,0 +1,56 @@
+{% extends 'staff/base.html' %}
+
+{% block staff_content %}
+    <p class="breadcrumbs">
+        <strong>Mantención</strong>
+        &raquo; Mantenciones programadas pendientes
+    </p>
+
+    <h2>Mantenciones programadas pendientes</h2>
+
+    <hr />
+
+    <table class="tablesorter">
+        <thead>
+            <tr>
+                <th>Vehículo</th>
+                <th>Cuerpo / compañía</th>
+                <th>Fecha de la mantención</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for mantencion in mantenciones_programadas_pendientes %}
+                <tr>
+                    <td>{{ mantencion.material_mayor }}</td>
+                    <td>{{ mantencion.material_mayor.cuerpo|default_if_none:"JNBC" }} - {{ mantencion.material_mayor.compania|default_if_none:"Nivel central" }}</td>
+                    <td>{{ mantencion.fecha|date:"Y/m/d"}}</td>
+                    <td><a class="btn primary" href="{% url interface.views.detalle_mantencion_programada mantencion.material_mayor.id mantencion.id %}">Resolver</a></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">
+                        <em>No hay mantenciones pendientes</em>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div id="pager" class="pager">
+        <form>
+            <img src="{{ STATIC_URL }}/css/pager/first.png" class="first"/>
+            <img src="{{ STATIC_URL }}/css/pager/prev.png" class="prev"/>
+            <input type="text" class="pagedisplay"/>
+            <img src="{{ STATIC_URL }}/css/pager/next.png" class="next"/>
+            <img src="{{ STATIC_URL }}/css/pager/last.png" class="last"/>
+            <select class="pagesize">
+                <option selected="selected"  value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option  value="40">40</option>
+            </select>
+        </form>
+    </div>
+{% endblock %}

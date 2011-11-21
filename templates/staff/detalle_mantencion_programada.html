@@ -65,7 +65,7 @@
 
     <ul>
         {% for archivo in mantencion_programada.archivomantencionprogramada_set.all %}
-            <li><a href="{{ MEDIA_URL }}{{ archivo.archivo }}">{{ archivo }}</a></li>
+            <li><a href="{{ MEDIA_URL }}{{ archivo.archivo }}">{{ archivo }}</a> [<a href="{% url interface.views.eliminar_archivo_mantencion_programada mantencion_programada.material_mayor.id mantencion_programada.id archivo.id %}">Eliminar</a>]</li>
         {% empty %}
             <li>No hay archivos asociados a esta mantención</li>
         {% endfor %}
