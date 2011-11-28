@@ -1,0 +1,7 @@
+{% extends 'staff/detalle_evento_hoja_vida_material_mayor.html' %}
+        
+{% block event_details %}
+   <strong>Motivo: </strong> {{ form.instance.motivo }} <br />
+    <strong>Observaciones: </strong> <br />
+    {{ form.instance.observaciones|default_if_none:'Sin observaciones' }}
+{% endblock %}

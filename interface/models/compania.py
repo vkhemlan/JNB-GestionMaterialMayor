@@ -45,7 +45,7 @@ class Compania(models.Model):
             return ''
 
     @classmethod
-    def update_from_webservice(self):
+    def update_from_webservice(cls):
         from . import Cuerpo
 
         companias_raw_data = request_webservice('/services/compania/')

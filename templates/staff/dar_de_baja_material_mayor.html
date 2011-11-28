@@ -1,0 +1,31 @@
+{% extends 'staff/base.html' %}
+
+{% block staff_content %}
+    <p class="breadcrumbs">
+        <strong>Material mayor</strong>
+        &raquo; {{ material_mayor.breadcrumbs_string }}
+        &raquo; Dar de baja
+    </p>
+
+	<h2>Dar de baja</h2>
+
+    <hr />
+	
+	<p>
+    	Por favor considere que este proceso es irreversible. Verifique que este es el vehículo que se desea dar de baja
+    y rellene el formulario con cuidado
+	</p>
+
+    <form method="post" action=".">
+        <table id="form-table">
+            {% csrf_token %}
+            {{ form.as_table }}
+            <tr>
+                <td>
+                    <input type="submit" value="Dar de baja" class="btn primary" />
+                </td>
+            </tr>
+        </table>
+    </form>
+
+{% endblock %}

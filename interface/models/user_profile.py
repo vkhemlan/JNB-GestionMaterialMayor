@@ -14,6 +14,15 @@ class UserProfile(models.Model):
     rol = models.ForeignKey('Rol', blank=True, null=True)
     cargos = models.ManyToManyField('Cargo', blank=True, null=True)
     cuerpo = models.ForeignKey('Cuerpo', blank=True, null=True)
+
+    @classmethod
+    def get_usuarios_operaciones(cls):
+        return UserProfile.objects.filter(rol=Rol.OPERACIONES())
+
+    def enviar_recordatorio_mantenciones_pendientes(self):
+        t = loader.get_template('mails/resumen_mantenciones_pendientes.html')
+        c = Context({'usuario': self.user, 'SITE_URL': settings.SITE_URL})
+        self.user.email_user('Mantenciones pendientes de material mayor', t.render(c))
     
     def is_comandante(self):
         return settings.CARGOS_CUERPO['Comandante'] in [cargo.webservice_id for cargo in self.cargos.all()]
@@ -87,6 +96,13 @@ class UserProfile(models.Model):
         return False
         
     def puede_cambiar_numero_motor_material_mayor(self):
+        if self.user.is_superuser:
+            return True
+        if self.rol == Rol.OPERACIONES():
+            return True
+        return False
+
+    def puede_dar_de_baja_material_mayor(self):
         if self.user.is_superuser:
             return True
         if self.rol == Rol.OPERACIONES():

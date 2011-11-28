@@ -45,6 +45,8 @@ from .mantencion_programada import MantencionProgramada
 from .operacion_mantencion_programada import OperacionMantencionProgramada
 from .ejecucion_operacion_mantencion_programada import EjecucionOperacionMantencionProgramada
 from .archivo_mantencion_programada import ArchivoMantencionProgramada
+from .motivo_dada_de_baja import MotivoDadaDeBaja
+from .dada_de_baja_material_mayor import DadaDeBajaMaterialMayor
 
 __all__ = [
     'TipoVehiculoMaterialMayor',
@@ -93,5 +95,7 @@ __all__ = [
     'MantencionProgramada',
     'OperacionMantencionProgramada',
     'EjecucionOperacionMantencionProgramada',
-    'ArchivoMantencionProgramada'
+    'ArchivoMantencionProgramada',
+    'MotivoDadaDeBaja',
+    'DadaDeBajaMaterialMayor'
 ]

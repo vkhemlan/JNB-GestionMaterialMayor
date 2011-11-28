@@ -68,7 +68,7 @@
                 <th>Asignación actual</th>
                 <td>{{ form.instance.get_location }} 
                 
-                {% if asignacion_link %}
+                {% if asignacion_link and not dado_de_baja %}
                     (<a href="{{ asignacion_link }}">Asignar</a>)   
                 {% endif %}
                 
@@ -96,7 +96,7 @@
                     {% else %}
                         <i>No posee certificado</i>
                     {% endif %}
-                    {% if user.get_profile.puede_asignar_certificado_de_anotaciones_vigentes %}
+                    {% if user.get_profile.puede_asignar_certificado_de_anotaciones_vigentes and not dado_de_baja %}
                         (<a href="{% url interface.views.cambiar_certificado_anotaciones_vigentes form.instance.id %}">Actualizar certificado</a>)
                     {% endif %}
                 </td>
@@ -109,7 +109,7 @@
                     {% else %}
                         <i>No posee solicitud</i>
                     {% endif %}
-                    {% if user.get_profile.puede_asignar_solicitud_de_primera_inscripcion %}
+                    {% if user.get_profile.puede_asignar_solicitud_de_primera_inscripcion and not dado_de_baja %}
                         (<a href="{% url interface.views.asignar_solicitud_primera_inscripcion form.instance.id %}">Asignar</a>)
                     {% endif %}
                 </td>
@@ -119,7 +119,7 @@
                 <td>
                     {% if form.instance.pauta_mantencion_carrosado %}
                         <a href="{% url interface.views.pauta_mantencion_carrosado_editar form.instance.pauta_mantencion_carrosado.id %}">{{ form.instance.pauta_mantencion_carrosado }}</a>
-                        {% if user.get_profile.puede_asignar_pauta_de_mantenimiento_de_carrosado %}
+                        {% if user.get_profile.puede_asignar_pauta_de_mantenimiento_de_carrosado and not dado_de_baja %}
                             (<a href="{% url interface.views.cambiar_pauta_mantencion_carrosado form.instance.id %}">Cambiar pauta</a>)
                         {% endif %}
                     {% else %}
@@ -131,12 +131,18 @@
                 </td>
             </tr>
             <tr><th>Ingresado por</th><td>{{ form.instance.adquisicion.usuario.get_full_name }}</td></tr>
-            <tr><th>Forma de adquisición</th><td>{{ form.instance.adquisicion.modo }} (<a href="{% url interface.views.editar_adquisicion_material_mayor form.instance.id %}">Editar detalles</a>)</td></tr>
+            <tr><th>Forma de adquisición</th><td>{{ form.instance.adquisicion.modo }} (<a href="{% url interface.views.editar_adquisicion_material_mayor form.instance.id %}">Detalles</a>)</td></tr>
             <tr><th>Hoja de vida</th><td><a href="{% url interface.views.detalles_hoja_de_vida_material_mayor form.instance.id %}">Ver hoja de vida</a></td></tr>
             <tr><th>Mantenciones programadas</th><td><a href="{% url interface.views.mantenciones_programadas form.instance.id %}">Ver mantenciones programadas</a></td></tr>
+            <tr>
             {% if user.get_profile.puede_eliminar_material_mayor %}
-                <tr><td colspan="2"><br /><a href="{% url interface.views.eliminar_material_mayor form.instance.id %}" class="btn danger">Eliminar material mayor</a></td></tr>
+                <td><br /><a href="{% url interface.views.eliminar_material_mayor form.instance.id %}" class="btn danger">Eliminar material mayor</a></td>
             {% endif %}
+
+            {% if user.get_profile.puede_dar_de_baja_material_mayor and not dado_de_baja %}
+                <td colspan="2"><br /><a href="{% url interface.views.dar_de_baja_material_mayor form.instance.id %}" class="btn danger">Dar de baja</a></td>
+            {% endif %}
+            </tr>
 
             <tr><td colspan="2"><br /><h3>Datos del vehículo</h3><br /></tr></td>
             
@@ -154,11 +160,11 @@
             </tr>
             <tr>
                 <td><label>N° chasis</label></td>
-                <td>{{ form.instance.numero_chasis }} {% if user.get_profile.puede_cambiar_numero_chasis_material_mayor %}(<a href="{% url interface.views.cambiar_numero_chasis_material_mayor form.instance.id %}">Cambiar</a>){% endif %}</td>
+                <td>{{ form.instance.numero_chasis }} {% if user.get_profile.puede_cambiar_numero_chasis_material_mayor and not dado_de_baja %}(<a href="{% url interface.views.cambiar_numero_chasis_material_mayor form.instance.id %}">Cambiar</a>){% endif %}</td>
             </tr>
             <tr>
                 <td><label>N° motor</label></td>
-                <td>{{ form.instance.numero_motor }} {% if user.get_profile.puede_cambiar_numero_motor_material_mayor %}(<a href="{% url interface.views.cambiar_numero_motor_material_mayor form.instance.id %}">Cambiar</a>){% endif %}</td>
+                <td>{{ form.instance.numero_motor }} {% if user.get_profile.puede_cambiar_numero_motor_material_mayor and not dado_de_baja %}(<a href="{% url interface.views.cambiar_numero_motor_material_mayor form.instance.id %}">Cambiar</a>){% endif %}</td>
             </tr>
             
             {{ form.render_datos_vehiculo }}
@@ -193,7 +199,11 @@
             <tr>
                 <td></td>
                 <td>
-                    <input type="submit" class="btn primary" value="Guardar cambios" />
+                    {% if dado_de_baja %}
+                        <input type="submit" disabled="disabled" class="btn primary" value="El material fue dado de baja" />
+                    {% else %}
+                        <input type="submit" class="btn primary" value="Guardar cambios" />
+                    {% endif %}
                 </td>
             </tr>
         </table>

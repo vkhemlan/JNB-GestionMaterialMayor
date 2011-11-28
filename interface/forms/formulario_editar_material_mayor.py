@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from django import forms
-from interface.models import MaterialMayor, MarcaChasisMaterialMayor, MarcaCarrosadoMaterialMayor, MarcaCajaCambioMaterialMayor, MarcaBombaMaterialMayor, PautaMantencionCarrosado
+from interface.models import MaterialMayor, MarcaCajaCambioMaterialMayor, MarcaBombaMaterialMayor
 from . import BaseModelForm
 
 class FormularioEditarMaterialMayor(BaseModelForm):
@@ -9,8 +9,6 @@ class FormularioEditarMaterialMayor(BaseModelForm):
     marca_bomba = forms.ModelChoiceField(queryset=MarcaBombaMaterialMayor.objects.all(), required=False)
     
     def __init__(self, *args, **kwargs):
-        profile = kwargs['user'].get_profile()
-        
         super(FormularioEditarMaterialMayor, self).__init__(*args, **kwargs)
 
     def clean(self):
@@ -50,8 +48,8 @@ class FormularioEditarMaterialMayor(BaseModelForm):
         return [(field, getattr(self.instance, field.name)) for field in fields]
         
     @classmethod
-    def get_from_instance(self, instance, user):
-        form = FormularioEditarMaterialMayor(instance=instance, user=user)
+    def get_from_instance(cls, instance, user):
+        form = cls(instance=instance, user=user)
         if instance.modelo_caja_cambio:
             form.initial['marca_caja_cambio'] = instance.modelo_caja_cambio.marca.id
         if instance.modelo_bomba:
@@ -60,4 +58,6 @@ class FormularioEditarMaterialMayor(BaseModelForm):
                
     class Meta:
         model = MaterialMayor
-        exclude = ('adquisicion', 'asignacion_de_patente', 'pauta_mantencion_carrosado', 'validado_por_operaciones', 'modelo_chasis', 'marca_carrosado', 'numero_chasis', 'numero_motor')
+        fields = ('tipo_vehiculo', 'uso', 'otro_uso', 'ano_vehiculo', 'color', 'condicion', 'tipo_caja_cambio', 'modelo_caja_cambio',
+            'tipo_combustible', 'modelo_bomba', 'pais_origen', 'planos', 'fotografia_frontal', 'fotografia_lateral',
+            'fotografia_trasera')

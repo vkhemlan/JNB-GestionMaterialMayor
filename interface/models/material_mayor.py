@@ -45,6 +45,7 @@ class MaterialMayor(models.Model):
     # Información de procesos asociados
     adquisicion = models.OneToOneField('AdquisicionMaterialMayor')
     asignacion_de_patente = models.OneToOneField('AsignacionPatenteMaterialMayor', blank=True, null=True)
+    dada_de_baja = models.OneToOneField('DadaDeBajaMaterialMayor', blank=True, null=True)
     # Metadata
     validado_por_operaciones = models.BooleanField(default=True)
     # Asociacion

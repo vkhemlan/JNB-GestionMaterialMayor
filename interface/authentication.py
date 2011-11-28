@@ -2,7 +2,6 @@
 
 from functools import wraps
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 
@@ -10,8 +9,9 @@ from interface.models import UserProfile, MaterialMayor
 from interface.utils import log, request_webservice, get_xml_node_contents, intersect
 
 class authorize_material_mayor_access(object):
-    def __init__(self, requiere_validacion_operaciones):
+    def __init__(self, requiere_validacion_operaciones, requiere_material_en_servicio=True):
         self.requiere_validacion_operaciones = requiere_validacion_operaciones
+        self.requiere_material_en_servicio = requiere_material_en_servicio
 
     def __call__(self, func):
         @wraps(func)
@@ -21,6 +21,9 @@ class authorize_material_mayor_access(object):
                 return redirect('login')
             if not request.user.get_profile().may_access_material_mayor(material_mayor):
                 request.flash['error'] = u'Error de acceso'
+                return redirect('index')
+            if material_mayor.dada_de_baja and self.requiere_material_en_servicio:
+                request.flash['error'] = u'El material mayor fue dado de baja'
                 return redirect('index')
             if self.requiere_validacion_operaciones and not material_mayor.validado_por_operaciones:
                 request.flash['error'] = u'El material aún no ha sido validado por la JNBC'

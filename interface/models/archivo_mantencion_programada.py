@@ -5,7 +5,7 @@ from django.db import models
 def generate_uploaded_archivo_mantencion_programada_file_name(instance, filename):
     left_path, extension = filename.rsplit('.',1)
 
-    return 'documentos/material_mayor/%d/mantenciones_programadas/%d.%s' % (instance.mantencion.material_mayor.id, instance.id, extension)
+    return 'documentos/material_mayor/%d/mantenciones_programadas/%d/%d.%s' % (instance.mantencion.material_mayor.id, instance.mantencion.id, instance.id, extension)
 
 class ArchivoMantencionProgramada(models.Model):
     nombre = models.CharField(max_length=255, verbose_name='Nombre')

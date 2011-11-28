@@ -12,7 +12,7 @@
     </script>
 {% endblock %}
 
-{% block main_content %}
+{% block staff_content %}
     <p class="breadcrumbs">
         <strong>Material mayor</strong>
         &raquo; <a href="{% url interface.views.editar_material_mayor form.instance.materialmayor.id %}">{{ form.instance.materialmayor }}</a>
@@ -30,7 +30,13 @@
 
             <tr>
                 <td></td>
-                <td><input type="submit" value="Guardar cambios" class="btn primary" /></td>
+                <td>
+                    {% if form.instance.materialmayor.dada_de_baja %}
+                        <input type="submit" disabled="disabled" value="El material fue dado de baja" class="btn primary" />
+                    {% else %}
+                        <input type="submit" value="Guardar cambios" class="btn primary" />
+                    {% endif %}
+                </td>
             </tr>
 
         </table>
