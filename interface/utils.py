@@ -13,7 +13,7 @@ def log(message):
 
 def notificar_mantenciones_pendientes():
     from interface.models.mantencion_programada import MantencionProgramada
-    from interface.models import UserProfile, Cuerpo
+    from interface.models import UserProfile
 
     mantenciones_pendientes = MantencionProgramada.get_pendientes()
 
@@ -54,8 +54,10 @@ def notificar_mantenciones_pendientes():
             t = loader.get_template('mails/resumen_mantenciones_pendientes_cuerpo.html')
             c = Context({'usuario': full_name, 'SITE_URL': settings.SITE_URL})
 
-            if not settings.DEBUG:
-                send_mail('Mantenciones pendientes de material mayor', t.render(c), settings.EMAIL_HOST_USER, [email])
+            if settings.DEBUG:
+                email = 'vkhemlan@gmail.com'
+                
+            send_mail('Mantenciones pendientes de material mayor', t.render(c), settings.EMAIL_HOST_USER, [email])
 
 def update_data_from_webservice():
     from models import Region, Provincia, Comuna, Cuerpo, Compania

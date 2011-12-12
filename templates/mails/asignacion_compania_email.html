@@ -1,0 +1,7 @@
+Estimado(a) {{ usuario.get_full_name }},
+
+Un material mayor ha sido reasignado a compañía por el usuario {{ material_mayor.adquisicion.usuario.get_full_name }} del Cuerpo de {{ material_mayor.adquisicion.usuario.get_profile.cuerpo }}.
+
+Para ver los detalles de esta operación por favor diríjase a
+
+{{ SITE_URL }}{% url interface.views.editar_material_mayor material_mayor.id %}

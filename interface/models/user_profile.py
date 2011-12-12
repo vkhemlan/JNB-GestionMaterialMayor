@@ -1,7 +1,8 @@
+# coding: utf-8
+
 from django.db import models
 from django.db.models.signals import post_save  
 from django.contrib.auth.models import User
-from django.shortcuts import render_to_response
 from django.template import loader, Context
 from interface.utils import log, request_webservice, get_xml_node_contents, get_xml_node_children, get_xml_node_attribute
 from django.conf import settings
@@ -70,7 +71,12 @@ class UserProfile(models.Model):
             return True
         if self.rol == Rol.OPERACIONES():
             return True
-        if self.is_comandante():
+        return False
+
+    def puede_ver_pauta_mantenimiento_carrosado(self):
+        if self.user.is_superuser:
+            return True
+        if self.rol == Rol.OPERACIONES():
             return True
         return False
         
@@ -93,12 +99,16 @@ class UserProfile(models.Model):
             return True
         if self.rol == Rol.OPERACIONES():
             return True
+        if self.is_inspector_de_material_mayor():
+            return True
         return False
         
     def puede_cambiar_numero_motor_material_mayor(self):
         if self.user.is_superuser:
             return True
         if self.rol == Rol.OPERACIONES():
+            return True
+        if self.is_inspector_de_material_mayor():
             return True
         return False
 
@@ -128,6 +138,11 @@ class UserProfile(models.Model):
         t = loader.get_template('mails/new_dada_de_alta.html')
         c = Context({'material_mayor': material_mayor, 'usuario': self.user, 'SITE_URL': settings.SITE_URL})
         self.user.email_user('Nuevo material mayor dado de alta', t.render(c))
+
+    def send_asignacion_compania_email(self, material_mayor):
+        t = loader.get_template('mails/asignacion_compania_email.html')
+        c = Context({'material_mayor': material_mayor, 'usuario': self.user, 'SITE_URL': settings.SITE_URL})
+        self.user.email_user(u'Material mayor reasignado a compañía', t.render(c))
             
     def update(self, username, xml_data):
         from . import Cargo, Cuerpo

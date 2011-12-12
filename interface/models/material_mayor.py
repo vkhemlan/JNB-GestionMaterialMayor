@@ -57,7 +57,7 @@ class MaterialMayor(models.Model):
 
     @classmethod
     def vehiculos_en_alta(cls):
-        return cls.objects.filter(validado_por_operaciones=True)
+        return cls.objects.filter(validado_por_operaciones=True, dada_de_baja__isnull=True)
         
     def extract_data(self, keys):
         return_data = []
@@ -85,6 +85,20 @@ class MaterialMayor(models.Model):
         for user_profile in operaciones_bomberiles_user_profiles:
             user_profile.send_new_dada_de_alta_email(self)
 
+    def notify_operaciones_of_asignacion_a_compania(self):
+        from . import Rol, UserProfile
+        operaciones_bomberiles_user_profiles = UserProfile.objects.filter(rol=Rol.OPERACIONES())
+        for user_profile in operaciones_bomberiles_user_profiles:
+            user_profile.send_asignacion_compania_email(self)
+
+    def obtener_estado(self):
+        if not self.validado_por_operaciones:
+            return 'Sin validar'
+        elif not self.dada_de_baja:
+            return 'En servicio'
+        else:
+            return 'Dado de baja'
+
     def corresponde_mantenimiento_programado(self, frecuencia_operacion, fecha):
         fecha_crecion_vehiculo = self.adquisicion.fecha.date()
 
@@ -102,11 +116,11 @@ class MaterialMayor(models.Model):
         from . import FrecuenciaOperacion
         fecha_crecion_vehiculo = self.adquisicion.fecha.date()
 
-        nuevo_numero_meses = fecha_crecion_vehiculo.month + numero_meses
-        numero_annos_agregar = nuevo_numero_meses / 12
-        nuevo_numero_meses %= 12
+        numero_total_meses = fecha_crecion_vehiculo.year * 12 + (fecha_crecion_vehiculo.month - 1) + numero_meses
+        nuevo_numero_annos = numero_total_meses / 12
+        nuevo_numero_meses = numero_total_meses % 12 + 1
 
-        fecha_gatillo = date(fecha_crecion_vehiculo.year + numero_annos_agregar, nuevo_numero_meses, fecha_crecion_vehiculo.day)
+        fecha_gatillo = date(nuevo_numero_annos, nuevo_numero_meses, fecha_crecion_vehiculo.day)
 
         self.revisar_nuevas_mantenciones_programadas(FrecuenciaOperacion.objects.all(), fecha_gatillo)
 

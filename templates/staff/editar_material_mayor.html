@@ -61,6 +61,10 @@
                 <td>{{ form.instance.adquisicion.fecha }}</td>
             </tr>
             <tr>
+                <th>Estado actual</th>
+                <td>{{ form.instance.obtener_estado }}</td>
+            </tr>
+            <tr>
                 <th>Cuerpo destinatario original</th>
                 <td>{{ form.instance.adquisicion.cuerpo_destinatario }} ({{ form.instance.adquisicion.cuerpo_destinatario.comuna.provincia.region }})</td>
             </tr>
@@ -118,7 +122,11 @@
                 <th>Pauta de mantenimiento de carrosado</th>
                 <td>
                     {% if form.instance.pauta_mantencion_carrosado %}
-                        <a href="{% url interface.views.pauta_mantencion_carrosado_editar form.instance.pauta_mantencion_carrosado.id %}">{{ form.instance.pauta_mantencion_carrosado }}</a>
+                        {% if user.get_profile.puede_ver_pauta_mantenimiento_carrosado %}
+                            <a href="{% url interface.views.pauta_mantencion_carrosado_editar form.instance.pauta_mantencion_carrosado.id %}">{{ form.instance.pauta_mantencion_carrosado }}</a>
+                        {% else %}
+                            {{ form.instance.pauta_mantencion_carrosado }}
+                        {% endif %}
                         {% if user.get_profile.puede_asignar_pauta_de_mantenimiento_de_carrosado and not dado_de_baja %}
                             (<a href="{% url interface.views.cambiar_pauta_mantencion_carrosado form.instance.id %}">Cambiar pauta</a>)
                         {% endif %}

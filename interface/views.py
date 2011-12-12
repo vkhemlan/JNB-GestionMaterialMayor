@@ -12,6 +12,7 @@ import re
 from datetime import date
 import xlrd
 from xlwt import Workbook, easyxf, Formula, XFStyle, Font
+from xlwt.Formatting import Alignment
 from interface.forms.formulario_cambio_pauta_mantencion_chasis_material_mayor import FormularioCambioPautaMantencionChasisMaterialMayor
 from interface.forms.formulario_dar_de_baja_material_mayor import FormularioDarDeBajaMaterialMayor
 
@@ -256,7 +257,7 @@ def cambiar_pauta_mantencion_carrosado(request, material_mayor):
     }, 
     context_instance=RequestContext(request))
     
-@authorize(roles=(Rol.OPERACIONES(),),)
+@authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Inspector de Material Mayor'],) )
 @authorize_material_mayor_access(requiere_validacion_operaciones=False)
 def cambiar_numero_chasis_material_mayor(request, material_mayor):
     if request.method == 'POST':
@@ -304,7 +305,7 @@ def dar_de_baja_material_mayor(request, material_mayor):
     },
     context_instance=RequestContext(request))
     
-@authorize(roles=(Rol.OPERACIONES(),),)
+@authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Inspector de Material Mayor'],))
 @authorize_material_mayor_access(requiere_validacion_operaciones=False)
 def cambiar_numero_motor_material_mayor(request, material_mayor):
     if request.method == 'POST':
@@ -460,6 +461,7 @@ def asignar_material_mayor_a_compania(request, material_mayor):
 
             material_mayor.compania = instance.compania
             material_mayor.save()
+            material_mayor.notify_operaciones_of_asignacion_a_compania()
 
             request.flash['success'] = u'Material mayor asignado correctamente'
             url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
@@ -623,7 +625,7 @@ def material_mayor_excel(request):
     wb.save(response)
     return response
         
-@authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Comandante'],))
+@authorize(roles=(Rol.OPERACIONES(),))
 @authorize_material_mayor_access(requiere_validacion_operaciones=True)
 def asignar_patente_a_material_mayor(request, material_mayor):
     if material_mayor.asignacion_de_patente:
@@ -971,6 +973,66 @@ def detalle_mantencion_programada(request, material_mayor, mantencion_programada
         'material_mayor': material_mayor
     },
     context_instance=RequestContext(request))
+
+@authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],) )
+@authorize_material_mayor_access(requiere_validacion_operaciones=True, requiere_material_en_servicio=False)
+def detalle_mantencion_programada_excel(request, material_mayor, mantencion_programada_id):
+    mantencion_programada = MantencionProgramada.objects.get(pk=mantencion_programada_id)
+    if mantencion_programada.material_mayor != material_mayor:
+        raise Http404
+
+    operaciones_mantencion = mantencion_programada.operacionmantencionprogramada_set.all()
+
+    response = HttpResponse(mimetype="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename=pauta_mantencion_material_mayor.xls'
+
+    title_style = XFStyle()
+    title_font = Font()
+    title_font.bold = True
+    title_font.height = 300
+    title_style.font = title_font
+
+    wb = Workbook()
+    ws = wb.add_sheet(u'Operaciones')
+
+
+    ws.row(0).height = 500
+    ws.col(0).width = 20000
+    ws.col(1).width = 10000
+
+    current_row = 0
+    ws.write(current_row, 0, u'Operaciones de mantención programada', title_style)
+    current_row += 1
+
+    bold_style = XFStyle()
+    bold_font = Font()
+    bold_font.bold = True
+    bold_style.font = bold_font
+
+    al1 = Alignment()
+    al1.horz = Alignment.HORZ_LEFT
+    al1.vert = Alignment.VERT_TOP
+    al1.wrap = Alignment.WRAP_AT_RIGHT
+
+    style1 = XFStyle()
+    style1.alignment = al1
+
+    ws.write(current_row, 0, 'Material mayor: %s' % unicode(material_mayor), bold_style)
+    current_row += 2
+
+    ws.write(current_row, 0, u'Operación de mantención', bold_style)
+    ws.write(current_row, 1, u'Observaciones', bold_style)
+    current_row += 1
+
+
+    for operacion in operaciones_mantencion:
+        ws.write(current_row, 0, operacion.descripcion, style1)
+        ws.row(current_row).height = 600
+        current_row += 1
+
+    wb.save(response)
+    return response
+
 
 @authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],) )
 @authorize_material_mayor_access(requiere_validacion_operaciones=True)

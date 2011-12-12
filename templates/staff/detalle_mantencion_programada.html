@@ -15,12 +15,16 @@
 
 	<h2>{{ mantencion_programada.gestor_string }}</h2>
     <hr />
-        
+
+    <a href="{% url interface.views.detalle_mantencion_programada_excel material_mayor.id mantencion_programada.id %}"><strong>Descargar esta pauta como Excel</strong></a>
+
+    <br />
+    <br />
     <table>
         <tr>
             <th>Operación</th>
             <th>Estado</th>
-            <th>Acciones</th>
+            <th></th>
         </tr>
         {% for operacion_mantencion in operaciones_mantencion %}
             <tr>
@@ -47,7 +51,7 @@
                             {% if material_mayor.dada_de_baja %}
                                 <button class="btn" disabled="disabled">El material fue dado de baja</button>
                             {% else %}
-                                <button data-controls-modal="modal-form-ejecutar" data-backdrop="true" data-keyboard="true" class="btn primary boton_ejecutar" action="{% url interface.views.marcar_operacion_mantencion_programada_como_ejecutada material_mayor.id mantencion_programada.id operacion_mantencion.id %}">Ejecutar</button>
+                                <button data-controls-modal="modal-form-ejecutar" data-backdrop="true" data-keyboard="true" class="btn primary boton_ejecutar" action="{% url interface.views.marcar_operacion_mantencion_programada_como_ejecutada material_mayor.id mantencion_programada.id operacion_mantencion.id %}">Marcar como ejecutada</button>
                             {% endif %}
                         </td>
                     {% else %}
@@ -59,7 +63,7 @@
                                 <button class="btn" disabled="disabled">El material fue dado de baja</button>
                             {% else %}
                                 {% csrf_token %}
-                                <button data-controls-modal="modal-form-ejecutar" data-backdrop="true" data-keyboard="true" class="btn primary boton_ejecutar" action="{% url interface.views.marcar_operacion_mantencion_programada_como_ejecutada material_mayor.id mantencion_programada.id operacion_mantencion.id %}">Ejecutar</button>
+                                <button data-controls-modal="modal-form-ejecutar" data-backdrop="true" data-keyboard="true" class="btn primary boton_ejecutar" action="{% url interface.views.marcar_operacion_mantencion_programada_como_ejecutada material_mayor.id mantencion_programada.id operacion_mantencion.id %}">Marcar como ejecutada</button>
                                 <button data-controls-modal="modal-form-posponer" data-backdrop="true" data-keyboard="true" class="btn danger boton_posponer" action="{% url interface.views.marcar_operacion_mantencion_programada_como_pospuesta material_mayor.id mantencion_programada.id operacion_mantencion.id %}">Posponer</button>
                             {% endif %}
                         </td>
