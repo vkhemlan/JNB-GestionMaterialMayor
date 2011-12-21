@@ -475,5 +475,37 @@
         "classname": "CambioNumeroMotorMaterialMayor", 
         "name": "Cambio de número de motor de material mayor"
     }
-  }
+  },
+  {
+      "pk": 7,
+      "model": "interface.tipoeventohojavidamaterialmayor",
+      "fields": {
+          "classname": "CambioCertificadoAnotacionesVigentes",
+          "name": "Cambio de certificado de anotaciones vigentes"
+      }
+  },
+    {
+        "pk": 8,
+        "model": "interface.tipoeventohojavidamaterialmayor",
+        "fields": {
+            "classname": "AsignacionSolicitudPrimeraInscripcion",
+            "name": "Asignación Solicitud de Primera Inscripción"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "interface.tipoeventohojavidamaterialmayor",
+        "fields": {
+            "classname": "EjecucionOperacionMantencionProgramada",
+            "name": "Ejecución de operación de mantención programada"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "interface.tipoeventohojavidamaterialmayor",
+        "fields": {
+            "classname": "DadaDeBajaMaterialMayor",
+            "name": "Dada de baja de material mayor"
+        }
+    }
 ]
