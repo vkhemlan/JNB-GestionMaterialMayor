@@ -62,6 +62,7 @@ def notificar_mantenciones_pendientes():
 def update_data_from_webservice():
     from models import Region, Provincia, Comuna, Cuerpo, Compania
     for layer in [Region, Provincia, Comuna, Cuerpo, Compania]:
+        print 'Actualizando: ' + unicode(layer.__name__)
         layer.update_from_webservice()
 
 def request_webservice(service_location, data=None):
