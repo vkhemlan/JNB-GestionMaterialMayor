@@ -43,7 +43,7 @@ class MaterialMayor(models.Model):
     fotografia_lateral = ImageField(upload_to=lambda i, fn: uploaded_image_rename('fotografia_lateral', i, fn), verbose_name=u'Vista Lateral', blank=True, null=True)
     fotografia_trasera = ImageField(upload_to=lambda i, fn: uploaded_image_rename('fotografia_trasera', i, fn), verbose_name=u'Vista Trasera', blank=True, null=True)
     # Información de procesos asociados
-    adquisicion = models.OneToOneField('AdquisicionMaterialMayor')
+    adquisicion = models.OneToOneField('AdquisicionMaterialMayor', blank=True, null=True)
     asignacion_de_patente = models.OneToOneField('AsignacionPatenteMaterialMayor', blank=True, null=True)
     dada_de_baja = models.OneToOneField('DadaDeBajaMaterialMayor', blank=True, null=True)
     # Metadata

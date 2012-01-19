@@ -62,22 +62,21 @@ def _adquisicion_material_mayor(request, FormularioAdquisicion, template):
         if form.is_valid() and form_adquisicion.is_valid():
             data_form = FormularioAgregarMaterialMayor(request.POST, user=request.user)
             data_form.is_valid()
+
             material_mayor_data = data_form.instance
             material_mayor_data.save()
             
             form = FormularioAgregarMaterialMayor(request.POST, request.FILES, user=request.user, instance=material_mayor_data)
             form.is_valid()
-            
+
             material_mayor = form.get_instance()
-            
-            adquisicion = form_adquisicion.get_instance(request.user)
+            material_mayor.adquisicion = form_adquisicion.get_instance(request.user)
             material_mayor.save()
             
-            adquisicion.materialmayor = material_mayor
-            adquisicion.save()
-            
-            material_mayor.adquisicion = adquisicion
-            material_mayor.save()
+            #adquisicion.materialmayor = material_mayor
+            #adquisicion.save()
+
+            #material_mayor.save()
             
             if request.user.get_profile().is_staff_cuerpo():
                 material_mayor.cuerpo = request.user.get_profile().cuerpo
@@ -762,6 +761,7 @@ def _parse_pauta_mantencion_contents(input_file, ModelClass):
     
         m = ModelClass(name=nombre_pauta)
     except Exception:
+        print '1'
         return None
         
     m.save()
@@ -774,11 +774,13 @@ def _parse_pauta_mantencion_contents(input_file, ModelClass):
                 operation_frequency = sh.cell(row_operation, 1).value
                 r = re.match(r'(\d+) meses$', operation_frequency)
                 operation_frequency_value = int(r.groups()[0])
+                print operation_frequency_value
                 frecuencia = FrecuenciaOperacion.objects.get(numero_meses=operation_frequency_value)
                 op = OperacionMantencionPauta(pauta=m, descripcion=operation_name, frecuencia=frecuencia)
                 op.save()
-    except Exception:
+    except Exception, e:
         m.delete()
+        print e.message
         return None
         
     return m

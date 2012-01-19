@@ -507,5 +507,75 @@
             "classname": "DadaDeBajaMaterialMayor",
             "name": "Dada de baja de material mayor"
         }
+    },
+    {
+        "pk": 1,
+        "model": "interface.frecuenciaoperacion",
+        "fields": {
+            "numero_meses": "3"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "interface.frecuenciaoperacion",
+        "fields": {
+            "numero_meses": "6"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "interface.frecuenciaoperacion",
+        "fields": {
+            "numero_meses": "12"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "interface.frecuenciaoperacion",
+        "fields": {
+            "numero_meses": "18"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "interface.frecuenciaoperacion",
+        "fields": {
+            "numero_meses": "24"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "interface.frecuenciaoperacion",
+        "fields": {
+            "numero_meses": "30"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "interface.frecuenciaoperacion",
+        "fields": {
+            "numero_meses": "36"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "interface.motivodadadebaja",
+        "fields": {
+            "nombre": "Obsolescencia"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "interface.motivodadadebaja",
+        "fields": {
+            "nombre": "Accidente"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "interface.motivodadadebaja",
+        "fields": {
+            "nombre": "Otro"
+        }
     }
 ]
