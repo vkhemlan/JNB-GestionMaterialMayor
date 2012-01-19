@@ -27,8 +27,10 @@ LOGIN_REDIRECT_URL = '/'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': root('etc', 'development.db')                      # Or path to database file if using sqlite3.    }
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'gestion',                      # Or path to database file if using sqlite3.    }
+        'USER': 'cc61a',
+        'PASSWORD': 'cc61a'
     }
 }
 

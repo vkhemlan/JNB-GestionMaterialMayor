@@ -18,5 +18,5 @@ class AsignacionSolicitudPrimeraInscripcion(EventoHojaVidaMaterialMayor):
 
     class Meta:
         app_label = 'interface'
-        verbose_name = u'Asignación de solicitud de primera inscripción'
-        verbose_name_plural = u'Asignaciones de solicitud de primera inscripción'
+        verbose_name = u'Asig. de solicitud de primera insc.'
+        verbose_name_plural = u'Asig. de solicitud de primera insc.'

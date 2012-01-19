@@ -17,5 +17,5 @@ class CambioPautaMantencionCarrosadoMaterialMayor(EventoHojaVidaMaterialMayor):
 
     class Meta:
         app_label = 'interface'
-        verbose_name = u'Cambio de pauta de mantención de carrosado'
-        verbose_name_plural = u'Cambios de pauta de mantención de carrosado'
+        verbose_name = u'Cambio pauta mantención carrosado'
+        verbose_name_plural = u'Cambios pauta mantención carrosado'

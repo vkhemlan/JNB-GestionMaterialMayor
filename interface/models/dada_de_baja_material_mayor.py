@@ -18,5 +18,5 @@ class DadaDeBajaMaterialMayor(EventoHojaVidaMaterialMayor):
 
     class Meta:
         app_label = 'interface'
-        verbose_name = u'Dada de baja de merial mayor'
-        verbose_name_plural = u'Dadas de baja de material mayor'
+        verbose_name = u'Baja de merial mayor'
+        verbose_name_plural = u'Bajas de material mayor'

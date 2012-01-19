@@ -18,5 +18,5 @@ class CambioCertificadoAnotacionesVigentes(EventoHojaVidaMaterialMayor):
 
     class Meta:
         app_label = 'interface'
-        verbose_name = u'Cambio de certificado de anotaciones vigentes'
-        verbose_name_plural = u'Cambios de certificado de anotaciones vigentes'
+        verbose_name = u'Cambio de certif. de anot. vigentes'
+        verbose_name_plural = u'Cambios de certif. de anot. vigentes'
