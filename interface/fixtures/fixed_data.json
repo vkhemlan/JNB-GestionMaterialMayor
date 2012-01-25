@@ -577,5 +577,21 @@
         "fields": {
             "nombre": "Otro"
         }
+    },
+    {
+        "pk": 1,
+        "model": "interface.modoadquisicionmaterialmayor",
+        "fields": {
+            "name": "Adquisición por compra",
+            "classname": "AdquisicionCompraMaterialMayor"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "interface.modoadquisicionmaterialmayor",
+        "fields": {
+            "name": "Adquisición por donación",
+            "classname": "AdquisicionDonacionMaterialMayor"
+        }
     }
 ]

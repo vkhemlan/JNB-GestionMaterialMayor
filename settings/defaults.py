@@ -6,6 +6,7 @@ PROJECT_ROOT = here('..')
 root = lambda * x: os.path.join(os.path.abspath(PROJECT_ROOT), *x)
 
 PROJECT_MODULE = '.'.join(__name__.split('.')[:-2])
+PROJECT_MODULE = 'gestion_material_mayor'
 
 DEBUG = True
 
@@ -132,6 +133,7 @@ INSTALLED_APPS = (
     'interface',
     'django_extensions')
 
+'''
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -169,3 +171,4 @@ LOGGING = {
         }
     }
 }
+'''

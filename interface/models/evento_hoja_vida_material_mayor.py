@@ -33,11 +33,11 @@ class EventoHojaVidaMaterialMayor(models.Model):
         self.material_mayor = material_mayor
         self.usuario = user
         self.rol_usuario = user.get_profile().rol
+        self.tipo = TipoEventoHojaVidaMaterialMayor.objects.get(classname=classname)
         self.save()
         for cargo in user.get_profile().cargos.all():
             self.cargos_usuario.add(cargo)
         self.cuerpo_usuario = user.get_profile().cuerpo
-        self.tipo = TipoEventoHojaVidaMaterialMayor.objects.get(classname=classname)
         self.save()
 
     class Meta:

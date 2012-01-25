@@ -1,4 +1,7 @@
-import json
+try:
+    import json
+except ImportError:
+    import simplejson as json
 from django.http import HttpResponse
 from django.core import serializers
 from interface.models import ModeloChasisMaterialMayor, ModeloCajaCambioMaterialMayor, ModeloBombaMaterialMayor
