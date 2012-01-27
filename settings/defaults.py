@@ -5,8 +5,7 @@ PROJECT_ROOT = here('..')
 
 root = lambda * x: os.path.join(os.path.abspath(PROJECT_ROOT), *x)
 
-PROJECT_MODULE = '.'.join(__name__.split('.')[:-2])
-PROJECT_MODULE = 'gestion_material_mayor'
+PROJECT_MODULE = 'JNB-GestionMaterialMayor'
 
 DEBUG = True
 
@@ -20,6 +19,7 @@ AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
                             'interface.authentication.JnbAuthenticationBackend',)
 
 JNB_WEBSERVICES_URL = 'http://10.13.10.7:8080/JnbWebServices'
+SITE_URL = 'materialmayor.bomberos.cl'
 
 MANAGERS = ADMINS
 
