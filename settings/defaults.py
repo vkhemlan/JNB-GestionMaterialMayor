@@ -31,7 +31,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'gestion',                      # Or path to database file if using sqlite3.    }
         'USER': 'cc61a',
-        'PASSWORD': 'cc61a'
+        'PASSWORD': 'cc61a',
+	'HOST': ''
     }
 }
 
