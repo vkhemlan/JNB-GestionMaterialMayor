@@ -17,7 +17,7 @@ class AdquisicionCompraMaterialMayor(AdquisicionMaterialMayor):
     packing_list = models.FileField(upload_to=lambda i, fn: generate_uploaded_adquisicion_file_name('packing_list', i, fn), verbose_name=u'Packing List', blank=True, null=True)
     acta_de_recepcion = models.FileField(upload_to=lambda i, fn: generate_uploaded_adquisicion_file_name('acta_de_recepcion', i, fn), verbose_name=u'Acta de recepción', blank=True, null=True)
     solicitud_exencion_de_iva = models.FileField(upload_to=lambda i, fn: generate_uploaded_adquisicion_file_name('solicitud_exencion_de_iva', i, fn), verbose_name=u'Solicitud de exención de IVA', blank=True, null=True)
-    respuesta_solicitud_exencion_de_iva = models.FileField(upload_to=lambda i, fn: generate_uploaded_adquisicion_file_name('respuesta_solicitud_exencion_de_iva', i, fn), verbose_name=u'Respuesta solicitud de exención de IVA', blank=True, null=True)
+    respuesta_solicitud_exencion_de_iva = models.FileField(upload_to=lambda i, fn: generate_uploaded_adquisicion_file_name('respuesta_solicitud_exencion_de_iva', i, fn), verbose_name=u'Resolución exención de IVA', blank=True, null=True)
     valor_final_de_compra = models.IntegerField(verbose_name=u'Valor final de la compra', blank=True, null=True) 
     proveedor = models.CharField(max_length=255, verbose_name=u'Proveedor', blank=True, null=True)
     agente_de_aduana = models.CharField(max_length=255, verbose_name=u'Agente de aduana', blank=True, null=True)

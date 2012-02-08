@@ -36,8 +36,9 @@ class FormularioAdquisicionCompraMaterialMayor(FormularioAdquisicionMaterialMayo
         if 'region_cuerpo_destinatario' in self.fields:
             fields.append(self['region_cuerpo_destinatario'])
             fields.append(self['cuerpo_destinatario'])
+
         return self._render_fields_as_list(fields, blacklist=['region_cuerpo_destinatario', 'cuerpo_destinatario'])
                
     class Meta:
         model = AdquisicionCompraMaterialMayor
-        exclude = ('modo_adquisicion', 'usuario', 'fecha', 'modo', 'cuerpo_destinatario')
+        exclude = ('modo_adquisicion', 'usuario', 'fecha', 'modo')

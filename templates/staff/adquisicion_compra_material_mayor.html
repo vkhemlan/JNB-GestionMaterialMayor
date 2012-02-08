@@ -45,6 +45,10 @@
             <tr><td colspan="3"><br /><h3>Documentos</h3><br /></td></tr>
             
             {{ form_adquisicion.render_detalles }}
+
+            {% if not user.is_staff %}
+                <input type="hidden" name="cuerpo_destinatario" value="{{ user.get_profile.cuerpo.id }}" />
+            {% endif %}
                 
             <tr>
                 <td></td>
@@ -53,6 +57,7 @@
                 </td>
             </tr>
         </table>
+
 
     </form>
 {% endblock %}

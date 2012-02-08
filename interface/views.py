@@ -59,6 +59,7 @@ def _adquisicion_material_mayor(request, FormularioAdquisicion, template):
         # para el staff de la JNBC, no para los usuarios de cuerpos bomberiles.
         form = FormularioAgregarMaterialMayor(request.POST, request.FILES, user=request.user)
         form_adquisicion = FormularioAdquisicion(request.POST, request.FILES, user=request.user)
+
         if form.is_valid() and form_adquisicion.is_valid():
             form_data = FormularioAgregarMaterialMayor(request.POST, user=request.user)
             form_data.is_valid()

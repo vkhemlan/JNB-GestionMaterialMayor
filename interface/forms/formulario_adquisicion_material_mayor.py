@@ -8,6 +8,7 @@ class FormularioAdquisicionMaterialMayor(BaseModelForm):
     """
     Clase base para los formularios para dar de alta material mayor
     """
+    cuerpo_destinatario = forms.ModelChoiceField(queryset=Cuerpo.objects.all())
     
     def __init__(self, *args, **kwargs):
         """
