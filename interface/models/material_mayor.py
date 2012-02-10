@@ -38,6 +38,7 @@ class MaterialMayor(models.Model):
     planos = models.FileField(upload_to=lambda i, fn: generate_uploaded_material_mayor_file_name('planos', i, fn), verbose_name=u'Planos del vehículo', blank=True, null=True)
     certificado_de_anotaciones_vigentes = models.ForeignKey('CambioCertificadoAnotacionesVigentes', blank=True, null=True)
     asignacion_solicitud_primera_inscripcion = models.ForeignKey('AsignacionSolicitudPrimeraInscripcion', blank=True, null=True)
+    denominacion = models.CharField(max_length=255, blank=True, null=True)
     # Fotografías
     fotografia_frontal = ImageField(upload_to=lambda i, fn: uploaded_image_rename('fotografia_frontal', i, fn), verbose_name=u'Vista Frontal', blank=True, null=True)
     fotografia_lateral = ImageField(upload_to=lambda i, fn: uploaded_image_rename('fotografia_lateral', i, fn), verbose_name=u'Vista Lateral', blank=True, null=True)

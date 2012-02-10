@@ -79,6 +79,19 @@
                 </td>
             </tr>
             <tr>
+                <th>Denominación</th>
+                <td>
+                    {% if form.instance.denominacion %}
+                        {{ form.instance.denominacion }}
+                    {% else %}
+                        <i>No posee denominación</i>
+                    {% endif %}
+                    {% if user.get_profile.puede_cambiar_denominacion and not dado_de_baja %}
+                        (<a href="{% url interface.views.cambiar_denominacion form.instance.id %}">Cambiar denominación</a>)
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
                 <th>Patente</th>
                 <td>
                     {% if form.instance.asignacion_de_patente %}

@@ -17,7 +17,7 @@ from interface.forms.formulario_cambio_pauta_mantencion_chasis_material_mayor im
 from interface.forms.formulario_dar_de_baja_material_mayor import FormularioDarDeBajaMaterialMayor
 
 from interface.models import MaterialMayor, EventoHojaVidaMaterialMayor, Rol, AsignacionPatenteMaterialMayor, UsoMaterialMayor, PautaMantencionCarrosado, PautaMantencionChasis, ModeloChasisMaterialMayor, FrecuenciaOperacion, MantencionProgramada, OperacionMantencionProgramada, EjecucionOperacionMantencionProgramada
-from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioAgregarMaterialMayor, FormularioEditarMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioAsignacionCompaniaMaterialMayor, FormularioAsignacionPatenteMaterialMayor, FormularioAgregarPautaMantencionCarrosado, FormularioAgregarPautaMantencionChasis, FormularioCambioPautaMantencionCarrosadoMaterialMayor, FormularioCambioNumeroChasisMaterialMayor, FormularioCambioNumeroMotorMaterialMayor, FormularioPautaMantencionCarrosadoAgregar, FormularioPautaMantencionChasisAgregar, FormularioCambioCertificadoAnotacionesVigentes, FormularioAsignacionSolicitudPrimeraInscripcion, FormularioAgregarArchivoMantencionProgramada
+from interface.forms import FormularioAdquisicionCompraMaterialMayor, FormularioAdquisicionDonacionMaterialMayor, MaterialMayorSearchForm, FormularioAgregarMaterialMayor, FormularioEditarMaterialMayor, FormularioAsignacionCuerpoMaterialMayor, FormularioAsignacionCompaniaMaterialMayor, FormularioAsignacionPatenteMaterialMayor, FormularioAgregarPautaMantencionCarrosado, FormularioAgregarPautaMantencionChasis, FormularioCambioPautaMantencionCarrosadoMaterialMayor, FormularioCambioNumeroChasisMaterialMayor, FormularioCambioNumeroMotorMaterialMayor, FormularioPautaMantencionCarrosadoAgregar, FormularioPautaMantencionChasisAgregar, FormularioCambioCertificadoAnotacionesVigentes, FormularioAsignacionSolicitudPrimeraInscripcion, FormularioAgregarArchivoMantencionProgramada, FormularioCambioDenominacion
 from django.http import HttpResponseRedirect
 from interface.models.archivo_mantencion_programada import ArchivoMantencionProgramada
 from interface.models.cambio_pauta_mantencion_carrosado_material_mayor import CambioPautaMantencionCarrosadoMaterialMayor
@@ -778,7 +778,7 @@ def _parse_pauta_mantencion_contents(input_file, ModelClass):
                 frecuencia = FrecuenciaOperacion.objects.get(numero_meses=operation_frequency_value)
                 op = OperacionMantencionPauta(pauta=m, descripcion=operation_name, frecuencia=frecuencia)
                 op.save()
-    except Exception, e:
+    except Exception:
         m.delete()
         return None
         
@@ -1183,3 +1183,27 @@ def mantenciones_programadas_pendientes(request):
         'mantenciones_programadas_pendientes': mantenciones_programadas_pendientes,
     },
     context_instance=RequestContext(request))
+
+@authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Comandante'],))
+@authorize_material_mayor_access(requiere_validacion_operaciones=True)
+def cambiar_denominacion(request, material_mayor):
+    if request.method == 'POST':
+        form = FormularioCambioDenominacion(request.POST)
+        if form.is_valid():
+            instance = form.instance
+            instance.cargar_informacion_hoja_de_vida(material_mayor, request.user, 'CambioDenominacion')
+            instance.save()
+
+            material_mayor.denominacion = instance.nueva_denominacion
+            material_mayor.save()
+
+            request.flash['success'] = u'Cambio de denominación realizado exitosamente'
+            url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
+            return HttpResponseRedirect(url)
+    else:
+        form = FormularioCambioDenominacion()
+    return render_to_response('staff/cambiar_denominacion_material_mayor.html', {
+        'form': form,
+        'material_mayor': material_mayor
+    },
+        context_instance=RequestContext(request))

@@ -118,6 +118,15 @@ class UserProfile(models.Model):
         if self.rol == Rol.OPERACIONES():
             return True
         return False
+
+    def puede_cambiar_denominacion(self):
+        if self.user.is_superuser:
+            return True
+        if self.rol == Rol.OPERACIONES():
+            return True
+        if self.is_comandante():
+            return True
+        return False
         
     def __str__(self):  
           return '%s\'s profile' % self.user

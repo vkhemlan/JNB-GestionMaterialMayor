@@ -31,6 +31,8 @@ from .formulario_agregar_archivo_mantencion_programada import FormularioAgregarA
 from .formulario_cambio_pauta_mantencion_chasis_material_mayor import FormularioCambioPautaMantencionChasisMaterialMayor
 from .formulario_dar_de_baja_material_mayor import FormularioDarDeBajaMaterialMayor
 from .formulario_hoja_vida_dada_de_baja_material_mayor import FormularioHojaVidaDadaDeBajaMaterialMayor
+from .formulario_cambio_denominacion import FormularioCambioDenominacion
+from .formulario_hoja_vida_cambio_denominacion import FormularioHojaVidaCambioDenominacion
 
 __all__ = [ 'BaseModelForm',
 			'FormularioAgregarMaterialMayor',
@@ -64,4 +66,6 @@ __all__ = [ 'BaseModelForm',
             'FormularioAgregarArchivoMantencionProgramada',
             'FormularioCambioPautaMantencionChasisMaterialMayor',
             'FormularioDarDeBajaMaterialMayor',
-            'FormularioHojaVidaDadaDeBajaMaterialMayor']
+            'FormularioHojaVidaDadaDeBajaMaterialMayor',
+            'FormularioCambioDenominacion',
+            'FormularioHojaVidaCambioDenominacion']
