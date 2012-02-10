@@ -509,6 +509,14 @@
         }
     },
     {
+        "pk": 11,
+        "model": "interface.tipoeventohojavidamaterialmayor",
+        "fields": {
+            "classname": "CambioDenominacion",
+            "name": "Cambio de denominación"
+        }
+    },
+    {
         "pk": 1,
         "model": "interface.frecuenciaoperacion",
         "fields": {
