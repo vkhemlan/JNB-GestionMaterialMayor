@@ -19,7 +19,7 @@ AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
                             'interface.authentication.JnbAuthenticationBackend',)
 
 JNB_WEBSERVICES_URL = 'http://10.13.10.7:8080/JnbWebServices'
-SITE_URL = 'materialmayor.bomberos.cl'
+SITE_URL = 'http://localhost:8000/'
 
 MANAGERS = ADMINS
 
@@ -72,8 +72,8 @@ MEDIA_URL = ''
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
 
-STATIC_ROOT = root('static', 'assets')
-STATIC_URL = '/staticfiles/'
+STATIC_ROOT = root('static', 'assets2')
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
     root('staticfiles'),

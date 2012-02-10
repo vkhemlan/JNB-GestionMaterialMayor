@@ -6,3 +6,4 @@ static/media/*
 settings/local.py
 uploads
 .idea
+static/**
