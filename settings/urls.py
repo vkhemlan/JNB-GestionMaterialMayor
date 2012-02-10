@@ -1,5 +1,11 @@
+import os
+here = lambda * x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
+
+PROJECT_ROOT = here('..')
+
+root = lambda * x: os.path.join(os.path.abspath(PROJECT_ROOT), *x)
+
 from django.conf.urls.defaults import patterns, include, url
-from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 
@@ -14,5 +20,7 @@ urlpatterns = patterns('',
 urlpatterns += staticfiles_urlpatterns()
 
 urlpatterns += patterns('',
-    url(r'^static/(?P<path>.*)$', 'django.views.static.serve'),
+    url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {
+        'document_root': root('static', 'assets')
+    }),
 )
