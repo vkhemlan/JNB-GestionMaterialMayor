@@ -18,7 +18,7 @@ ADMINS = (
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
                             'interface.authentication.JnbAuthenticationBackend',)
 
-JNB_WEBSERVICES_URL = 'http://10.13.10.7:8080/JnbWebServices'
+JNB_WEBSERVICES_URL = 'http://localhost:8080/JnbWebServices'
 SITE_URL = 'http://localhost:8000/'
 
 MANAGERS = ADMINS
@@ -72,7 +72,7 @@ MEDIA_URL = ''
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
 
-STATIC_ROOT = root('static', 'assets2')
+STATIC_ROOT = root('static', 'assets')
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
@@ -133,43 +133,3 @@ INSTALLED_APPS = (
     'south',
     'interface',
     'django_extensions')
-
-'''
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': ('%(levelname)s %(asctime)s |'
-                       ' %(pathname)s:%(lineno)d (in %(funcName)s) |'
-                       ' %(message)s ')
-        },
-        'simple': {
-            'format': '%(levelname)s %(message)s'
-        },
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler'
-        },
-        'logfile': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.WatchedFileHandler',
-            'filename': root('%s.log' % PROJECT_MODULE),
-            'formatter': 'verbose',
-        },
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-        PROJECT_MODULE: {
-            'handlers': ['logfile'],
-            'level': 'DEBUG'
-        }
-    }
-}
-'''
