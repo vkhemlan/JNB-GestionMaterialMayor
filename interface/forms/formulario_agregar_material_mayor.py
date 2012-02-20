@@ -54,8 +54,8 @@ class FormularioAgregarMaterialMayor(BaseModelForm):
             fields.insert(1, self['pauta_mantencion_carrosado']) 
         except KeyError:
             pass
-        fields.insert(3, self['marca_caja_cambio'])
-        fields.insert(6, self['marca_bomba'])
+        fields.insert(-5, self['marca_caja_cambio'])
+        fields.insert(-3, self['marca_bomba'])
         return self._render_fields_as_list(fields, blacklist=['pauta_mantencion_carrosado'])
 
     def picture_fields(self):

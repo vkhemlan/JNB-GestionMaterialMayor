@@ -6,10 +6,10 @@ from adquisicion_material_mayor import generate_uploaded_adquisicion_file_name
 
 class AdquisicionCompraMaterialMayor(AdquisicionMaterialMayor):
     orden_de_compra = models.FileField(upload_to=lambda i, fn: generate_uploaded_adquisicion_file_name('orden_de_compra', i, fn), verbose_name=u'Orden de compra', blank=True, null=True)
-    numero_orden_de_compra = models.IntegerField(verbose_name=u'N° de orden de compra', blank=True, null=True)
+    numero_orden_de_compra = models.CharField(max_length=255, verbose_name=u'N° de orden de compra', blank=True, null=True)
     fecha_orden_de_compra = models.DateField(verbose_name=u'Fecha de orden de compra', blank=True, null=True)
     declaracion_de_ingreso = models.FileField(upload_to=lambda i, fn: generate_uploaded_adquisicion_file_name('declaracion_de_ingreso', i, fn), verbose_name=u'Declaración de Ingreso', blank=True, null=True)
-    numero_declaracion_de_ingreso = models.IntegerField(verbose_name=u'N° de declaración de ingreso', blank=True, null=True)
+    numero_declaracion_de_ingreso = models.CharField(max_length=255, verbose_name=u'N° de declaración de ingreso', blank=True, null=True)
     fecha_declaracion_de_ingreso = models.DateField(verbose_name=u'Fecha de declaración de ingreso', blank=True, null=True)
     
     factura_comercial = models.FileField(upload_to=lambda i, fn: generate_uploaded_adquisicion_file_name('factura_comercial', i, fn), verbose_name=u'Factura Comercial', blank=True, null=True)
