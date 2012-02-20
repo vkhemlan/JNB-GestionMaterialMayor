@@ -2,8 +2,7 @@
 *.pyc
 *.db
 *.log
-static/media/*
 settings/local.py
 uploads
 .idea
-static/**
+staticfiles/**
