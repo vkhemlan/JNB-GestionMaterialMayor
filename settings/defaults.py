@@ -72,11 +72,11 @@ MEDIA_URL = ''
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
 
-STATIC_ROOT = root('static', 'assets')
+STATIC_ROOT = root('staticfiles')
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    root('staticfiles'),
+    root('static', 'assets')
 )
 
 ADMIN_MEDIA_PREFIX = '%sadmin/' % STATIC_URL
