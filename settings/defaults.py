@@ -76,7 +76,7 @@ STATIC_ROOT = root('staticfiles')
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    root('static', 'assets')
+    root('static', 'assets'),
 )
 
 ADMIN_MEDIA_PREFIX = '%sadmin/' % STATIC_URL

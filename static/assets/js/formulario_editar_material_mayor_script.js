@@ -1,16 +1,19 @@
 var dynamic_part_names = ['chasis', 'caja_cambio', 'bomba'];
 
+var default_modelos = {}
+
+
 $(function() {
     $.each(dynamic_part_names, function(index, value) {
+        default_modelos[value] = parseInt($('#id_modelo_' + value).val())
+        
         $('#id_marca_' + value).change(function() {
-            generic_refresh(value);
+            generic_refresh(value, NaN);
         });
         
-        generic_refresh(value);
+        generic_refresh(value, default_modelos[value]);
         
-        if (typeof window['default_modelo_' + value] == 'number') {
-            $('#id_modelo_' + value).val(window['default_modelo_' + value]);
-        }
+        $('#id_modelo_' + value).val(default_modelos[value]);
     });
     
     $('#id_uso').change(function() {
@@ -73,24 +76,50 @@ function refresh_otros_usos() {
     }
 }
 
-function generic_refresh(part_name) {
+function generic_refresh(part_name, default_model_id) {
     var selected_marca = parseInt($('#id_marca_' + part_name).val());
     var select_modelo = $('#id_modelo_' + part_name);
     select_modelo.empty();
     
     if (selected_marca) {
         select_modelo.removeAttr('disabled');
-        var element_added = false;
-        $.each(window['modelos_' + part_name], function(index, value) {
-            if (value[2] == selected_marca) {
-                select_modelo.append($("<option />").val(value[0]).text(value[1]));
-                element_added = true;
+        
+        add_another_link = $('#add_id_modelo_' + part_name);
+    
+        add_another_link.hide();
+        
+        $.getJSON('/services/part_model_list/', 
+            {
+                part_name: part_name,
+                brand_id: selected_marca
+            }, 
+            function(data) {
+                models = eval(data)
+                var max_id = 0;
+                var element_added = false;
+                $.each(models, function(index, value) {
+                    if (value[0] > max_id) {
+                        max_id = value[0];
+                    }
+                    
+                    select_modelo.append($("<option />").val(value[0]).text(value[1]));
+                    element_added = true;
+                })
+                
+                if (!element_added) {
+                    select_modelo.append($("<option />").val(0).text('No hay modelos para esta marca'));
+                    select_modelo.attr('disabled', true);
+                }
+                
+                if (default_model_id != NaN) {
+                    $('#id_modelo_' + part_name).val(default_model_id);
+                } else {
+                    $('#id_modelo_' + part_name).val(max_id);
+                }
+                add_another_link.show();
             }
-        });
-        if (!element_added) {
-            select_modelo.append($("<option />").val(0).text('No hay modelos para esta marca'));
-            select_modelo.attr('disabled', true);
-        }
+        );
+
     } else {
         select_modelo.append($("<option />").val(0).text('Por favor seleccione una marca'));
         select_modelo.attr('disabled', true);
@@ -98,6 +127,7 @@ function generic_refresh(part_name) {
 }
 
 function reload_part_model_list(part_name, new_element_id) {
+    return
     add_another_link = $('#add_id_modelo_' + part_name);
     
     add_another_link.hide();
@@ -210,7 +240,7 @@ function dismissAddAnotherPopup(win, newId, newRepr) {
     possible_part_name = name.replace('id_modelo_', '');
     
     if ($.inArray(possible_part_name, dynamic_part_names) != -1) {
-        reload_part_model_list(possible_part_name, newId)
+        generic_refresh(possible_part_name, parseInt(newId))
     } else if (elem) {
         if (elem.nodeName == 'SELECT') {
             var o = new Option(newRepr, newId);
@@ -219,7 +249,7 @@ function dismissAddAnotherPopup(win, newId, newRepr) {
             
             possible_part_name = name.replace('id_marca_', '');
             if ($.inArray(possible_part_name, dynamic_part_names) != -1) {
-                generic_refresh(possible_part_name)
+                generic_refresh(possible_part_name, parseInt(newId))
             }
         } else if (elem.nodeName == 'INPUT') {
             if (elem.className.indexOf('vManyToManyRawIdAdminField') != -1 && elem.value) {
