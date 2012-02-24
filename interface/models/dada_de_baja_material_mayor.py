@@ -5,8 +5,15 @@ from . import EventoHojaVidaMaterialMayor
 
 def generate_uploaded_dada_de_baja_file_name(field_name, instance, filename):
     left_path, extension = filename.rsplit('.',1)
+    
+    filename = 'documentos/material_mayor/%d/dada_de_baja/%s.%s' % (instance.materialmayor.id, field_name, extension)
+    
+    try:
+        os.unlink(os.path.join(settings.MEDIA_ROOT, filename))
+    except OSError:
+        pass
 
-    return 'documentos/material_mayor/%d/dada_de_baja/%s.%s' % (instance.materialmayor.id, field_name, extension)
+    return filename
 
 class DadaDeBajaMaterialMayor(EventoHojaVidaMaterialMayor):
     fecha_dada_de_baja = models.DateField(verbose_name=u'Fecha')

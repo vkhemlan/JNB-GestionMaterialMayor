@@ -4,8 +4,15 @@ from django.db import models
 
 def generate_uploaded_archivo_mantencion_programada_file_name(instance, filename):
     left_path, extension = filename.rsplit('.',1)
+    
+    filename = 'documentos/material_mayor/%d/mantenciones_programadas/%d/%d.%s' % (instance.mantencion.material_mayor.id, instance.mantencion.id, instance.id, extension)
+    
+    try:
+        os.unlink(os.path.join(settings.MEDIA_ROOT, filename))
+    except OSError:
+        pass
 
-    return 'documentos/material_mayor/%d/mantenciones_programadas/%d/%d.%s' % (instance.mantencion.material_mayor.id, instance.mantencion.id, instance.id, extension)
+    return filename
 
 class ArchivoMantencionProgramada(models.Model):
     nombre = models.CharField(max_length=255, verbose_name='Nombre')

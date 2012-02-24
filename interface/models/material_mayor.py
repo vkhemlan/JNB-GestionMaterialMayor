@@ -8,7 +8,14 @@ from datetime import date
 def generate_uploaded_material_mayor_file_name(field_name, instance, filename):
     left_path, extension = filename.rsplit('.',1)
     
-    return 'documentos/material_mayor/%d/%s.%s' % (instance.id, field_name, extension)
+    filename = 'documentos/material_mayor/%d/%s.%s' % (instance.id, field_name, extension)
+    
+    try:
+        os.unlink(os.path.join(settings.MEDIA_ROOT, filename))
+    except OSError:
+        pass
+    
+    return filename
     
 def uploaded_image_rename(field_name, instance, filename):
     left_path, extension = filename.rsplit('.',1)
