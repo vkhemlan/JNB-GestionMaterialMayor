@@ -40,10 +40,17 @@
 	
 	<hr />
 	
-	<p><a href="{% url interface.views.material_mayor_excel %}?{{ form.get_path }}">Descargar esta búsqueda como Excel</a></p>
+	
 	<br />
     
     <div class="span-21">
+        <strong>Búsqueda rápida</strong>
+        <input type="text" id="filter-box" />
+        <input type="button" id="filter-clear-button" value="Limpiar" class="btn" />
+        
+        <p style="text-align: right;">
+            <a href="{% url interface.views.material_mayor_excel %}?{{ form.get_path }}">Descargar esta búsqueda como Excel </a>
+        </p>
         <table class="tablesorter">
             <thead>
                 <tr>
@@ -79,17 +86,10 @@
 
         <div id="pager" class="pager">
             <form>
-                <img src="{{ STATIC_URL }}/css/pager/first.png" class="first"/>
                 <img src="{{ STATIC_URL }}/css/pager/prev.png" class="prev"/>
                 <input type="text" class="pagedisplay"/>
                 <img src="{{ STATIC_URL }}/css/pager/next.png" class="next"/>
-                <img src="{{ STATIC_URL }}/css/pager/last.png" class="last"/>
-                <select class="pagesize">
-                    <option selected="selected"  value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                    <option  value="40">40</option>
-                </select>
+                <input type="hidden" class="pagesize" value="10" />
             </form>
         </div>
     </div>
