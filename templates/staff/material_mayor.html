@@ -54,6 +54,7 @@
         <table class="tablesorter">
             <thead>
                 <tr>
+                    <th>Correlativo</th>
                     <th>Marca chasis</th>
                     <th>Modelo chasis</th>
                     <th>Marca carrosado</th>
@@ -67,12 +68,19 @@
             <tbody>
                 {% for material_mayor in material_mayor %}
                     <tr>
+                        <td>{{ material_mayor.id }}</td>
                         <td>{{ material_mayor.modelo_chasis.marca }}</td>
                         <td>{{ material_mayor.modelo_chasis }}</td>
                         <td>{{ material_mayor.marca_carrosado }}</td>
                         <td>{{ material_mayor.numero_chasis }}</td>
                         <td>{{ material_mayor.numero_motor }}</td>
-                        <td>{{ material_mayor.cuerpo|default_if_none:"No asignado" }}</td>
+                        <td>
+                            {% if materialmayor.cuerpo %}
+                                {{ material_mayor.cuerpo}}
+                            {% else %}
+                                No asignado ({{material_mayor.adquisicion.cuerpo_destinatario }})
+                            {% endif %}
+                        </td>
                         <td>{{ material_mayor.compania|default_if_none:"No asignado" }}</td>
                         <td><a href="{% url interface.views.editar_material_mayor material_mayor.id %}">Editar</a></td>
                     </tr>
