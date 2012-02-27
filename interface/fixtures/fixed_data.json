@@ -517,6 +517,30 @@
         }
     },
     {
+        "pk": 12,
+        "model": "interface.tipoeventohojavidamaterialmayor",
+        "fields": {
+            "classname": "CambioVinMaterialMayor",
+            "name": "Cambio de VIN de material mayor"
+        }
+    },
+    {
+        "pk": 13,
+        "model": "interface.tipoeventohojavidamaterialmayor",
+        "fields": {
+            "classname": "CambioNumeroSerieMaterialMayor",
+            "name": "Cambio de número de serie de material mayor"
+        }
+    },
+    {
+        "pk": 14,
+        "model": "interface.tipoeventohojavidamaterialmayor",
+        "fields": {
+            "classname": "CambioPesoBrutoVehicularMaterialMayor",
+            "name": "Cambio de peso bruto vehicular de material mayor"
+        }
+    },
+    {
         "pk": 1,
         "model": "interface.frecuenciaoperacion",
         "fields": {

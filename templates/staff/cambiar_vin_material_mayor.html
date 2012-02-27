@@ -1,0 +1,23 @@
+{% extends 'staff/base.html' %}
+
+{% block staff_content %}
+    <p class="breadcrumbs">
+        <strong>Material mayor</strong>
+        &raquo; {{ material_mayor.breadcrumbs_string }}
+        &raquo; Cambiar VIN
+    </p>
+
+	<h2>Cambiar VIN</h2>
+    <hr />
+	
+	<p>
+    	Por favor indique el nuevo VIN del vehículo.
+	</p>
+	
+	<form method="post" action=".">
+	    {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Guardar" class="btn primary" />
+    </form>
+
+{% endblock %}

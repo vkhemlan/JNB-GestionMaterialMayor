@@ -48,6 +48,9 @@ from .archivo_mantencion_programada import ArchivoMantencionProgramada
 from .motivo_dada_de_baja import MotivoDadaDeBaja
 from .dada_de_baja_material_mayor import DadaDeBajaMaterialMayor
 from .cambio_denominacion import CambioDenominacion
+from .cambio_vin_material_mayor import CambioVinMaterialMayor
+from .cambio_numero_serie_material_mayor import CambioNumeroSerieMaterialMayor
+from .cambio_peso_bruto_vehicular_material_mayor import CambioPesoBrutoVehicularMaterialMayor
 
 __all__ = [
     'TipoVehiculoMaterialMayor',
@@ -99,5 +102,8 @@ __all__ = [
     'ArchivoMantencionProgramada',
     'MotivoDadaDeBaja',
     'DadaDeBajaMaterialMayor',
-    'CambioDenominacion'
+    'CambioDenominacion',
+    'CambioVinMaterialMayor',
+    'CambioNumeroSerieMaterialMayor',
+    'CambioPesoBrutoVehicularMaterialMayor'
 ]

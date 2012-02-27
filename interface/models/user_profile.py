@@ -102,6 +102,39 @@ class UserProfile(models.Model):
         if self.is_inspector_de_material_mayor():
             return True
         return False
+
+    def puede_cambiar_vin_material_mayor(self):
+        if self.user.is_superuser:
+            return True
+        if self.rol == Rol.OPERACIONES():
+            return True
+        if self.is_inspector_de_material_mayor():
+            return True
+        if self.is_comandante():
+            return True
+        return False
+
+    def puede_cambiar_numero_serie_material_mayor(self):
+        if self.user.is_superuser:
+            return True
+        if self.rol == Rol.OPERACIONES():
+            return True
+        if self.is_inspector_de_material_mayor():
+            return True
+        if self.is_comandante():
+            return True
+        return False
+
+    def puede_cambiar_peso_bruto_vehicular_material_mayor(self):
+        if self.user.is_superuser:
+            return True
+        if self.rol == Rol.OPERACIONES():
+            return True
+        if self.is_inspector_de_material_mayor():
+            return True
+        if self.is_comandante():
+            return True
+        return False
         
     def puede_cambiar_numero_motor_material_mayor(self):
         if self.user.is_superuser:

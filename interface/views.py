@@ -13,7 +13,10 @@ from datetime import date
 import xlrd
 from xlwt import Workbook, easyxf, Formula, XFStyle, Font
 from xlwt.Formatting import Alignment
+from interface.forms.formulario_cambio_numero_serie_material_mayor import FormularioCambioNumeroSerieMaterialMayor
 from interface.forms.formulario_cambio_pauta_mantencion_chasis_material_mayor import FormularioCambioPautaMantencionChasisMaterialMayor
+from interface.forms.formulario_cambio_peso_bruto_vehicular_material_mayor import FormularioCambioPesoBrutoVehicularMaterialMayor
+from interface.forms.formulario_cambio_vin_material_mayor import FormularioCambioVinMaterialMayor
 from interface.forms.formulario_dar_de_baja_material_mayor import FormularioDarDeBajaMaterialMayor
 
 from interface.models import MaterialMayor, EventoHojaVidaMaterialMayor, Rol, AsignacionPatenteMaterialMayor, UsoMaterialMayor, PautaMantencionCarrosado, PautaMantencionChasis, ModeloChasisMaterialMayor, FrecuenciaOperacion, MantencionProgramada, OperacionMantencionProgramada, EjecucionOperacionMantencionProgramada
@@ -330,6 +333,81 @@ def cambiar_numero_motor_material_mayor(request, material_mayor):
         'material_mayor': material_mayor
     }, 
     context_instance=RequestContext(request))
+
+@authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],))
+@authorize_material_mayor_access(requiere_validacion_operaciones=False)
+def cambiar_vin_material_mayor(request, material_mayor):
+    if request.method == 'POST':
+        form = FormularioCambioVinMaterialMayor(request.POST)
+        if form.is_valid():
+            instance = form.instance
+
+            instance.cargar_informacion_hoja_de_vida(material_mayor, request.user, 'CambioVinMaterialMayor')
+            instance.save()
+
+            material_mayor.vin = instance.nuevo_vin
+            material_mayor.save()
+
+            request.flash['success'] = u'Cambio de VIN realizado exitosamente'
+            url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
+            return HttpResponseRedirect(url)
+    else:
+        form = FormularioCambioVinMaterialMayor()
+    return render_to_response('staff/cambiar_vin_material_mayor.html', {
+        'form': form,
+        'material_mayor': material_mayor
+    },
+        context_instance=RequestContext(request))
+
+@authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],))
+@authorize_material_mayor_access(requiere_validacion_operaciones=False)
+def cambiar_numero_serie_material_mayor(request, material_mayor):
+    if request.method == 'POST':
+        form = FormularioCambioNumeroSerieMaterialMayor(request.POST)
+        if form.is_valid():
+            instance = form.instance
+
+            instance.cargar_informacion_hoja_de_vida(material_mayor, request.user, 'CambioNumeroSerieMaterialMayor')
+            instance.save()
+
+            material_mayor.numero_serie = instance.nuevo_numero_serie
+            material_mayor.save()
+
+            request.flash['success'] = u'Cambio de número de serie realizado exitosamente'
+            url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
+            return HttpResponseRedirect(url)
+    else:
+        form = FormularioCambioNumeroSerieMaterialMayor()
+    return render_to_response('staff/cambiar_numero_serie_material_mayor.html', {
+        'form': form,
+        'material_mayor': material_mayor
+    },
+        context_instance=RequestContext(request))
+
+@authorize(roles=(Rol.OPERACIONES(),), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],))
+@authorize_material_mayor_access(requiere_validacion_operaciones=False)
+def cambiar_peso_bruto_vehicular_material_mayor(request, material_mayor):
+    if request.method == 'POST':
+        form = FormularioCambioPesoBrutoVehicularMaterialMayor(request.POST)
+        if form.is_valid():
+            instance = form.instance
+
+            instance.cargar_informacion_hoja_de_vida(material_mayor, request.user, 'CambioPesoBrutoVehicularMaterialMayor')
+            instance.save()
+
+            material_mayor.peso_bruto_vehicular = instance.nuevo_peso_bruto_vehicular
+            material_mayor.save()
+
+            request.flash['success'] = u'Cambio de peso bruto vehicular realizado exitosamente'
+            url = reverse('interface.views.editar_material_mayor', args=[material_mayor.id])
+            return HttpResponseRedirect(url)
+    else:
+        form = FormularioCambioPesoBrutoVehicularMaterialMayor()
+    return render_to_response('staff/cambiar_peso_bruto_vehicular_material_mayor.html', {
+        'form': form,
+        'material_mayor': material_mayor
+    },
+        context_instance=RequestContext(request))
 
 
 @authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'], settings.CARGOS_CUERPO['Inspector de Material Mayor'],))

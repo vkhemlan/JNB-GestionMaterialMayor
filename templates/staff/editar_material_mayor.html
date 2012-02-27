@@ -187,6 +187,18 @@
                 <td><label>N° motor</label></td>
                 <td>{{ form.instance.numero_motor }} {% if user.get_profile.puede_cambiar_numero_motor_material_mayor and not dado_de_baja %}(<a href="{% url interface.views.cambiar_numero_motor_material_mayor form.instance.id %}">Cambiar</a>){% endif %}</td>
             </tr>
+            <tr>
+                <td><label>VIN</label></td>
+                <td>{{ form.instance.vin }} {% if user.get_profile.puede_cambiar_vin_material_mayor and not dado_de_baja %}(<a href="{% url interface.views.cambiar_vin_material_mayor form.instance.id %}">Cambiar</a>){% endif %}</td>
+            </tr>
+            <tr>
+                <td><label>N° serie</label></td>
+                <td>{{ form.instance.numero_serie }} {% if user.get_profile.puede_cambiar_numero_serie_material_mayor and not dado_de_baja %}(<a href="{% url interface.views.cambiar_numero_serie_material_mayor form.instance.id %}">Cambiar</a>){% endif %}</td>
+            </tr>
+            <tr>
+                <td><label>Peso bruto vehicular</label></td>
+                <td>{{ form.instance.peso_bruto_vehicular }} {% if user.get_profile.puede_cambiar_peso_bruto_vehicular_material_mayor and not dado_de_baja %}(<a href="{% url interface.views.cambiar_peso_bruto_vehicular_material_mayor form.instance.id %}">Cambiar</a>){% endif %}</td>
+            </tr>
             
             {{ form.render_datos_vehiculo }}
             

@@ -1,0 +1,23 @@
+{% extends 'staff/base.html' %}
+
+{% block staff_content %}
+    <p class="breadcrumbs">
+        <strong>Material mayor</strong>
+        &raquo; {{ material_mayor.breadcrumbs_string }}
+        &raquo; Cambiar peso bruto vehicular
+    </p>
+
+	<h2>Cambiar peso bruto vehicular</h2>
+    <hr />
+	
+	<p>
+    	Por favor indique el nuevo peso bruto vehicular del vehículo.
+	</p>
+	
+	<form method="post" action=".">
+	    {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Guardar" class="btn primary" />
+    </form>
+
+{% endblock %}

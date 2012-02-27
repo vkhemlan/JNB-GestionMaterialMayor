@@ -58,6 +58,6 @@ class FormularioEditarMaterialMayor(BaseModelForm):
                
     class Meta:
         model = MaterialMayor
-        fields = ('tipo_vehiculo', 'uso', 'otro_uso', 'vin', 'numero_serie', 'peso_bruto_vehicular', 'ano_vehiculo', 'color', 'condicion', 'tipo_caja_cambio', 'modelo_caja_cambio',
+        fields = ('tipo_vehiculo', 'uso', 'otro_uso', 'ano_vehiculo', 'color', 'condicion', 'tipo_caja_cambio', 'modelo_caja_cambio',
             'tipo_combustible', 'modelo_bomba', 'pais_origen', 'planos', 'fotografia_frontal', 'fotografia_lateral',
             'fotografia_trasera')

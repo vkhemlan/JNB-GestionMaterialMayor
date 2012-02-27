@@ -33,6 +33,12 @@ from .formulario_dar_de_baja_material_mayor import FormularioDarDeBajaMaterialMa
 from .formulario_hoja_vida_dada_de_baja_material_mayor import FormularioHojaVidaDadaDeBajaMaterialMayor
 from .formulario_cambio_denominacion import FormularioCambioDenominacion
 from .formulario_hoja_vida_cambio_denominacion import FormularioHojaVidaCambioDenominacion
+from .formulario_hoja_vida_cambio_vin_material_mayor import FormularioHojaVidaCambioVinMaterialMayor
+from .formulario_cambio_numero_serie_material_mayor import FormularioCambioNumeroSerieMaterialMayor
+from .formulario_hoja_vida_cambio_numero_serie_material_mayor import FormularioHojaVidaCambioNumeroSerieMaterialMayor
+from .formulario_cambio_peso_bruto_vehicular_material_mayor import FormularioCambioPesoBrutoVehicularMaterialMayor
+from .formulario_hoja_vida_cambio_peso_bruto_vehicular_material_mayor import FormularioHojaVidaCambioPesoBrutoVehicularMaterialMayor
+
 
 __all__ = [ 'BaseModelForm',
 			'FormularioAgregarMaterialMayor',
@@ -68,4 +74,10 @@ __all__ = [ 'BaseModelForm',
             'FormularioDarDeBajaMaterialMayor',
             'FormularioHojaVidaDadaDeBajaMaterialMayor',
             'FormularioCambioDenominacion',
-            'FormularioHojaVidaCambioDenominacion']
+            'FormularioHojaVidaCambioDenominacion',
+            'FormularioHojaVidaCambioVinMaterialMayor',
+            'FormularioCambioNumeroSerieMaterialMayor',
+            'FormularioHojaVidaCambioNumeroSerieMaterialMayor',
+            'FormularioCambioPesoBrutoVehicularMaterialMayor',
+            'FormularioHojaVidaCambioPesoBrutoVehicularMaterialMayor'
+]
