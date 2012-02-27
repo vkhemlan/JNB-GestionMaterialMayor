@@ -1,7 +1,9 @@
 # coding: utf-8
+from django.conf import settings
 
 from django.db import models
 from django.db.models import Q
+import os
 from sorl.thumbnail import ImageField
 from datetime import date
 
@@ -30,6 +32,9 @@ class MaterialMayor(models.Model):
     modelo_chasis = models.ForeignKey('ModeloChasisMaterialMayor', verbose_name=u'Modelo de chasis')
     numero_chasis = models.CharField(max_length=255, verbose_name=u'Número de chasis')
     numero_motor = models.CharField(max_length=255, verbose_name=u'Número de motor')
+    vin = models.CharField(max_length=255, verbose_name=u'VIN')
+    numero_serie = models.CharField(max_length=255, verbose_name=u'Número de serie')
+    peso_bruto_vehicular = models.PositiveIntegerField(verbose_name=u'Peso bruto vehicular')
     YEAR_CHOICES = [(year, year) for year in xrange(date.today().year, 1949, -1)]
     ano_vehiculo = models.IntegerField(choices=YEAR_CHOICES, verbose_name=u'Año del vehículo', blank=True, null=True)
     color = models.ForeignKey('ColorMaterialMayor', verbose_name=u'Color', blank=True, null=True)

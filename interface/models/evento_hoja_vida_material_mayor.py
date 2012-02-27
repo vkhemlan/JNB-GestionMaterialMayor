@@ -1,7 +1,9 @@
 # coding: utf-8
+from django.conf import settings
 
 from django.db import models
 from django.contrib.auth.models import User
+import os
 from interface.models.tipo_evento_hoja_vida_material_mayor import TipoEventoHojaVidaMaterialMayor
 
 def generate_uploaded_hoja_de_vida_file_name(field_name, evento, filename):

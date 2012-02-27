@@ -1,7 +1,9 @@
 # coding: utf-8
+from django.conf import settings
 
 from django.db import models
 from . import EventoHojaVidaMaterialMayor
+import os
 
 def generate_uploaded_dada_de_baja_file_name(field_name, instance, filename):
     left_path, extension = filename.rsplit('.',1)
