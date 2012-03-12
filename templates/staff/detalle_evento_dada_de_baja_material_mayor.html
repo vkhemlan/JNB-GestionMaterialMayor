@@ -2,6 +2,9 @@
         
 {% block event_details %}
    <strong>Motivo: </strong> {{ form.instance.motivo }} <br />
+        {% if form.instance.otro_motivo %}
+    <strong>Detalle: </strong> {{ form.instance.otro_motivo }} <br />
+        {% endif %}
     <strong>Observaciones: </strong> <br />
     {{ form.instance.observaciones|default_if_none:'Sin observaciones' }}
 {% endblock %}

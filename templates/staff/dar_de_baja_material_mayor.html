@@ -1,5 +1,9 @@
 {% extends 'staff/base.html' %}
 
+        {% block header_block %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/formulario_dar_de_baja_material_mayor_script.js"></script>
+        {% endblock %}
+
 {% block staff_content %}
     <p class="breadcrumbs">
         <strong>Material mayor</strong>
@@ -16,7 +20,7 @@
     y rellene el formulario con cuidado
 	</p>
 
-    <form method="post" action=".">
+    <form method="post" action="." enctype="multipart/form-data">
         <table id="form-table">
             {% csrf_token %}
             {{ form.as_table }}

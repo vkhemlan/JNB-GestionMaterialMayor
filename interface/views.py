@@ -289,7 +289,7 @@ def cambiar_numero_chasis_material_mayor(request, material_mayor):
 @authorize_material_mayor_access(requiere_validacion_operaciones=True)
 def dar_de_baja_material_mayor(request, material_mayor):
     if request.method == 'POST':
-        form = FormularioDarDeBajaMaterialMayor(request.POST)
+        form = FormularioDarDeBajaMaterialMayor(request.POST, request.FILES)
         if form.is_valid():
             instance = form.instance
             instance.cargar_informacion_hoja_de_vida(material_mayor, request.user, 'DadaDeBajaMaterialMayor')
