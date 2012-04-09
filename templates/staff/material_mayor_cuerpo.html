@@ -26,38 +26,61 @@
     {% if flash.success %}				    
 		<div class="success">{{ flash.success }}</div>
     {% endif %}
-    
+
     <table class="tablesorter">
         <thead>
-            <tr>
-                <th>Marca chasis</th>
-                <th>Modelo chasis</th>
-                <th>Marca carrosado</th>
-                <th>N° chasis</th>
-                <th>N° motor</th>
-                <th>Cuerpo</th>
-                <th>Compañía</th>
-                <th>Acciones</th>
-            </tr>
+        <tr>
+            <th>Correlativo</th>
+            <th>Marca chasis</th>
+            <th>Modelo chasis</th>
+            <th>Marca carrosado</th>
+            <th>N° chasis</th>
+            <th>N° motor</th>
+            <th>Patente</th>
+            <th>Cuerpo</th>
+            <th>Compañía</th>
+            <th>Denominación</th>
+            <th>Editar</th>
+        </tr>
         </thead>
-
         <tbody>
-            {% for material_mayor in material_mayor %}
-                <tr>
-                    <td>{{ material_mayor.modelo_chasis.marca }}</td>
-                    <td>{{ material_mayor.modelo_chasis }}</td>
-                    <td>{{ material_mayor.marca_carrosado }}</td>
-                    <td>{{ material_mayor.numero_chasis }}</td>
-                    <td>{{ material_mayor.numero_motor }}</td>
-                    <td>{{ material_mayor.cuerpo|default_if_none:"No asignado" }}</td>
-                    <td>{{ material_mayor.compania|default_if_none:"No asignado" }}</td>
-                    <td><a href="{% url interface.views.editar_material_mayor material_mayor.id %}">Editar</a></td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="5">No hay material mayor que mostrar</td>
-                </tr>
-            {% endfor %}
+        {% for material_mayor in material_mayor %}
+        <tr>
+            <td>{{ material_mayor.id }}</td>
+            <td>{{ material_mayor.modelo_chasis.marca }}</td>
+            <td>{{ material_mayor.modelo_chasis }}</td>
+            <td>{{ material_mayor.marca_carrosado }}</td>
+            <td>{{ material_mayor.numero_chasis }}</td>
+            <td>{{ material_mayor.numero_motor }}</td>
+            <td>{{ material_mayor.asignacion_de_patente|default_if_none:"No posee" }}</td>
+            <td>
+                {% if material_mayor.cuerpo %}
+                    {{ material_mayor.cuerpo}}
+                {% else %}
+                    No asignado ({{material_mayor.adquisicion.cuerpo_destinatario }})
+                {% endif %}
+            </td>
+            <td>{% if material_mayor.cuerpo %}
+                    {% if material_mayor.compania %}
+                        {{ material_mayor.compania }}
+                    {% else %}
+                        Nivel Central
+                    {% endif %}
+                {% else %}
+                    No asignado ({{material_mayor.adquisicion.cuerpo_destinatario }})
+                {% endif %}</td>
+            <td>{% if material_mayor.denominacion %}
+                    {{ material_mayor.denominacion}}
+                {% else %}
+                    Sin denominación
+                {% endif %}</td>
+            <td><a href="{% url interface.views.editar_material_mayor material_mayor.id %}">Editar</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="11">Ningún material mayor coincide con los criterios de búsqueda</td>
+        </tr>
+        {% endfor %}
         </tbody>
     </table>
 {% endblock %}

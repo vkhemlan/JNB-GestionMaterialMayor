@@ -50,6 +50,8 @@
         
         <p style="text-align: right;">
             <a href="{% url interface.views.material_mayor_excel %}?{{ form.get_path }}">Descargar esta búsqueda como Excel </a>
+            <br />
+            <a href="{% url interface.views.all_material_mayor %}">Listado de todo el material mayor</a>
         </p>
         <table class="tablesorter">
             <thead>
@@ -60,8 +62,10 @@
                     <th>Marca carrosado</th>
                     <th>N° chasis</th>
                     <th>N° motor</th>
+                    <th>Patente</th>
                     <th>Cuerpo</th>
                     <th>Compañía</th>
+                    <th>Denominación</th>
                     <th>Editar</th>
                 </tr>
             </thead>
@@ -74,19 +78,33 @@
                         <td>{{ material_mayor.marca_carrosado }}</td>
                         <td>{{ material_mayor.numero_chasis }}</td>
                         <td>{{ material_mayor.numero_motor }}</td>
+                        <td>{{ material_mayor.asignacion_de_patente|default_if_none:"No posee" }}</td>
                         <td>
-                            {% if materialmayor.cuerpo %}
+                            {% if material_mayor.cuerpo %}
                                 {{ material_mayor.cuerpo}}
                             {% else %}
                                 No asignado ({{material_mayor.adquisicion.cuerpo_destinatario }})
                             {% endif %}
                         </td>
-                        <td>{{ material_mayor.compania|default_if_none:"No asignado" }}</td>
+                        <td>{% if material_mayor.cuerpo %}
+                                {% if material_mayor.compania %}
+                                    {{ material_mayor.compania }}
+                                {% else %}
+                                    Nivel Central
+                                {% endif %}
+                            {% else %}
+                                No asignado ({{material_mayor.adquisicion.cuerpo_destinatario }})
+                            {% endif %}</td>
+                        <td>{% if material_mayor.denominacion %}
+                                {{ material_mayor.denominacion}}
+                            {% else %}
+                                Sin denominación
+                            {% endif %}</td>
                         <td><a href="{% url interface.views.editar_material_mayor material_mayor.id %}">Editar</a></td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="5">Ningún material mayor coincide con los criterios de búsqueda</td>
+                        <td colspan="11">Ningún material mayor coincide con los criterios de búsqueda</td>
                     </tr>
                 {% endfor %}
             </tbody>

@@ -630,6 +630,15 @@ def material_mayor(request):
             'title': title
         }, 
         context_instance=RequestContext(request))
+
+@authorize(roles=(Rol.OPERACIONES(),))
+def all_material_mayor(request):
+    material_mayor = MaterialMayor.objects.all()
+
+    return render_to_response('staff/all_material_mayor.html', {
+        'material_mayor': material_mayor,
+    },
+        context_instance=RequestContext(request))
         
 @authorize(roles=(Rol.OPERACIONES(), Rol.ADQUISICIONES(), Rol.JURIDICA()), cargos=(settings.CARGOS_CUERPO['Comandante'],))
 def material_mayor_excel(request):

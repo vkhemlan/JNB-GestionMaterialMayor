@@ -7,5 +7,5 @@ $(function() {
     .tablesorterPager({container: $("#pager")})
     .tablesorterFilter({filterContainer: "#filter-box",
                             filterClearContainer: "#filter-clear-button",
-                            filterColumns: [0,1,2,3,4,5,6,7]});
+                            filterColumns: [0,1,2,3,4,5,6,7,8,9]});
 });
