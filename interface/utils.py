@@ -29,15 +29,15 @@ def notificar_mantenciones_pendientes():
         if mantencion_pendiente.material_mayor.cuerpo:
             ids_cuerpos_con_mantenciones_pendientes.add(mantencion_pendiente.material_mayor.cuerpo.webservice_id)
 
-    encargados_raw_data = request_webservice('/services/usuarios/encargados_de_material_mayor/')
-    encargados_raw_data_list = encargados_raw_data.childNodes
+    #encargados_raw_data = request_webservice('/services/usuarios/encargados_de_material_mayor/')
+    #encargados_raw_data_list = encargados_raw_data.childNodes
 
     encargados_material_mayor_por_notificar = []
 
-    for raw_encargado in encargados_raw_data_list:
-        cuerpo_id = int(get_xml_node_attribute(raw_encargado, 'cuerpo', 'id'))
-        if cuerpo_id in ids_cuerpos_con_mantenciones_pendientes:
-            encargados_material_mayor_por_notificar.append([raw_encargado, cuerpo_id])
+    #for raw_encargado in encargados_raw_data_list:
+    #    cuerpo_id = int(get_xml_node_attribute(raw_encargado, 'cuerpo', 'id'))
+    #    if cuerpo_id in ids_cuerpos_con_mantenciones_pendientes:
+    #        encargados_material_mayor_por_notificar.append([raw_encargado, cuerpo_id])
 
     for encargado_material_mayor, cuerpo_id in encargados_material_mayor_por_notificar:
         webservice_url = '/services/usuario/%s/correos/' % (get_xml_node_contents(encargado_material_mayor, 'id'),)

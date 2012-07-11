@@ -19,7 +19,7 @@ AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
                             'interface.authentication.JnbAuthenticationBackend',)
 
 JNB_WEBSERVICES_URL = 'http://localhost:8080/JnbWebServices'
-SITE_URL = 'http://localhost:8000/'
+SITE_URL = 'http://localhost:8000'
 
 MANAGERS = ADMINS
 
@@ -30,8 +30,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'gestion',                      # Or path to database file if using sqlite3.    }
-        'USER': 'cc61a',
-        'PASSWORD': 'cc61a',
+        'USER': 'vkhemlan',
+        'PASSWORD': 'vkhemlan',
 	'HOST': ''
     }
 }
